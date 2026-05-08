@@ -1,0 +1,3642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Observatorio BOB/USD — Paralelo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg: #0b0d10;
+    --bg-elevated: #131619;
+    --bg-soft: #181b1f;
+    --border: #25292e;
+    --border-soft: #1d2025;
+    --text: #ece6d6;
+    --text-soft: #a8a394;
+    --text-mute: #6e6a5e;
+    --accent: #d4a647;
+    --accent-soft: #b88a2c;
+    --positive: #7fae8f;
+    --negative: #c97070;
+    --neutral: #7a8a9a;
+    --gold-glow: rgba(212, 166, 71, 0.08);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  body {
+    background-image:
+      radial-gradient(ellipse at 15% 0%, var(--gold-glow) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 100%, rgba(127, 174, 143, 0.04) 0%, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  /* ============= NAVBAR ============= */
+  .navbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.85rem 0; margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-soft);
+    position: relative;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 0.65rem;
+    text-decoration: none; user-select: none;
+  }
+  .nav-logo svg { width: 32px; height: 32px; flex-shrink: 0; }
+  .nav-logo-text {
+    font-family: var(--sans); font-weight: 600; font-size: 0.95rem;
+    color: var(--text); letter-spacing: 0.01em; line-height: 1.1;
+  }
+  .nav-logo-text span { color: var(--accent); }
+  .nav-logo-sub {
+    font-family: var(--mono); font-size: 0.6rem; color: var(--text-mute);
+    letter-spacing: 0.1em; text-transform: uppercase; display: block;
+  }
+  .nav-links {
+    display: flex; align-items: center; gap: 0.2rem; list-style: none;
+  }
+  .nav-links a, .nav-dropdown-toggle {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-mute);
+    text-decoration: none; padding: 0.45rem 0.75rem; border-radius: 2px;
+    transition: color 0.15s, background 0.15s; background: transparent;
+    border: none; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;
+  }
+  .nav-links a:hover, .nav-dropdown-toggle:hover {
+    color: var(--text); background: var(--bg-soft);
+  }
+  .nav-links a.active {
+    color: var(--accent); background: var(--gold-glow);
+  }
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-toggle .arrow {
+    font-size: 0.55rem; transition: transform 0.2s; display: inline-block;
+  }
+  .nav-dropdown:hover .arrow { transform: rotate(180deg); }
+  .nav-dropdown-menu {
+    display: none; position: absolute; top: calc(100% + 4px); left: 0;
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 3px; min-width: 160px; z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+  .nav-dropdown-menu a {
+    display: block; padding: 0.6rem 1rem; font-size: 0.7rem;
+    border-bottom: 1px solid var(--border-soft); border-radius: 0;
+  }
+  .nav-dropdown-menu a:last-child { border-bottom: none; }
+  .nav-dropdown-menu a:hover { background: var(--bg-soft); color: var(--accent); }
+  .nav-cta {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--accent) !important;
+    border: 1px solid var(--accent) !important; padding: 0.4rem 0.75rem !important;
+    border-radius: 2px; transition: all 0.15s !important;
+  }
+  .nav-cta:hover { background: var(--accent) !important; color: var(--bg) !important; }
+  .nav-hamburger {
+    display: none; flex-direction: column; gap: 4px; cursor: pointer;
+    padding: 6px; background: none; border: none;
+  }
+  .nav-hamburger span {
+    display: block; width: 20px; height: 1.5px; background: var(--text-mute);
+    transition: all 0.2s;
+  }
+  @media (max-width: 768px) {
+    .nav-hamburger { display: flex; }
+    .nav-links { display: none; flex-direction: column; align-items: flex-start;
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 200;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      padding: 0.5rem; gap: 0;
+    }
+    .nav-links.open { display: flex; }
+    .nav-dropdown-menu { position: static; box-shadow: none; border: none;
+      background: var(--bg-soft); padding-left: 0.5rem; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: none; }
+    .nav-dropdown.open .nav-dropdown-menu { display: block; }
+  }
+
+  /* ============= HEADER ============= */
+  header.topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 1.5rem; margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .brand {
+    font-family: var(--serif); font-weight: 500; font-style: italic;
+    font-size: 1.05rem; letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+  .brand::before { content: '◆ '; opacity: 0.55; font-style: normal; }
+  .brand-sub {
+    font-family: var(--mono); font-size: 0.7rem; color: var(--text-mute);
+    letter-spacing: 0.08em; margin-top: 0.25rem; padding-left: 1.1rem;
+  }
+  .topbar-meta {
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.12em;
+    text-align: right;
+  }
+  .topbar-controls {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;
+  }
+  .topbar-actions {
+    display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .refresh-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-soft); font-family: var(--mono);
+    font-size: 0.7rem; padding: 0.4rem 0.8rem; border-radius: 2px;
+    cursor: pointer; letter-spacing: 0.06em; text-transform: uppercase;
+    transition: all 0.15s ease;
+  }
+  .refresh-btn:hover {
+    border-color: var(--accent); color: var(--accent);
+  }
+  .refresh-btn:active { transform: translateY(1px); }
+  .refresh-btn.spinning .refresh-icon {
+    display: inline-block;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .auto-refresh-toggle {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--text-mute); letter-spacing: 0.06em;
+    text-transform: uppercase; cursor: pointer; user-select: none;
+    padding: 0.4rem 0.6rem; border: 1px solid var(--border-soft);
+    border-radius: 2px; transition: all 0.15s ease;
+  }
+  .auto-refresh-toggle:hover {
+    border-color: var(--border); color: var(--text-soft);
+  }
+  .auto-refresh-toggle input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 28px; height: 14px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px;
+    position: relative; cursor: pointer; outline: none;
+    margin: 0; padding: 0; transition: all 0.2s ease;
+  }
+  .auto-refresh-toggle input[type="checkbox"]::before {
+    content: ''; position: absolute; left: 1px; top: 1px;
+    width: 10px; height: 10px; background: var(--text-mute);
+    border-radius: 50%; transition: all 0.2s ease;
+  }
+  .auto-refresh-toggle input[type="checkbox"]:checked {
+    background: var(--accent); border-color: var(--accent);
+  }
+  .auto-refresh-toggle input[type="checkbox"]:checked::before {
+    left: 15px; background: var(--bg);
+  }
+  .auto-refresh-toggle:has(input:checked) {
+    color: var(--accent); border-color: var(--accent);
+  }
+  .live-dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--positive); margin-right: 0.4rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* ============= HERO ============= */
+  .hero {
+    display: grid; grid-template-columns: 1fr; gap: 2.5rem;
+    margin-bottom: 3rem; padding: 1rem 0 2rem;
+  }
+  @media (min-width: 768px) { .hero { grid-template-columns: 1.1fr 1fr; align-items: end; } }
+
+  .hero-left .eyebrow {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem;
+  }
+  .hero-left h1 {
+    font-family: var(--serif); font-weight: 300; font-style: italic;
+    font-size: clamp(2.4rem, 5vw, 3.6rem); line-height: 1; color: var(--text);
+    letter-spacing: -0.01em; font-variation-settings: 'opsz' 60;
+  }
+  .hero-left h1 .em {
+    font-style: normal; font-weight: 400; color: var(--accent);
+  }
+  .hero-left p.lead {
+    margin-top: 1rem; max-width: 38ch; color: var(--text-soft);
+    font-size: 0.95rem; line-height: 1.55;
+  }
+
+  .hero-prices {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border: 1px solid var(--border); border-radius: 2px;
+    background: var(--bg-elevated);
+    overflow: hidden;
+  }
+  .hero-sparkline {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--border);
+    padding: 0.7rem 1.4rem 0.5rem;
+    background: var(--bg-soft);
+    position: relative; height: 70px;
+  }
+  .hero-spark-label {
+    font-family: var(--mono); font-size: 0.62rem;
+    color: var(--text-mute); letter-spacing: 0.18em;
+    text-transform: uppercase; margin-bottom: 0.2rem;
+  }
+  .hero-sparkline canvas {
+    position: absolute; left: 1.4rem; right: 1.4rem;
+    top: 1.7rem; bottom: 0.5rem;
+    width: calc(100% - 2.8rem) !important; height: calc(100% - 2.2rem) !important;
+  }
+  .price-cell {
+    padding: 1.6rem 1.4rem; position: relative;
+  }
+  .price-cell:first-child { border-right: 1px solid var(--border); }
+  .price-label {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-mute); margin-bottom: 0.5rem;
+  }
+  .price-value {
+    font-family: var(--serif); font-weight: 400;
+    font-size: 2.4rem; line-height: 1; color: var(--text);
+    font-variation-settings: 'opsz' 90;
+  }
+  .price-value .currency {
+    font-size: 1rem; color: var(--accent); margin-right: 0.3rem;
+    font-weight: 500;
+  }
+  .price-change {
+    margin-top: 0.7rem; font-family: var(--mono); font-size: 0.78rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .change-up { color: var(--negative); }
+  .change-down { color: var(--positive); }
+  .change-flat { color: var(--text-mute); }
+
+  /* ============= METRICS STRIP ============= */
+  .metrics-layout {
+    display: grid; grid-template-columns: 1fr; gap: 1px;
+    background: var(--border); border: 1px solid var(--border);
+    margin-bottom: 3rem; border-radius: 2px; overflow: hidden;
+  }
+  @media (min-width: 900px) {
+    .metrics-layout { grid-template-columns: 1fr 2fr; }
+  }
+  .brecha-hero {
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-soft));
+    padding: 1.5rem 1.4rem;
+    display: flex; flex-direction: column; justify-content: center;
+    border-right: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .brecha-hero::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%; background: var(--accent);
+  }
+  .brecha-label {
+    font-family: var(--mono); font-size: 0.68rem;
+    color: var(--text-mute); letter-spacing: 0.18em;
+    text-transform: uppercase; margin-bottom: 0.6rem;
+  }
+  .brecha-value {
+    font-family: var(--serif); font-weight: 400;
+    font-size: 2.6rem; line-height: 1; color: var(--accent);
+    font-variation-settings: 'opsz' 90;
+    letter-spacing: -0.01em;
+  }
+  .brecha-sub {
+    font-size: 0.78rem; color: var(--text-soft);
+    margin-top: 0.6rem; line-height: 1.4;
+  }
+  .strip {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--border);
+  }
+  @media (min-width: 600px) { .strip { grid-template-columns: repeat(4, 1fr); } }
+  .strip-cell {
+    background: var(--bg-elevated); padding: 1.2rem 1.1rem;
+  }
+  .strip-label {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--text-mute);
+    margin-bottom: 0.55rem;
+  }
+  .strip-value {
+    font-family: var(--mono); font-size: 1.3rem; font-weight: 500;
+    color: var(--text); letter-spacing: -0.01em;
+  }
+  .strip-sub {
+    font-size: 0.72rem; color: var(--text-soft);
+    margin-top: 0.3rem; font-family: var(--sans);
+  }
+
+  /* ============= SECTIONS ============= */
+  section.block {
+    margin-bottom: 3.5rem;
+    border: 1px solid var(--border-soft);
+    background: var(--bg-elevated);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .block-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 1.4rem 1.6rem 1.1rem;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .block-title {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: 1.45rem; letter-spacing: -0.005em;
+  }
+  .block-title .num {
+    font-family: var(--mono); font-style: normal; font-size: 0.7rem;
+    color: var(--accent); margin-right: 0.7rem; letter-spacing: 0.1em;
+    vertical-align: 0.3em;
+  }
+  .block-actions {
+    display: flex; gap: 0.3rem; flex-wrap: wrap;
+  }
+  .pill {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-soft); font-family: var(--mono);
+    font-size: 0.7rem; padding: 0.35rem 0.75rem; border-radius: 2px;
+    cursor: pointer; letter-spacing: 0.05em;
+    transition: all 0.15s ease;
+  }
+  .pill:hover { border-color: var(--accent); color: var(--text); }
+  .pill.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+  .block-body { padding: 1.4rem 1.6rem 1.8rem; }
+  .block-intro {
+    font-size: 0.88rem; color: var(--text-soft); line-height: 1.6;
+    margin-bottom: 1.5rem; max-width: 75ch;
+  }
+  .block-intro strong { color: var(--text); font-weight: 500; }
+  .chart-wrap { position: relative; height: 380px; width: 100%; }
+
+  /* ============= CHART MINI LEGEND ============= */
+  .chart-legend-mini {
+    display: grid; grid-template-columns: 1fr; gap: 0.55rem;
+    margin-bottom: 1.4rem; padding: 0.9rem 1.1rem;
+    background: var(--bg-soft);
+    border: 1px solid var(--border-soft);
+    border-radius: 2px;
+  }
+  @media (min-width: 700px) {
+    .chart-legend-mini { grid-template-columns: 1fr 1fr; gap: 0.5rem 1.5rem; }
+  }
+  .legend-row {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.82rem; color: var(--text-soft); line-height: 1.4;
+  }
+  .legend-row strong { color: var(--text); font-weight: 500; }
+  .legend-dot {
+    flex-shrink: 0; width: 18px; height: 3px; border-radius: 2px;
+  }
+
+  /* ============= DOWNLOAD BAR ============= */
+  .download-bar {
+    margin-top: 1.4rem; padding-top: 1.2rem;
+    border-top: 1px solid var(--border-soft);
+    display: flex; flex-direction: column; gap: 0.7rem;
+    align-items: flex-start;
+  }
+  @media (min-width: 640px) {
+    .download-bar { flex-direction: row; justify-content: space-between; align-items: center; }
+  }
+  .download-label {
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--text-soft); letter-spacing: 0.08em;
+  }
+  .download-icon {
+    color: var(--accent); font-weight: bold; margin-right: 0.3rem;
+  }
+  .download-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .dl-btn {
+    background: transparent; border: 1px solid var(--accent);
+    color: var(--accent); font-family: var(--mono);
+    font-size: 0.72rem; padding: 0.5rem 1rem; border-radius: 2px;
+    cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: all 0.18s ease;
+  }
+  .dl-btn:hover {
+    background: var(--accent); color: var(--bg);
+  }
+  .dl-btn:active { transform: translateY(1px); }
+
+  /* ============= FORECAST ============= */
+  .forecast-disclaimer {
+    background: var(--bg-soft);
+    border-left: 2px solid var(--accent);
+    padding: 0.9rem 1.1rem; margin-top: 1.2rem;
+    font-size: 0.82rem; color: var(--text-soft); line-height: 1.55;
+  }
+  .forecast-disclaimer strong { color: var(--accent); font-weight: 600; }
+
+  /* ============= ENSEMBLE DECOMPOSITION CARD ============= */
+  .ensemble-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--border-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 2px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+  .ensemble-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap;
+  }
+  .ensemble-label {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--text-mute); letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .ensemble-result {
+    font-family: var(--serif); font-style: italic;
+    font-size: 1.4rem; color: var(--accent);
+    font-variation-settings: 'opsz' 60;
+  }
+  .ensemble-bars {
+    display: flex; flex-direction: column; gap: 0.55rem;
+    margin-bottom: 0.9rem;
+  }
+  .ensemble-row {
+    display: grid; grid-template-columns: 1fr 50px;
+    align-items: center; gap: 0.8rem;
+  }
+  @media (min-width: 640px) {
+    .ensemble-row { grid-template-columns: 130px 1fr 60px 75px; }
+  }
+  .ensemble-row-name {
+    font-size: 0.82rem; color: var(--text);
+  }
+  .ensemble-row-name .row-detail {
+    display: block; font-size: 0.68rem;
+    color: var(--text-mute); font-family: var(--mono);
+    letter-spacing: 0.04em; margin-top: 0.1rem;
+  }
+  .ensemble-bar-track {
+    height: 6px; background: var(--bg);
+    border-radius: 3px; overflow: hidden;
+    border: 1px solid var(--border-soft);
+    position: relative;
+  }
+  .ensemble-bar-fill {
+    height: 100%; border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .ensemble-row-weight {
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--text-soft); text-align: right;
+  }
+  .ensemble-row-value {
+    font-family: var(--mono); font-size: 0.78rem;
+    color: var(--text); text-align: right;
+  }
+  .ensemble-explainer {
+    font-size: 0.78rem; color: var(--text-soft);
+    line-height: 1.55; padding-top: 0.8rem;
+    border-top: 1px solid var(--border-soft);
+  }
+  .ensemble-explainer strong { color: var(--text); font-weight: 500; }
+
+  /* ============= PROJECTION TABLE ============= */
+  .projection-table-wrap {
+    margin-top: 1.6rem; padding: 1rem 1.2rem;
+    background: var(--bg-soft); border: 1px solid var(--border-soft);
+    border-radius: 2px;
+  }
+  .projection-table-title {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 0.16em;
+    text-transform: uppercase; margin-bottom: 0.8rem;
+    font-weight: 500;
+  }
+  .projection-table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--mono); font-size: 0.84rem;
+  }
+  .projection-table thead th {
+    text-align: left; padding: 0.5rem 0.7rem;
+    color: var(--text-mute); font-size: 0.68rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 500; border-bottom: 1px solid var(--border);
+  }
+  .projection-table thead th:not(:first-child) { text-align: right; }
+  .projection-table tbody td {
+    padding: 0.5rem 0.7rem;
+    color: var(--text-soft);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .projection-table tbody td:not(:first-child) { text-align: right; }
+  .projection-table tbody tr:last-child td { border-bottom: none; }
+  .projection-table tbody tr.actual-row td {
+    color: var(--accent); font-weight: 500;
+    background: rgba(212, 166, 71, 0.04);
+  }
+  .projection-table .delta-up { color: var(--negative); }
+  .projection-table .delta-down { color: var(--positive); }
+  .projection-table .delta-flat { color: var(--text-mute); }
+  .forecast-stats {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--border); margin-top: 1.2rem;
+  }
+  @media (min-width: 640px) {
+    .forecast-stats { grid-template-columns: repeat(4, 1fr); }
+  }
+  .fc-stat { background: var(--bg-elevated); padding: 0.9rem; }
+  .fc-stat-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text-mute); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .fc-stat-value { font-family: var(--mono); font-size: 1.1rem; color: var(--text); }
+
+  /* ============= ECONOMIC ============= */
+  .econ-grid {
+    display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+  }
+  @media (min-width: 768px) { .econ-grid { grid-template-columns: 1.4fr 1fr; } }
+
+  .indicator-list {
+    display: flex; flex-direction: column; gap: 0;
+    border: 1px solid var(--border-soft); border-radius: 2px; overflow: hidden;
+  }
+  .indicator-row {
+    padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--bg-soft);
+  }
+  .indicator-row:last-child { border-bottom: none; }
+  .ind-name { font-size: 0.85rem; color: var(--text-soft); }
+  .ind-val { font-family: var(--mono); font-size: 0.95rem; color: var(--text); }
+  .ind-val .delta { font-size: 0.72rem; margin-left: 0.5rem; }
+
+  /* ============= NEWS ============= */
+  .news-grid {
+    display: grid; grid-template-columns: 1fr; gap: 2rem;
+  }
+  @media (min-width: 768px) {
+    .news-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  }
+  .news-column { display: flex; flex-direction: column; gap: 0.7rem; }
+  .news-col-title {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 0.3rem;
+    padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+  }
+  .news-col-flag { font-size: 1rem; }
+  .news-list { display: grid; gap: 0.6rem; }
+  .news-card {
+    padding: 1rem 1.1rem;
+    border-left: 2px solid var(--border);
+    background: var(--bg-soft);
+    transition: border-color 0.2s;
+  }
+  .news-card:hover { border-left-color: var(--accent); }
+  .news-meta {
+    font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.4rem;
+  }
+  .news-title { font-size: 0.95rem; line-height: 1.45; color: var(--text); }
+  .news-source { font-size: 0.72rem; color: var(--text-mute); margin-top: 0.4rem; }
+
+  /* ============= CRYPTO MARKET ============= */
+  .crypto-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--border); border: 1px solid var(--border);
+    border-radius: 2px; overflow: hidden;
+  }
+  @media (min-width: 900px) { .crypto-grid { grid-template-columns: repeat(4, 1fr); } }
+  .crypto-card {
+    background: var(--bg-elevated); padding: 1.1rem 1.1rem 0.6rem;
+    display: flex; flex-direction: column; gap: 0.4rem;
+    position: relative; min-height: 150px;
+  }
+  .crypto-head {
+    display: flex; align-items: baseline; gap: 0.5rem;
+  }
+  .crypto-symbol {
+    font-family: var(--mono); font-size: 0.95rem; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.05em;
+  }
+  .crypto-name {
+    font-size: 0.72rem; color: var(--text-mute);
+  }
+  .peg-tag {
+    display: inline-block; padding: 0.05rem 0.35rem;
+    font-family: var(--mono); font-size: 0.55rem;
+    background: rgba(127, 174, 143, 0.12);
+    color: var(--positive);
+    border: 1px solid rgba(127, 174, 143, 0.25);
+    border-radius: 2px; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-left: 0.3rem;
+  }
+  .crypto-price {
+    font-family: var(--serif); font-weight: 400;
+    font-size: 1.6rem; color: var(--text);
+    line-height: 1.1;
+    font-variation-settings: 'opsz' 80;
+  }
+  .crypto-change {
+    font-family: var(--mono); font-size: 0.78rem;
+    margin-top: -0.2rem;
+  }
+  .crypto-change.up { color: var(--positive); }
+  .crypto-change.down { color: var(--negative); }
+  .crypto-change.flat { color: var(--text-mute); }
+  .crypto-spark {
+    position: relative; height: 50px; margin-top: 0.5rem;
+  }
+  .crypto-card.peg-warning {
+    border-left: 2px solid var(--negative);
+  }
+  .crypto-card.peg-warning .crypto-symbol { color: var(--negative); }
+
+  /* ============= LEGAL DISCLAIMER ============= */
+  .legal-disclaimer {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 2px; padding: 1.4rem 1.6rem;
+    margin-bottom: 2rem;
+  }
+  .legal-title {
+    font-family: var(--mono); font-size: 0.78rem;
+    color: var(--accent); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .legal-body p {
+    font-size: 0.82rem; line-height: 1.7;
+    color: var(--text-soft); margin-bottom: 0.9rem;
+  }
+  .legal-body p:last-child { margin-bottom: 0; }
+  .legal-body strong { color: var(--text); font-weight: 500; }
+  .legal-body a {
+    color: var(--accent); text-decoration: underline;
+    text-decoration-color: rgba(212, 166, 71, 0.3);
+  }
+  .legal-body a:hover { text-decoration-color: var(--accent); }
+
+  /* ============= FOOTER ============= */
+  footer.foot {
+    margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-soft);
+    color: var(--text-mute); font-size: 0.78rem; line-height: 1.6;
+  }
+  footer.foot a { color: var(--text-soft); text-decoration: underline; text-decoration-color: var(--border); }
+  footer.foot a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+  .foot-grid {
+    display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (min-width: 768px) { .foot-grid { grid-template-columns: repeat(3, 1fr); } }
+  .foot-grid h4 {
+    font-family: var(--mono); font-size: 0.68rem; color: var(--accent);
+    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem;
+    font-weight: 500;
+  }
+
+  /* loading */
+  .skeleton { color: var(--text-mute); }
+  .skeleton .price-value::after { content: '— —'; }
+
+  .error-banner {
+    background: rgba(201, 112, 112, 0.08);
+    border: 1px solid rgba(201, 112, 112, 0.3);
+    color: var(--negative); padding: 0.8rem 1rem; border-radius: 2px;
+    margin-bottom: 1.5rem; font-size: 0.85rem;
+  }
+  .info-banner {
+    background: var(--gold-glow);
+    border: 1px solid rgba(212, 166, 71, 0.25);
+    color: var(--text-soft); padding: 0.8rem 1rem; border-radius: 2px;
+    margin-bottom: 1.5rem; font-size: 0.85rem;
+  }
+  .soft-banner {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-soft);
+    border-left: 2px solid var(--text-mute);
+    color: var(--text-mute); padding: 0.6rem 0.9rem; border-radius: 2px;
+    margin-bottom: 1.5rem; font-size: 0.78rem;
+    font-family: var(--mono); letter-spacing: 0.02em;
+  }
+  .soft-banner::before {
+    content: 'ⓘ '; opacity: 0.6;
+  }
+
+  .diag-banner {
+    padding: 0.7rem 1rem; border-radius: 2px;
+    margin-bottom: 1.2rem; font-size: 0.82rem;
+    font-family: var(--mono); letter-spacing: 0.02em;
+    line-height: 1.5;
+  }
+  .diag-banner strong { color: var(--text); font-weight: 600; }
+  .diag-success {
+    background: rgba(127, 174, 143, 0.08);
+    border: 1px solid rgba(127, 174, 143, 0.25);
+    border-left: 3px solid var(--positive);
+    color: var(--text-soft);
+  }
+  .diag-warning {
+    background: rgba(212, 166, 71, 0.08);
+    border: 1px solid rgba(212, 166, 71, 0.25);
+    border-left: 3px solid var(--accent);
+    color: var(--text-soft);
+  }
+  .diag-info {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-soft);
+    border-left: 3px solid var(--neutral);
+    color: var(--text-soft);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ NAVBAR ============ -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <!-- Logo chip SVG replicando el ícono DataHunter -->
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Perfil de cabeza -->
+        <path d="M50 14 C62 14 68 24 68 36 C68 46 63 54 55 58 L55 66 L38 66 L38 58 C30 57 26 52 26 46 C26 44 27 42 29 41 C28 39 28 36 29 34 C31 26 40 14 50 14Z"
+              stroke="#d4a647" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+        <!-- Chip CPU en el centro -->
+        <rect x="36" y="28" width="20" height="20" rx="2"
+              stroke="#d4a647" stroke-width="2" fill="none"/>
+        <rect x="40" y="32" width="12" height="12" rx="1"
+              stroke="#d4a647" stroke-width="1.5" fill="rgba(212,166,71,0.12)"/>
+        <!-- Pines del chip -->
+        <line x1="40" y1="28" x2="40" y2="24" stroke="#d4a647" stroke-width="1.5"/>
+        <line x1="46" y1="28" x2="46" y2="24" stroke="#d4a647" stroke-width="1.5"/>
+        <line x1="52" y1="28" x2="52" y2="24" stroke="#d4a647" stroke-width="1.5"/>
+        <line x1="40" y1="48" x2="40" y2="52" stroke="#d4a647" stroke-width="1.5"/>
+        <line x1="46" y1="48" x2="46" y2="52" stroke="#d4a647" stroke-width="1.5"/>
+        <line x1="52" y1="48" x2="52" y2="52" stroke="#d4a647" stroke-width="1.5"/>
+        <line x1="36" y1="34" x2="32" y2="34" stroke="#d4a647" stroke-width="1.5"/>
+        <line x1="36" y1="40" x2="32" y2="40" stroke="#d4a647" stroke-width="1.5"/>
+        <line x1="56" y1="34" x2="60" y2="34" stroke="#d4a647" stroke-width="1.5"/>
+        <line x1="56" y1="40" x2="60" y2="40" stroke="#d4a647" stroke-width="1.5"/>
+      </svg>
+      <div>
+        <div class="nav-logo-text">Data<span>Hunter</span> Labs</div>
+        <span class="nav-logo-sub">Observatorio USDT/BOB</span>
+      </div>
+    </a>
+
+    <!-- Hamburger mobile -->
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html" class="active">Inicio</a></li>
+      <li class="nav-dropdown" id="nav-blog">
+        <button class="nav-dropdown-toggle">
+          Blog <span class="arrow">▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="blog-economia.html">📊 Economía</a>
+          <a href="blog.html">📰 Todos los artículos</a>
+        </div>
+      </li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="contacto.html" class="nav-cta">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <header class="topbar">
+    <div>
+      <div class="brand">Observatorio BOB / USD</div>
+      <div class="brand-sub">Monitor diario del dólar paralelo en Bolivia</div>
+    </div>
+    <div class="topbar-controls">
+      <div class="topbar-meta">
+        <span class="live-dot"></span>
+        <span id="last-update">Cargando…</span>
+      </div>
+      <div class="topbar-actions">
+        <button id="btn-refresh" class="refresh-btn" title="Actualizar datos en vivo">
+          <span class="refresh-icon">↻</span>
+          <span>Actualizar</span>
+        </button>
+        <label class="auto-refresh-toggle" title="Auto-actualizar cada 5 minutos">
+          <input type="checkbox" id="auto-refresh-toggle" />
+          <span>Auto 5min</span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">Mercado paralelo · Bolivia</div>
+      <h1>El precio real <span class="em">del dólar</span>, día a día</h1>
+      <p class="lead">
+        Cotización del paralelo USDT/BOB agregada de exchanges P2P,
+        con histórico persistente, brechas frente al oficial y proyección a corto plazo.
+      </p>
+    </div>
+    <div class="hero-prices skeleton">
+      <div class="price-cell">
+        <div class="price-label">Compra</div>
+        <div class="price-value" id="hero-compra"><span class="currency">Bs</span>—</div>
+        <div class="price-change" id="hero-compra-chg">—</div>
+      </div>
+      <div class="price-cell">
+        <div class="price-label">Venta</div>
+        <div class="price-value" id="hero-venta"><span class="currency">Bs</span>—</div>
+        <div class="price-change" id="hero-venta-chg">—</div>
+      </div>
+      <div class="hero-sparkline">
+        <div class="hero-spark-label">Variación 7 días</div>
+        <canvas id="hero-spark-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="banner-area"></div>
+
+  <!-- METRICS STRIP -->
+  <div class="metrics-layout">
+    <div class="brecha-hero">
+      <div class="brecha-label">Brecha cambiaria</div>
+      <div class="brecha-value" id="m-brecha-of">—</div>
+      <div class="brecha-sub">paralelo vs oficial BCB · Bs 6.96 fijo desde 2011</div>
+    </div>
+    <div class="strip">
+      <div class="strip-cell">
+        <div class="strip-label">vs Referencial</div>
+        <div class="strip-value" id="m-brecha-ref">—</div>
+        <div class="strip-sub">BCB diario</div>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-label">Volatilidad 7d</div>
+        <div class="strip-value" id="m-vol">—</div>
+        <div class="strip-sub">desvío estándar</div>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-label">Máx 7 días</div>
+        <div class="strip-value" id="m-max">—</div>
+        <div class="strip-sub" id="m-max-date">—</div>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-label">Mín 7 días</div>
+        <div class="strip-value" id="m-min">—</div>
+        <div class="strip-sub" id="m-min-date">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORICAL CHART -->
+  <section class="block">
+    <div class="block-header">
+      <div>
+        <div class="block-title"><span class="num">01</span>Histórico</div>
+        <div class="data-source-line" id="data-source-badge" style="font-family:var(--mono); font-size:0.65rem; letter-spacing:0.08em; margin-top:0.4rem;">Cargando…</div>
+      </div>
+      <div class="block-actions" id="range-controls">
+        <button class="pill" data-range="7">7D</button>
+        <button class="pill" data-range="30">30D</button>
+        <button class="pill active" data-range="90">90D</button>
+        <button class="pill" data-range="365">1A</button>
+        <button class="pill" data-range="all">TODO</button>
+      </div>
+    </div>
+    <div class="block-body">
+      <div class="chart-legend-mini">
+        <div class="legend-row">
+          <span class="legend-dot" style="background:#7fae8f"></span>
+          <span class="legend-text"><strong>Compra / Venta</strong> · Binance P2P (bot 15 min)</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-dot" style="background:repeating-linear-gradient(to right, #6e6a5e 0, #6e6a5e 4px, transparent 4px, transparent 8px);"></span>
+          <span class="legend-text"><strong>Oficial BCB</strong> · fijo en Bs 6.96 desde 2011</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-dot" style="background:#e08a4a"></span>
+          <span class="legend-text"><strong>Referencial BCB</strong> · diario, publicado desde dic-2025</span>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-historic"></canvas></div>
+      <div class="download-bar">
+        <div class="download-label">
+          <span class="download-icon">↓</span> Descargar Excel:
+        </div>
+        <div class="download-buttons">
+          <button class="dl-btn" data-granularity="day">Diario</button>
+          <button class="dl-btn" data-granularity="week">Semanal</button>
+          <button class="dl-btn" data-granularity="month">Mensual</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRYPTO MARKET -->
+  <section class="block">
+    <div class="block-header">
+      <div>
+        <div class="block-title"><span class="num">02</span>Mercado Cripto Global</div>
+        <div class="data-source-line" id="crypto-update-time" style="font-family:var(--mono); font-size:0.65rem; letter-spacing:0.08em; margin-top:0.4rem; color:var(--text-mute);">Cargando…</div>
+      </div>
+      <div class="block-actions">
+        <span class="pill" style="cursor:default; pointer-events:none;">CoinGecko</span>
+      </div>
+    </div>
+    <div class="block-body">
+      <p class="block-intro">
+        Cotizaciones de los principales activos cripto en USD. Sirven como termómetro del
+        <strong>apetito de riesgo global</strong> (BTC, ETH) y de la <strong>salud de las stablecoins</strong>
+        (USDT, USDC), que es lo que los bolivianos usan para acceder al dólar paralelo vía P2P.
+        Si una stablecoin se aleja de $1.00, es señal de tensión en el mercado.
+      </p>
+      <div class="crypto-grid" id="crypto-grid">
+        <div class="crypto-card" data-coin="bitcoin">
+          <div class="crypto-head">
+            <div class="crypto-symbol">BTC</div>
+            <div class="crypto-name">Bitcoin</div>
+          </div>
+          <div class="crypto-price" data-field="price">—</div>
+          <div class="crypto-change" data-field="change">—</div>
+          <div class="crypto-spark"><canvas data-spark="bitcoin"></canvas></div>
+        </div>
+        <div class="crypto-card" data-coin="ethereum">
+          <div class="crypto-head">
+            <div class="crypto-symbol">ETH</div>
+            <div class="crypto-name">Ethereum</div>
+          </div>
+          <div class="crypto-price" data-field="price">—</div>
+          <div class="crypto-change" data-field="change">—</div>
+          <div class="crypto-spark"><canvas data-spark="ethereum"></canvas></div>
+        </div>
+        <div class="crypto-card" data-coin="tether">
+          <div class="crypto-head">
+            <div class="crypto-symbol">USDT</div>
+            <div class="crypto-name">Tether <span class="peg-tag">peg</span></div>
+          </div>
+          <div class="crypto-price" data-field="price">—</div>
+          <div class="crypto-change" data-field="change">—</div>
+          <div class="crypto-spark"><canvas data-spark="tether"></canvas></div>
+        </div>
+        <div class="crypto-card" data-coin="usd-coin">
+          <div class="crypto-head">
+            <div class="crypto-symbol">USDC</div>
+            <div class="crypto-name">USD Coin <span class="peg-tag">peg</span></div>
+          </div>
+          <div class="crypto-price" data-field="price">—</div>
+          <div class="crypto-change" data-field="change">—</div>
+          <div class="crypto-spark"><canvas data-spark="usd-coin"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORECAST -->
+  <section class="block">
+    <div class="block-header">
+      <div class="block-title"><span class="num">03</span>Proyección</div>
+      <div class="block-actions" id="forecast-controls">
+        <button class="pill active" data-horizon="30">30 días</button>
+        <button class="pill" data-horizon="90">3 meses</button>
+        <button class="pill" data-horizon="180">6 meses</button>
+      </div>
+    </div>
+    <div class="block-body">
+      <p class="block-intro" id="forecast-intro">
+        Vista del comportamiento desde <strong>enero del año actual</strong> con proyección a futuro.
+        Se entrenan <strong>dos modelos Holt independientes</strong>: uno para el paralelo (mid de Compra/Venta)
+        y otro para el Referencial BCB diario. Cada uno tiene su propia <strong>banda de confianza al 80%</strong>
+        que se ensancha con el horizonte.
+      </p>
+
+      <!-- Ensemble decomposition card -->
+      <div class="ensemble-card" id="ensemble-card">
+        <div class="ensemble-header">
+          <div class="ensemble-label">Modelo de proyección · descomposición</div>
+          <div class="ensemble-result" id="ensemble-result">—</div>
+        </div>
+        <div class="ensemble-bars" id="ensemble-bars"></div>
+        <div class="ensemble-explainer">
+          La proyección base no es un solo modelo, sino el <strong>promedio ponderado</strong> de tres enfoques
+          que se compensan entre sí. Esto evita que un solo modelo sobrerreaccione a movimientos puntuales.
+        </div>
+      </div>
+
+      <div class="chart-wrap"><canvas id="chart-forecast"></canvas></div>
+      <div class="forecast-stats" id="forecast-stats">
+        <div class="fc-stat">
+          <div class="fc-stat-label" id="fc-label-1">Paralelo · 7d</div>
+          <div class="fc-stat-value" id="fc-val-1">—</div>
+        </div>
+        <div class="fc-stat">
+          <div class="fc-stat-label" id="fc-label-2">Paralelo · final</div>
+          <div class="fc-stat-value" id="fc-val-2">—</div>
+        </div>
+        <div class="fc-stat">
+          <div class="fc-stat-label" id="fc-label-3">Referencial · final</div>
+          <div class="fc-stat-value" id="fc-val-3">—</div>
+        </div>
+        <div class="fc-stat">
+          <div class="fc-stat-label" id="fc-label-4">Tendencia diaria</div>
+          <div class="fc-stat-value" id="fc-val-4">—</div>
+        </div>
+      </div>
+      <div class="projection-table-wrap" id="projection-table-wrap">
+        <h6 class="projection-table-title">Proyección mensual · escenario base</h6>
+        <table class="projection-table" id="projection-table">
+          <thead>
+            <tr><th>Mes</th><th>Paralelo</th><th>Δ vs hoy</th><th>Referencial BCB</th></tr>
+          </thead>
+          <tbody id="projection-table-body"></tbody>
+        </table>
+      </div>
+      <div class="forecast-disclaimer" id="forecast-disclaimer">
+        <strong>⚠ Atención — limitaciones del modelo:</strong>
+        Esta proyección extrapola la tendencia reciente. La incertidumbre crece con la raíz
+        cuadrada del horizonte: a 30 días la banda es moderada, a 6 meses es muy amplia y la
+        proyección debe considerarse <strong>especulativa</strong>. <strong>El modelo NO incorpora</strong>
+        cambios de régimen (decisiones del BCB, política monetaria, eventos políticos como elecciones,
+        shocks externos como Fed o Medio Oriente). Usar como referencia direccional únicamente.
+      </div>
+    </div>
+  </section>
+
+  <!-- ECONOMIC INDICATORS -->
+  <section class="block">
+    <div class="block-header">
+      <div class="block-title"><span class="num">04</span>Contexto Económico</div>
+      <div class="block-actions">
+        <span class="pill" style="cursor:default; pointer-events:none;">Datos oficiales</span>
+      </div>
+    </div>
+    <div class="block-body">
+      <p class="block-intro">
+        Indicadores macroeconómicos que <strong>explican y acompañan</strong> el comportamiento del paralelo.
+        La inflación mensual del INE muestra la presión de precios sobre el boliviano; la brecha cambiaria
+        contra el oficial fijo y el referencial del BCB indica el grado de distorsión del mercado de divisas;
+        y el salario mínimo permite dimensionar el poder adquisitivo real frente al dólar paralelo.
+      </p>
+      <div class="econ-grid">
+        <div class="chart-wrap" style="height:300px"><canvas id="chart-inflation"></canvas></div>
+        <div class="indicator-list" id="indicator-list">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="block">
+    <div class="block-header">
+      <div class="block-title"><span class="num">05</span>Pulso Informativo</div>
+      <div class="block-actions">
+        <span class="pill" id="news-update-time" style="cursor:default; pointer-events:none;">Cargando…</span>
+      </div>
+    </div>
+    <div class="block-body">
+      <p class="block-intro">
+        Noticias con mayor impacto sobre el tipo de cambio, <strong>auto-actualizadas al abrir el dashboard</strong>
+        desde Google News (últimos 7 días). La columna <strong>nacional</strong> cubre BCB, ASFI y Gobierno;
+        la columna <strong>internacional</strong> cubre Fed, índice DXY y eventos globales que mueven el dólar.
+        Si la conexión falla, se muestra una selección curada manualmente.
+      </p>
+      <div class="news-grid">
+        <div class="news-column">
+          <div class="news-col-title">
+            <span class="news-col-flag">🇧🇴</span>
+            <span>Bolivia · Frente Cambiario</span>
+          </div>
+          <div class="news-list" id="news-list-nacional"></div>
+        </div>
+        <div class="news-column">
+          <div class="news-col-title">
+            <span class="news-col-flag">🌎</span>
+            <span>Mundo · Dólar Global &amp; Fed</span>
+          </div>
+          <div class="news-list" id="news-list-internacional"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+
+    <!-- LEGAL DISCLAIMER -->
+    <div class="legal-disclaimer">
+      <h5 class="legal-title">⚠ Aviso Legal · Términos de Uso</h5>
+      <div class="legal-body">
+        <p>
+          <strong>Naturaleza referencial de la información.</strong>
+          Este sitio web tiene fines exclusivamente <strong>informativos y educativos</strong>.
+          Los datos de cotización del dólar paralelo (USDT/BOB), tipos de cambio oficial y referencial del BCB,
+          inflación, indicadores económicos y noticias se obtienen de <strong>fuentes públicas de terceros</strong>
+          y se muestran tal como son provistos, sin garantía de exactitud, completitud o actualización.
+        </p>
+        <p>
+          <strong>Sobre las proyecciones.</strong>
+          Las proyecciones a 30 días, 3 meses y 6 meses son <strong>extrapolaciones estadísticas</strong>
+          basadas en tendencias históricas (modelo de suavizamiento exponencial Holt). No constituyen pronósticos,
+          predicciones ni recomendaciones de inversión. La incertidumbre crece con el horizonte y los modelos
+          <strong>no incorporan</strong> cambios de régimen, decisiones de política monetaria, eventos políticos
+          ni shocks externos.
+        </p>
+        <p>
+          <strong>Exención de responsabilidad.</strong>
+          El autor de este sitio <strong>no se responsabiliza</strong> por:
+          (a) errores, omisiones o desactualizaciones en los datos mostrados;
+          (b) decisiones financieras, comerciales o de inversión que tomen los usuarios basándose en esta información;
+          (c) pérdidas económicas derivadas del uso o interpretación de los datos o proyecciones;
+          (d) fallas, interrupciones o discontinuación de las fuentes externas de datos.
+        </p>
+        <p>
+          <strong>No es asesoramiento financiero.</strong>
+          Esta herramienta <strong>no constituye asesoramiento financiero, legal, tributario ni de inversión</strong>.
+          Para decisiones que involucren capital, consulte con un profesional autorizado por la
+          <a href="https://www.asfi.gob.bo/" target="_blank" rel="noopener">Autoridad de Supervisión del Sistema Financiero (ASFI)</a>.
+        </p>
+        <p>
+          <strong>Uso bajo propio riesgo.</strong>
+          Al utilizar este sitio, el usuario acepta que lo hace de manera voluntaria y bajo su propio criterio,
+          asumiendo toda responsabilidad por el uso que haga de la información presentada.
+        </p>
+      </div>
+    </div>
+
+    <div class="foot-grid">
+      <div>
+        <h4>Fuentes</h4>
+        Cotización paralela: <a href="https://criptoya.com/bo" target="_blank" rel="noopener">CriptoYa API</a> (USDT/BOB agregado P2P).
+        Inflación: <a href="https://www.ine.gob.bo/" target="_blank" rel="noopener">INE Bolivia</a>.
+        Tipo oficial y referencial: <a href="https://www.bcb.gob.bo/" target="_blank" rel="noopener">Banco Central de Bolivia</a>.
+      </div>
+      <div>
+        <h4>Metodología</h4>
+        Auto-actualización al abrir; histórico persistente entre sesiones.
+        Proyección con suavizamiento exponencial doble (α=0.6, β=0.3) y regresión
+        lineal sobre 30 días.
+      </div>
+      <div>
+        <h4>Aviso</h4>
+        Información de carácter referencial. Las cotizaciones P2P varían entre exchanges
+        y por momento del día. No constituye asesoría financiera.
+      </div>
+    </div>
+    <div style="opacity:0.5; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em;">
+      v1.0 · datos cacheados localmente · sin tracking · sin terceros
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — fuente de datos histórica (Google Sheet publicado como CSV)
+   El usuario puede cambiarla desde el panel de configuración del footer.
+   La URL se persiste en localStorage; si está vacía, se usa la default.
+============================================================ */
+const DEFAULT_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2lRBAKrqBFtv_Y8glwaBq28banI80eg3wTOE9Y63LR8iVOjVhpxS3dpeBiqREYM3z1TgA0fdg_h7B/pub?output=csv';
+
+function getSheetURL() {
+  try {
+    const custom = localStorage.getItem('bob_sheet_url');
+    if (custom && custom.trim()) return custom.trim();
+  } catch (_) {}
+  return DEFAULT_SHEET_URL;
+}
+
+function setSheetURL(url) {
+  try {
+    if (url && url.trim()) localStorage.setItem('bob_sheet_url', url.trim());
+    else localStorage.removeItem('bob_sheet_url');
+  } catch (_) {}
+}
+
+/* Local CSV storage — separate from Sheet URL so user can have both */
+function getLocalCSV() {
+  try { return localStorage.getItem('bob_local_csv') || null; }
+  catch { return null; }
+}
+function setLocalCSV(text) {
+  try {
+    if (text) localStorage.setItem('bob_local_csv', text);
+    else localStorage.removeItem('bob_local_csv');
+  } catch (_) {}
+}
+function clearLocalCSV() {
+  try { localStorage.removeItem('bob_local_csv'); } catch (_) {}
+}
+
+/* ============================================================
+   STORAGE LAYER (portable: window.storage in artifact, localStorage outside)
+   When migrating: leave this as is — it falls back automatically.
+============================================================ */
+const Store = {
+  async get(key) {
+    try {
+      if (typeof window !== 'undefined' && window.storage) {
+        const r = await window.storage.get(key);
+        return r ? JSON.parse(r.value) : null;
+      }
+    } catch (_) { /* not found */ }
+    try { return JSON.parse(localStorage.getItem(key) || 'null'); }
+    catch { return null; }
+  },
+  async set(key, value) {
+    const json = JSON.stringify(value);
+    try {
+      if (typeof window !== 'undefined' && window.storage) {
+        return await window.storage.set(key, json);
+      }
+    } catch (_) {}
+    try { localStorage.setItem(key, json); } catch (_) {}
+  }
+};
+
+/* ============================================================
+   SEED DATA — historical estimates from Jan 2025 to today,
+   anchored on real values from news reports.
+   Marked with seed:true to distinguish from live data.
+
+   ANCHOR POINTS (from public reporting):
+   - 2025-01-01: Bs 11.00 (estable post-2024)
+   - 2025-04-23: Bs 13.50 (alza fuerte, Correo del Sur)
+   - 2025-07-15: Bs 14.50 (pico Sucre)
+   - 2025-10-01: Bs 13.50 (cierta corrección)
+   - 2025-12-15: Bs 11.50 (anuncios reformas Paz Pereira)
+   - 2026-01-01: Bs 9.64 (caída fuerte por reformas, BID)
+   - 2026-02-01: Bs 9.55 (estable bajo)
+   - 2026-03-01: Bs 9.55 (lateral)
+   - 2026-04-01: Bs 9.50 (mínimo reciente)
+   - 2026-04-28: Bs 9.92 (rebote, máximo abril)
+============================================================ */
+function generateSeed() {
+  const anchors = [
+    { date: '2025-01-01', mid: 11.00 },
+    { date: '2025-02-15', mid: 11.10 },
+    { date: '2025-03-30', mid: 11.20 },
+    { date: '2025-04-23', mid: 13.50 },
+    { date: '2025-05-30', mid: 14.00 },
+    { date: '2025-07-15', mid: 14.50 },
+    { date: '2025-09-01', mid: 14.00 },
+    { date: '2025-10-01', mid: 13.50 },
+    { date: '2025-11-15', mid: 12.50 },
+    { date: '2025-12-15', mid: 11.50 },
+    { date: '2026-01-01', mid: 9.64 },
+    { date: '2026-02-01', mid: 9.55 },
+    { date: '2026-03-01', mid: 9.55 },
+    { date: '2026-04-01', mid: 9.50 },
+    { date: '2026-04-28', mid: 9.92 }
+  ];
+  const seed = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const startDate = new Date(anchors[0].date + 'T00:00:00');
+  const totalDays = Math.round((today - startDate) / 86400000);
+
+  // Convert anchors to day-index
+  const anchorPts = anchors.map(a => ({
+    day: Math.round((new Date(a.date + 'T00:00:00') - startDate) / 86400000),
+    mid: a.mid
+  }));
+
+  // Linear interpolation between anchors + small noise
+  let aIdx = 0;
+  for (let i = 0; i <= totalDays; i++) {
+    while (aIdx < anchorPts.length - 1 && i > anchorPts[aIdx + 1].day) aIdx++;
+    const a = anchorPts[aIdx];
+    const b = anchorPts[Math.min(aIdx + 1, anchorPts.length - 1)];
+    let mid;
+    if (a.day === b.day) {
+      mid = a.mid;
+    } else {
+      const t = (i - a.day) / (b.day - a.day);
+      mid = a.mid + t * (b.mid - a.mid);
+    }
+    // noise scaled to volatility level (higher when price is higher)
+    const noise = (Math.random() - 0.5) * 0.08 * (mid / 10);
+    mid = +(mid + noise).toFixed(2);
+    const spread = mid > 12 ? 0.10 : 0.06; // wider spread in high-volatility periods
+    const d = new Date(startDate.getTime() + i * 86400000);
+    seed.push({
+      t: d.toISOString().slice(0, 10),
+      compra: +(mid - spread / 2).toFixed(2),
+      venta: +(mid + spread / 2).toFixed(2),
+      seed: true
+    });
+  }
+  return seed;
+}
+
+/* ============================================================
+   STATIC DATA — inflation, official rates, news (curated)
+============================================================ */
+const INFLATION_DATA = [
+  { m: '2025-10', val: 0.55, label: 'Oct 25', est: true },
+  { m: '2025-11', val: 0.40, label: 'Nov 25' },
+  { m: '2025-12', val: 0.45, label: 'Dic 25', est: true },
+  { m: '2026-01', val: 1.31, label: 'Ene 26' },
+  { m: '2026-02', val: -0.62, label: 'Feb 26' },
+  { m: '2026-03', val: -0.34, label: 'Mar 26' }
+];
+
+const INDICATORS = [
+  { name: 'Inflación 12 meses', val: '19.64%', delta: 'persistente', deltaType: 'down', src: 'INE · Ene 2026' },
+  { name: 'Inflación acumulada YTD', val: '0.34%', delta: 'feb-mar negativos', deltaType: 'flat', src: 'INE · Mar 2026' },
+  { name: 'Tipo oficial BCB', val: 'Bs 6.96', delta: 'fijo desde 2011', deltaType: 'flat', src: 'BCB' },
+  { name: 'Tipo referencial BCB', val: 'Bs 9.74', delta: 'máx. histórico', deltaType: 'up', src: 'BCB · 27-abr' },
+  { name: 'Salario mínimo nacional', val: 'Bs 3.300', delta: '+20% vs 2025', deltaType: 'up', src: 'D.S. 5516 · Ene 2026' },
+  { name: 'Proy. PIB 2026', val: '-1.1%', delta: 'recesión esperada', deltaType: 'down', src: 'Banco Mundial' }
+];
+
+const NEWS_NACIONAL = [
+  {
+    date: '29 abr 2026', source: 'Infobae', tag: 'HOY',
+    title: 'Cotización de apertura: paralelo cerca de Bs 9.90, BID confirma financiamiento de $4.500M para 2026-2028',
+    url: 'https://www.infobae.com/noticias/2026/04/29/precio-del-dolar-hoy-en-bolivia-cotizacion-de-apertura-del-29-de-abril/'
+  },
+  {
+    date: '28 abr 2026', source: 'Red Uno', tag: 'AYER',
+    title: 'Dólar paralelo trepa a Bs 9.92 compra / Bs 9.90 venta en la tarde del martes',
+    url: 'https://www.reduno.com.bo/economia/a-cuanto-esta-el-dolar-asi-cotizan-el-paralelo-y-el-referencial-la-tarde-de-este-martes-en-bolivia-2026428124823'
+  },
+  {
+    date: '28 abr 2026', source: 'El Diario', tag: 'AYER',
+    title: 'Referencial BCB casi iguala al paralelo: Bs 9.74 venta, "batalla cambiaria" por escasez de divisas',
+    url: 'https://www.eldiario.net/portal/2026/04/28/precio-referencial-del-dolar-cerca-del-valor-del-mercado-paralelo/'
+  },
+  {
+    date: '27 abr 2026', source: 'La Razón', tag: 'SEMANA',
+    title: 'Tipo de cambio referencial sigue al alza e iguala al paralelo, máxima histórica del BCB',
+    url: 'https://larazon.bo/economia-y-empresa/2026/04/27/tipo-de-cambio-referencial-sigue-al-alza-e-iguala-al-dolar-paralelo/'
+  },
+  {
+    date: '24 abr 2026', source: 'Red Uno', tag: 'SEMANA',
+    title: 'Resumen semanal: el paralelo se movió en rango estrecho con cierre alcista en Bs 9.75',
+    url: 'https://www.reduno.com.bo/economia/que-cambios-tuvo-el-dolar-paralelo-en-bolivia-durante-la-semana-revisa-las-cotizaciones-2026424112155'
+  }
+];
+
+const NEWS_INTERNACIONAL = [
+  {
+    date: '29 abr 2026', source: 'Cambridge Currencies', tag: 'HOY',
+    title: 'FOMC decide hoy: 94% de probabilidad de hold, última reunión de Powell antes de la transición a Warsh',
+    url: 'https://cambridgecurrencies.com/usd-forecast-2026/'
+  },
+  {
+    date: '28 abr 2026', source: 'Trading Economics', tag: 'AYER',
+    title: 'DXY cae a 98.5 por avance en negociaciones con Irán; petróleo y dólar global en tendencia bajista',
+    url: 'https://es.tradingeconomics.com/united-states/currency'
+  },
+  {
+    date: '28 abr 2026', source: 'Infobae', tag: 'AYER',
+    title: 'FMI advierte: inflación boliviana podría superar 17% si no se controla emisión monetaria',
+    url: 'https://www.infobae.com/noticias/2026/04/28/precio-del-dolar-hoy-en-bolivia-cotizacion-de-cierre-del-28-de-abril/'
+  },
+  {
+    date: '16 abr 2026', source: 'Invezz', tag: 'MES',
+    title: 'EUR/USD supera 1.18, oro en máximos: gestores de reservas reducen exposición al dólar',
+    url: 'https://invezz.com/es/noticias/2026/04/16/la-fed-trump-y-la-prima-de-confianza-en-ruinas-tormenta-perfecta-para-el-dolar/'
+  },
+  {
+    date: 'Abr 2026', source: 'FMI', tag: 'MES',
+    title: 'WEO Abril 2026: economía mundial en riesgo por escalada en Medio Oriente y revisión arancelaria EE.UU.',
+    url: 'https://www.imf.org/-/media/files/publications/weo/2026/april/spanish/execsum.pdf'
+  }
+];
+
+const OFICIAL_FIJO = 6.96;
+const REFERENCIAL_VENTA = 9.74;
+
+/* ============================================================
+   HISTORIAL DEL REFERENCIAL BCB (venta)
+   El BCB publica el referencial diariamente desde 1 dic 2025.
+   Anclas confirmadas en notas de prensa; interpolación lineal entre ellas.
+   Antes del 1 dic 2025 → null (no existía).
+============================================================ */
+const REFERENCIAL_ANCHORS = [
+  { date: '2025-12-01', val: 7.85 },  // primera publicación, cerca del oficial
+  { date: '2025-12-15', val: 8.10 },
+  { date: '2025-12-31', val: 8.40 },
+  { date: '2026-01-15', val: 8.70 },
+  { date: '2026-02-01', val: 8.90 },
+  { date: '2026-02-28', val: 9.05 },
+  { date: '2026-03-15', val: 9.20 },
+  { date: '2026-04-01', val: 9.30 },
+  { date: '2026-04-09', val: 9.41 },  // confirmado: promedio ponderado El Diario
+  { date: '2026-04-20', val: 9.55 },
+  { date: '2026-04-27', val: 9.74 },  // confirmado: máximo histórico Red Uno
+  { date: '2026-04-28', val: 9.74 },
+  { date: '2026-04-29', val: 9.72 }
+];
+
+function buildReferencialHistory(targetDates) {
+  // Generates daily values aligned to targetDates by interpolating between anchors.
+  const startReferencial = '2025-12-01';
+  const result = new Map();
+  if (REFERENCIAL_ANCHORS.length < 2) return result;
+
+  const anchorsByDay = REFERENCIAL_ANCHORS.map(a => ({
+    day: new Date(a.date + 'T00:00:00').getTime() / 86400000,
+    val: a.val
+  }));
+
+  for (const t of targetDates) {
+    if (t < startReferencial) continue;
+    const day = new Date(t + 'T00:00:00').getTime() / 86400000;
+    if (day < anchorsByDay[0].day) continue;
+    if (day >= anchorsByDay[anchorsByDay.length - 1].day) {
+      result.set(t, anchorsByDay[anchorsByDay.length - 1].val);
+      continue;
+    }
+    for (let i = 0; i < anchorsByDay.length - 1; i++) {
+      if (day >= anchorsByDay[i].day && day <= anchorsByDay[i + 1].day) {
+        const a = anchorsByDay[i], b = anchorsByDay[i + 1];
+        const ratio = (day - a.day) / (b.day - a.day);
+        result.set(t, +(a.val + ratio * (b.val - a.val)).toFixed(3));
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+/* ============================================================
+   CSV PARSER + GOOGLE SHEET LOADER
+   Auto-detects common column layouts:
+     - Fecha + Compra + Venta
+     - Fecha + Precio (single price → used as both compra/venta)
+   Accepts column names in Spanish or English.
+   Date formats supported: YYYY-MM-DD, DD/MM/YYYY, DD-MM-YYYY.
+   Decimal separator: dot or comma.
+============================================================ */
+function parseCSV(text) {
+  // Robust CSV parser handling quoted values with commas/newlines
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+      else if (ch === '"') inQuotes = false;
+      else cell += ch;
+    } else {
+      if (ch === '"') inQuotes = true;
+      else if (ch === ',') { row.push(cell); cell = ''; }
+      else if (ch === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+      else if (ch === '\r') { /* skip */ }
+      else cell += ch;
+    }
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  // strip empty trailing rows
+  while (rows.length && rows[rows.length - 1].every(c => !c.trim())) rows.pop();
+  return rows;
+}
+
+function normalizeColName(s) {
+  return String(s || '').toLowerCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // remove accents
+}
+
+function detectColumns(headers) {
+  const norm = headers.map(normalizeColName);
+  const idx = {};
+  norm.forEach((h, i) => {
+    if (idx.fecha == null && /\b(fecha|date|dia|day|periodo)\b/.test(h)) idx.fecha = i;
+    if (idx.compra == null && /\b(compra|buy|bid)\b/.test(h)) idx.compra = i;
+    if (idx.venta == null && /\b(venta|sell|ask)\b/.test(h)) idx.venta = i;
+    if (idx.precio == null && /\b(precio|price|valor|cotizacion|tipo|mid)\b/.test(h)) idx.precio = i;
+  });
+  return idx;
+}
+
+function parseDate(s) {
+  if (!s) return null;
+  s = String(s).trim();
+  // ISO YYYY-MM-DD
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+  // DD/MM/YYYY or DD-MM-YYYY
+  m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+  if (m) {
+    let yyyy = m[3];
+    if (yyyy.length === 2) yyyy = (parseInt(yyyy, 10) > 50 ? '19' : '20') + yyyy;
+    return `${yyyy}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+  }
+  // Try Date.parse() as fallback
+  const d = new Date(s);
+  if (!isNaN(d)) return d.toISOString().slice(0, 10);
+  return null;
+}
+
+function parseNumber(s) {
+  if (s == null || s === '') return null;
+  s = String(s).trim().replace(/\s+/g, '').replace(/[^\d,.\-]/g, '');
+  // Detect Spanish locale (comma as decimal): "10,50" → "10.50"
+  // Heuristic: if there's a comma and no dot, comma is decimal
+  // If both, last separator is decimal
+  const lastDot = s.lastIndexOf('.');
+  const lastComma = s.lastIndexOf(',');
+  if (lastComma > lastDot) {
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else {
+    s = s.replace(/,/g, '');
+  }
+  const n = parseFloat(s);
+  return isFinite(n) ? n : null;
+}
+
+function parseCSVtoHistory(text, sourceTag) {
+  if (!text || text.length < 10) return { ok: false, reason: 'vacio' };
+  if (text.trim().toLowerCase().startsWith('<!doctype') || text.trim().startsWith('<')) {
+    return { ok: false, reason: 'html-no-csv' };
+  }
+
+  const rows = parseCSV(text);
+  if (rows.length < 2) return { ok: false, reason: 'sin-filas' };
+
+  const headers = rows[0];
+  const idx = detectColumns(headers);
+  if (idx.fecha == null) return { ok: false, reason: 'sin-columna-fecha' };
+  if (idx.compra == null && idx.venta == null && idx.precio == null) {
+    return { ok: false, reason: 'sin-columna-precio' };
+  }
+
+  const data = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    const t = parseDate(r[idx.fecha]);
+    if (!t) continue;
+    let compra = idx.compra != null ? parseNumber(r[idx.compra]) : null;
+    let venta = idx.venta != null ? parseNumber(r[idx.venta]) : null;
+    const precio = idx.precio != null ? parseNumber(r[idx.precio]) : null;
+
+    if (compra == null && venta == null && precio == null) continue;
+    if (compra == null && venta != null) compra = venta;
+    if (venta == null && compra != null) venta = compra;
+    if (compra == null && venta == null && precio != null) {
+      const spread = precio > 12 ? 0.10 : 0.06;
+      compra = +(precio - spread / 2).toFixed(2);
+      venta = +(precio + spread / 2).toFixed(2);
+    }
+
+    if (compra < 5 || compra > 25 || venta < 5 || venta > 25) continue;
+
+    data.push({ t, compra: +compra.toFixed(2), venta: +venta.toFixed(2), source: sourceTag });
+  }
+
+  if (!data.length) return { ok: false, reason: 'sin-datos-validos' };
+
+  data.sort((a, b) => a.t.localeCompare(b.t));
+  const dedup = new Map();
+  for (const d of data) dedup.set(d.t, d);
+  const final = [...dedup.values()].sort((a, b) => a.t.localeCompare(b.t));
+
+  return { ok: true, data: final, columns: idx };
+}
+
+async function loadFromGoogleSheet() {
+  const url = getSheetURL();
+  if (!url) return { ok: false, reason: 'sin-url' };
+
+  let finalUrl = url;
+  if (!/[?&]output=csv/.test(finalUrl)) {
+    finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'output=csv';
+  }
+  finalUrl += '&_t=' + Date.now();
+
+  try {
+    const resp = await fetchWithTimeout(finalUrl, { cache: 'no-cache' }, 10000);
+    if (!resp.ok) return { ok: false, reason: 'http-' + resp.status };
+    const text = await resp.text();
+    return parseCSVtoHistory(text, 'sheet');
+  } catch (e) {
+    return { ok: false, reason: e.message === 'timeout' ? 'timeout' : ('error-' + e.message) };
+  }
+}
+
+function loadFromLocalCSV() {
+  const text = getLocalCSV();
+  if (!text) return { ok: false, reason: 'sin-archivo-local' };
+  return parseCSVtoHistory(text, 'local');
+}
+
+/* ============================================================
+   GITHUB BOT — USDT/BOB BINANCE P2P
+   Public CSV updated every 15 minutes by a GitHub Action that
+   scrapes Binance P2P. Hosted on raw.githubusercontent.com which
+   is CORS-open by default (no proxy needed).
+
+   Format: timestamp, bcb_compra, bcb_venta, p2p_compra, p2p_venta
+   No header row. Spanish locale (comma as decimal).
+============================================================ */
+/* ============================================================
+   FUENTE DE DATOS — USDT/BOB Binance P2P
+   ============================================================
+   Apunta al Cloudflare Worker que scrapea Binance P2P cada 15 min
+   exactos. El endpoint raíz (/) devuelve el CSV completo histórico.
+   El endpoint /latest devuelve solo el último dato como JSON.
+
+   Para el dashboard usamos siempre el CSV completo (raíz).
+============================================================ */
+const USDT_SHEET_URL = 'https://monitor-p2p-bolivia.reynaldoft.workers.dev/';
+
+function parseSpanishCSVRow(line) {
+  // Robust: handles quoted fields containing commas
+  const result = [];
+  let cell = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') { cell += '"'; i++; }
+      else if (ch === '"') inQuotes = false;
+      else cell += ch;
+    } else {
+      if (ch === '"') inQuotes = true;
+      else if (ch === ',') { result.push(cell); cell = ''; }
+      else cell += ch;
+    }
+  }
+  result.push(cell);
+  return result;
+}
+
+function parseSpanishNumber(s) {
+  // "6,86" → 6.86  ;  "6.86" → 6.86  ;  "1.234,56" → 1234.56
+  if (s == null) return null;
+  s = String(s).trim().replace(/"/g, '');
+  if (!s) return null;
+  const lastDot = s.lastIndexOf('.');
+  const lastComma = s.lastIndexOf(',');
+  if (lastComma > lastDot) s = s.replace(/\./g, '').replace(',', '.');
+  else s = s.replace(/,/g, '');
+  const n = parseFloat(s);
+  return isFinite(n) ? n : null;
+}
+
+function parseTimestampDDMMYYYY(s) {
+  // "01/05/2025 00:14:15" → "2025-05-01" (date only, time discarded for daily aggregation)
+  if (!s) return null;
+  const m = String(s).trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+  if (!m) return null;
+  let yyyy = m[3];
+  if (yyyy.length === 2) yyyy = (parseInt(yyyy, 10) > 50 ? '19' : '20') + yyyy;
+  return `${yyyy}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+}
+
+async function fetchUsdtSheet() {
+  // GitHub raw CSV is CORS-open — direct fetch only, no proxies needed.
+  // Cache buster ensures we don't get stale CDN cache.
+  const url = USDT_SHEET_URL + '?_t=' + Date.now();
+
+  let text = null;
+  try {
+    const resp = await fetchWithTimeout(url, { cache: 'no-cache' }, 10000);
+    if (resp.ok) {
+      text = await resp.text();
+    }
+  } catch (_) {}
+
+  if (!text || text.length < 50) return { ok: false, reason: 'fetch-fail' };
+  if (text.trim().startsWith('<')) return { ok: false, reason: 'html-no-csv' };
+
+  // Parse all timestamped records
+  const lines = text.split(/\r?\n/);
+  const allRecords = [];
+
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cells = parseSpanishCSVRow(line);
+    if (cells.length < 5) continue;
+
+    // Per-row validation: column 1 must be a real number (skips headers, footers, blanks)
+    const test = parseSpanishNumber(cells[1]);
+    if (test == null || !isFinite(test)) continue;
+
+    // Parse full timestamp DD/MM/YYYY HH:MM:SS
+    const tsMatch = String(cells[0]).trim().match(
+      /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/
+    );
+    if (!tsMatch) continue;
+    let yyyy = tsMatch[3];
+    if (yyyy.length === 2) yyyy = '20' + yyyy;
+    const dateStr = `${yyyy}-${tsMatch[2].padStart(2, '0')}-${tsMatch[1].padStart(2, '0')}`;
+    const hh = tsMatch[4] || '00', mm = tsMatch[5] || '00', ss = tsMatch[6] || '00';
+    const fullTs = new Date(
+      `${dateStr}T${hh.padStart(2, '0')}:${mm.padStart(2, '0')}:${ss.padStart(2, '0')}`
+    ).getTime();
+
+    const bcbCompra = parseSpanishNumber(cells[1]);
+    const bcbVenta = parseSpanishNumber(cells[2]);
+    const p2pCompra = parseSpanishNumber(cells[3]);
+    const p2pVenta = parseSpanishNumber(cells[4]);
+
+    if (p2pCompra == null && p2pVenta == null) continue;
+    const compra = p2pCompra ?? p2pVenta;
+    const venta = p2pVenta ?? p2pCompra;
+    if (compra < 5 || compra > 30 || venta < 5 || venta > 30) continue;
+
+    allRecords.push({
+      t: dateStr,
+      ts: fullTs,
+      compra: +compra.toFixed(2),
+      venta: +venta.toFixed(2),
+      bcbCompra,
+      bcbVenta
+    });
+  }
+
+  if (!allRecords.length) return { ok: false, reason: 'sin-datos-validos' };
+
+  // Sort by timestamp ascending
+  allRecords.sort((a, b) => a.ts - b.ts);
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const latestRecord = allRecords[allRecords.length - 1];
+
+  // Aggregate: average per day for PAST days, but use the latest record for TODAY
+  // (so today's point reflects the freshest 15-min quote, not a partial average)
+  const byDay = new Map();
+  for (const r of allRecords) {
+    if (r.t === todayStr) continue; // handled separately
+    const existing = byDay.get(r.t);
+    if (!existing) {
+      byDay.set(r.t, {
+        t: r.t, count: 1,
+        compraSum: r.compra, ventaSum: r.venta,
+        bcbCompraSum: r.bcbCompra ?? 0, bcbVentaSum: r.bcbVenta ?? 0,
+        bcbCount: r.bcbCompra != null ? 1 : 0,
+        latestTs: r.ts
+      });
+    } else {
+      existing.count++;
+      existing.compraSum += r.compra;
+      existing.ventaSum += r.venta;
+      if (r.bcbCompra != null) {
+        existing.bcbCompraSum += r.bcbCompra;
+        existing.bcbVentaSum += r.bcbVenta ?? 0;
+        existing.bcbCount++;
+      }
+      existing.latestTs = Math.max(existing.latestTs, r.ts);
+    }
+  }
+
+  const dailyPoints = [...byDay.values()]
+    .map(d => ({
+      t: d.t,
+      compra: +(d.compraSum / d.count).toFixed(2),
+      venta: +(d.ventaSum / d.count).toFixed(2),
+      bcbCompra: d.bcbCount > 0 ? +(d.bcbCompraSum / d.bcbCount).toFixed(2) : null,
+      bcbVenta: d.bcbCount > 0 ? +(d.bcbVentaSum / d.bcbCount).toFixed(2) : null,
+      ts: d.latestTs,
+      source: 'usdt-sheet'
+    }))
+    .sort((a, b) => a.t.localeCompare(b.t));
+
+  // Append today's freshest point if we have records from today
+  const todayRecords = allRecords.filter(r => r.t === todayStr);
+  if (todayRecords.length > 0) {
+    const fresh = todayRecords[todayRecords.length - 1];
+    dailyPoints.push({
+      t: fresh.t,
+      compra: fresh.compra,
+      venta: fresh.venta,
+      bcbCompra: fresh.bcbCompra,
+      bcbVenta: fresh.bcbVenta,
+      ts: fresh.ts,
+      source: 'usdt-sheet',
+      isLive: true   // marker for "this is the freshest 15-min quote"
+    });
+  }
+
+  return {
+    ok: true,
+    points: dailyPoints,
+    latestRecord,                   // most recent 15-min quote (across all data)
+    todayRecordsCount: todayRecords.length,
+    stats: {
+      count: dailyPoints.length,
+      firstDate: dailyPoints[0].t,
+      lastDate: dailyPoints[dailyPoints.length - 1].t,
+      rawCount: allRecords.length,
+      lastUpdateTs: latestRecord.ts
+    }
+  };
+}
+
+
+function fetchWithTimeout(url, options = {}, timeoutMs = 8000) {
+  const fetchPromise = fetch(url, options);
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('timeout')), timeoutMs)
+  );
+  return Promise.race([fetchPromise, timeoutPromise]);
+}
+
+/* ============================================================
+   FETCH LIVE DATA from CriptoYa
+============================================================ */
+async function fetchLiveQuote() {
+  // Use our own Cloudflare Worker as CORS proxy for CriptoYa.
+  // The Worker exposes /criptoya endpoint that fetches CriptoYa server-side
+  // and returns the response with proper CORS headers.
+  // This is more reliable than public proxies (corsproxy.io, allorigins) which
+  // tend to fail with 403/522/500.
+  const workerProxyUrl = USDT_SHEET_URL.replace(/\/$/, '') + '/criptoya';
+
+  let data = null;
+  let usedMethod = null;
+
+  // Try 1: Worker proxy (preferred — our infrastructure)
+  try {
+    const resp = await fetchWithTimeout(workerProxyUrl, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    }, 7000);
+    if (resp.ok) {
+      const candidate = await resp.json();
+      if (candidate) {
+        data = candidate;
+        usedMethod = 'worker-proxy';
+      }
+    }
+  } catch (_) {}
+
+  // Try 2: Direct fetch (works in some browsers when CORS allows)
+  if (!data) {
+    try {
+      const resp = await fetchWithTimeout('https://criptoya.com/api/usdt/bob/1', {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }, 5000);
+      if (resp.ok) {
+        const candidate = await resp.json();
+        if (candidate) {
+          data = candidate;
+          usedMethod = 'direct';
+        }
+      }
+    } catch (_) {}
+  }
+
+  if (!data) return null;
+
+  // CriptoYa returns nested object keyed by exchange:
+  //   { binancep2p: {ask, bid, ...}, bybitp2p: {...}, saldo: {...}, ... }
+  // We use Binance P2P specifically (most used in Bolivia, matches our bot).
+  // Fallback to old flat shape if it ever returns that, just in case.
+  let ask, bid, time;
+  if (data.binancep2p && (data.binancep2p.totalAsk || data.binancep2p.ask)) {
+    ask = data.binancep2p.totalAsk || data.binancep2p.ask;
+    bid = data.binancep2p.totalBid || data.binancep2p.bid;
+    time = data.binancep2p.time;
+  } else if (data.totalAsk || data.ask) {
+    // Old flat-shape fallback
+    ask = data.totalAsk || data.ask;
+    bid = data.totalBid || data.bid;
+    time = data.time;
+  } else {
+    return null;  // unknown shape
+  }
+
+  if (!ask || !bid) return null;
+
+  return {
+    t: new Date().toISOString().slice(0, 10),
+    ts: time ? time * 1000 : Date.now(),
+    compra: +bid.toFixed(2),
+    venta: +ask.toFixed(2),
+    method: usedMethod
+  };
+}
+
+/* ============================================================
+   ENSEMBLE FORECASTING — combines 3 models for realistic projections
+   1. Holt's smoothed trend (recalibrated, less reactive)
+   2. Mean reversion toward 60-day average
+   3. Simple persistence (price stays roughly where it is)
+
+   Includes outlier filtering on input series to reduce noise impact.
+============================================================ */
+
+/**
+ * Detects and replaces outliers in a price series.
+ * An outlier is a value > 2.5 standard deviations from the rolling mean.
+ * Replaced with the median of 5 surrounding values (centered).
+ * Returns a cleaned copy of the series.
+ */
+function filterOutliers(values, sigmaThreshold = 2.5) {
+  if (values.length < 10) return values.slice();
+  const cleaned = values.slice();
+
+  // Compute rolling mean and stddev (full series)
+  const mean = values.reduce((s, v) => s + v, 0) / values.length;
+  const variance = values.reduce((s, v) => s + (v - mean) ** 2, 0) / values.length;
+  const sigma = Math.sqrt(variance);
+  const threshold = sigmaThreshold * sigma;
+
+  for (let i = 0; i < values.length; i++) {
+    if (Math.abs(values[i] - mean) > threshold) {
+      // Replace with median of 5 surrounding values (centered)
+      const start = Math.max(0, i - 2);
+      const end = Math.min(values.length, i + 3);
+      const window = values.slice(start, end).filter((_, j) => start + j !== i);
+      window.sort((a, b) => a - b);
+      const med = window.length % 2 === 0
+        ? (window[window.length / 2 - 1] + window[window.length / 2]) / 2
+        : window[Math.floor(window.length / 2)];
+      cleaned[i] = med;
+    }
+  }
+  return cleaned;
+}
+
+/**
+ * Mean reversion forecast: price drifts back to N-day average over the horizon.
+ * The longer the horizon, the closer it gets to the mean.
+ * Returns array of point forecasts (length = horizon).
+ */
+function meanReversionForecast(values, horizon, lookback = 60) {
+  if (values.length < 5) return null;
+  const recent = values.slice(-Math.min(lookback, values.length));
+  const targetMean = recent.reduce((s, v) => s + v, 0) / recent.length;
+  const current = values[values.length - 1];
+  const distance = current - targetMean;
+  // Half-life: at horizon/2, distance to mean is reduced by 50%
+  // We use exponential decay: at day t, gap is distance * exp(-k*t) with k = ln(2)/halflife
+  const halflife = horizon / 2;
+  const k = Math.log(2) / halflife;
+  const forecast = [];
+  for (let h = 1; h <= horizon; h++) {
+    const remainingGap = distance * Math.exp(-k * h);
+    forecast.push(targetMean + remainingGap);
+  }
+  return forecast;
+}
+
+/**
+ * Persistence forecast: tomorrow ≈ today, with very weak drift.
+ * Most basic, acts as anchor against overshooting.
+ * Returns array of point forecasts (length = horizon).
+ */
+function persistenceForecast(values, horizon) {
+  if (!values.length) return null;
+  const last = values[values.length - 1];
+  // Apply a tiny drift based on average daily change of last 14 days
+  const window = values.slice(-15);
+  let avgDailyChange = 0;
+  if (window.length > 1) {
+    let sum = 0, n = 0;
+    for (let i = 1; i < window.length; i++) {
+      sum += window[i] - window[i - 1];
+      n++;
+    }
+    avgDailyChange = n > 0 ? sum / n : 0;
+  }
+  // Damped: each day adds half the previous day's drift
+  const forecast = [];
+  let value = last;
+  for (let h = 1; h <= horizon; h++) {
+    value += avgDailyChange * Math.pow(0.95, h);  // gradual decay
+    forecast.push(value);
+  }
+  return forecast;
+}
+
+/**
+ * Ensemble forecast — weighted average of 3 models.
+ *
+ * Default weights:
+ *   - Holt (technical trend):    40%
+ *   - Mean reversion:            40%
+ *   - Persistence:               20%
+ *
+ * Returns:
+ *   - forecast: array of {point, lower, upper} for each horizon day
+ *   - components: individual model forecasts (for UI display)
+ *   - weights: weights actually used
+ *   - dailyTrend: smoothed daily change estimate
+ */
+function ensembleForecast(values, horizon, weights = { holt: 0.4, meanRev: 0.4, persistence: 0.2 }) {
+  if (!values || values.length < 10) return null;
+
+  // Filter outliers from input
+  const cleaned = filterOutliers(values, 2.5);
+
+  // Run 3 sub-models on cleaned series
+  // Holt with conservative parameters (less reactive than 0.6/0.3)
+  const holt = holtForecast(cleaned, horizon, 0.3, 0.1);
+  const meanRev = meanReversionForecast(cleaned, horizon, 60);
+  const persistence = persistenceForecast(cleaned, horizon);
+
+  if (!holt || !meanRev || !persistence) return null;
+
+  // Combine
+  const ensembleForecast = [];
+  for (let h = 0; h < horizon; h++) {
+    const point = weights.holt * holt.forecast[h].point +
+                  weights.meanRev * meanRev[h] +
+                  weights.persistence * persistence[h];
+    // Confidence interval: use Holt's IC width but center on ensemble mean
+    const halfWidth = (holt.forecast[h].upper - holt.forecast[h].lower) / 2;
+    ensembleForecast.push({
+      point: point,
+      lower: point - halfWidth,
+      upper: point + halfWidth
+    });
+  }
+
+  // Compute daily trend from ensemble (first 7 days slope)
+  const dailyTrend = (ensembleForecast[Math.min(6, horizon - 1)].point - values[values.length - 1]) /
+                     Math.min(7, horizon);
+
+  return {
+    forecast: ensembleForecast,
+    components: {
+      holt: holt.forecast.map(f => f.point),
+      meanRev: meanRev,
+      persistence: persistence
+    },
+    weights: weights,
+    dailyTrend: dailyTrend
+  };
+}
+
+
+function holtForecast(values, horizon = 14, alpha = 0.6, beta = 0.3) {
+  if (values.length < 3) return null;
+  let level = values[0];
+  let trend = values[1] - values[0];
+  const fitted = [level];
+  for (let i = 1; i < values.length; i++) {
+    const newLevel = alpha * values[i] + (1 - alpha) * (level + trend);
+    const newTrend = beta * (newLevel - level) + (1 - beta) * trend;
+    level = newLevel;
+    trend = newTrend;
+    fitted.push(level);
+  }
+  // residual std for confidence interval
+  let sse = 0, n = 0;
+  for (let i = 1; i < values.length; i++) {
+    const diff = values[i] - fitted[i - 1];
+    sse += diff * diff; n++;
+  }
+  const sigma = n ? Math.sqrt(sse / n) : 0.05;
+
+  const forecast = [];
+  for (let h = 1; h <= horizon; h++) {
+    const pt = level + h * trend;
+    const ci = 1.28 * sigma * Math.sqrt(h);  // 80% CI, widens with horizon
+    forecast.push({ point: pt, lower: pt - ci, upper: pt + ci });
+  }
+  return { forecast, dailyTrend: trend };
+}
+
+function linearRegressionForecast(values, horizon = 14) {
+  if (values.length < 5) return null;
+  const n = values.length;
+  let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+  for (let i = 0; i < n; i++) {
+    sumX += i; sumY += values[i];
+    sumXY += i * values[i]; sumXX += i * i;
+  }
+  const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+  const intercept = (sumY - slope * sumX) / n;
+  const forecast = [];
+  for (let h = 1; h <= horizon; h++) {
+    forecast.push(intercept + slope * (n - 1 + h));
+  }
+  return { forecast, slope };
+}
+
+/* ============================================================
+   CHART HELPERS
+============================================================ */
+const COLORS = {
+  compra: '#7fae8f',
+  venta: '#d4a647',
+  oficial: '#6e6a5e',
+  referencial: '#7a8a9a',
+  forecastHolt: '#d4a647',
+  forecastLR: '#7a8a9a',
+  ciFill: 'rgba(212, 166, 71, 0.08)',
+  inflation: '#c97070',
+  inflationNeg: '#7fae8f'
+};
+
+const baseChartOpts = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: {
+        color: '#a8a394', font: { family: "'IBM Plex Mono', monospace", size: 11 },
+        usePointStyle: true, pointStyle: 'line', boxWidth: 30
+      }
+    },
+    tooltip: {
+      backgroundColor: '#0b0d10', borderColor: '#25292e', borderWidth: 1,
+      titleColor: '#d4a647', bodyColor: '#ece6d6',
+      titleFont: { family: "'IBM Plex Mono', monospace", size: 11 },
+      bodyFont: { family: "'IBM Plex Mono', monospace", size: 12 },
+      padding: 12
+    }
+  },
+  scales: {
+    x: {
+      ticks: {
+        color: '#6e6a5e', font: { family: "'IBM Plex Mono', monospace", size: 10 },
+        maxRotation: 0, autoSkip: true, maxTicksLimit: 10
+      },
+      grid: { color: 'rgba(255,255,255,0.03)' }
+    },
+    y: {
+      ticks: { color: '#a8a394', font: { family: "'IBM Plex Mono', monospace", size: 11 },
+               callback: v => 'Bs ' + (typeof v === 'number' ? v.toFixed(2) : v) },
+      grid: { color: 'rgba(255,255,255,0.04)' }
+    }
+  },
+  interaction: { intersect: false, mode: 'index' },
+  elements: { point: { radius: 0, hoverRadius: 5 }, line: { tension: 0.3, borderWidth: 2 } },
+  spanGaps: true
+};
+
+let chartHist, chartFc, chartInf;
+
+function renderHistoric(data, range, liveCaptures = [], usdtSheet = null) {
+  const ctx = document.getElementById('chart-historic').getContext('2d');
+  let filtered = data;
+  if (range !== 'all') {
+    const days = parseInt(range, 10);
+    const cutoff = Date.now() - days * 86400000;
+    filtered = data.filter(d => new Date(d.t + 'T00:00:00').getTime() >= cutoff);
+  }
+  const labels = filtered.map(d => formatDate(d.t));
+  const compraData = filtered.map(d => d.compra);
+  const ventaData = filtered.map(d => d.venta);
+  const oficialData = filtered.map(() => OFICIAL_FIJO);
+
+  // USDT/BOB Google Sheet — only show as separate line if NOT already promoted to main source
+  const isUsdtPrimary = filtered.some(d => d.source === 'usdt-sheet');
+  let usdtSheetData = null;
+  let hasUsdtSheet = false;
+  if (usdtSheet && usdtSheet.ok && !isUsdtPrimary) {
+    const sMap = new Map(usdtSheet.points.map(p => [p.t, p.venta]));
+    usdtSheetData = filtered.map(d => sMap.get(d.t) ?? null);
+    hasUsdtSheet = usdtSheetData.some(v => v != null);
+  }
+
+  // Referencial BCB (interpolated from anchors)
+  const refMap = buildReferencialHistory(filtered.map(d => d.t));
+  const refData = filtered.map(d => refMap.get(d.t) ?? null);
+  const hasRefData = refData.some(v => v != null);
+
+  const datasets = [
+    { label: 'Compra', data: compraData, borderColor: COLORS.compra,
+      backgroundColor: COLORS.compra + '15', fill: false },
+    { label: 'Venta', data: ventaData, borderColor: COLORS.venta,
+      backgroundColor: COLORS.venta + '15', fill: false },
+    { label: 'Oficial BCB (fijo)', data: oficialData, borderColor: COLORS.oficial,
+      borderDash: [4, 4], pointRadius: 0, fill: false }
+  ];
+
+  if (hasRefData) {
+    datasets.push({
+      label: 'Referencial BCB (diario)',
+      data: refData,
+      borderColor: '#e08a4a',
+      backgroundColor: '#e08a4a15',
+      borderWidth: 2,
+      pointRadius: 0,
+      fill: false,
+      spanGaps: false,
+      tension: 0.2
+    });
+  }
+
+  if (hasUsdtSheet) {
+    datasets.push({
+      label: 'USDT/BOB (histórico)',
+      data: usdtSheetData,
+      borderColor: '#5fb3d6',
+      backgroundColor: '#5fb3d615',
+      borderWidth: 2,
+      pointRadius: 0,
+      fill: false,
+      spanGaps: true,
+      tension: 0.2
+    });
+  }
+
+  // Note: previously had a "USDT/BOB (en vivo)" purple dashed line from CriptoYa.
+  // Removed because it's now redundant with the Google Sheet data (which is denser
+  // and more reliable). The liveCaptures cache is still maintained internally for
+  // the live hero quote at the top, but no longer drawn as a chart line.
+
+  if (chartHist) chartHist.destroy();
+  chartHist = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: baseChartOpts
+  });
+}
+
+function renderForecast(historical, horizonDays = 30) {
+  const ctx = document.getElementById('chart-forecast').getContext('2d');
+
+  // Training window scales with horizon: more horizon → more training data
+  // 30d horizon → 30d training, 90d → 60d training, 180d → 90d training
+  const trainingDays = horizonDays <= 30 ? 30 : horizonDays <= 90 ? 60 : 90;
+  const training = historical.slice(-trainingDays);
+  if (training.length < 5) return;
+
+  // Mid prices (paralelo)
+  const trainMids = training.map(d => (d.compra + d.venta) / 2);
+
+  // Display window scales with horizon for context
+  // 30d horizon → from Jan of current year (or last 90 days)
+  // 90d/180d horizon → all of current year
+  const currentYear = new Date().getFullYear();
+  const yearStart = currentYear + '-01-01';
+  let displayData = historical.filter(d => d.t >= yearStart);
+  if (displayData.length < 30) displayData = historical.slice(-90);
+  const displayMids = displayData.map(d => (d.compra + d.venta) / 2);
+
+  const lastDate = new Date(historical[historical.length - 1].t + 'T00:00:00');
+  const HORIZON = horizonDays;
+
+  // ---- Model 1: Paralelo (mid) ENSEMBLE ----
+  // Combines Holt (40%) + Mean Reversion (40%) + Persistence (20%) for more
+  // realistic projections. Includes outlier filtering on input.
+  const ensemblePar = ensembleForecast(trainMids, HORIZON);
+  // Preserve compatibility with downstream code that expects holtPar shape
+  const holtPar = ensemblePar ? {
+    forecast: ensemblePar.forecast,
+    dailyTrend: ensemblePar.dailyTrend,
+    components: ensemblePar.components,
+    weights: ensemblePar.weights
+  } : null;
+  const lrPar = linearRegressionForecast(trainMids, HORIZON);
+  if (!holtPar || !lrPar) return;
+
+  // ---- Model 2: Referencial BCB ----
+  // Build referencial training from anchors (more reliable than CSV mostly)
+  const trainingDates = training.map(d => d.t);
+  const refMap = buildReferencialHistory(trainingDates);
+  const refTrainPairs = trainingDates
+    .map(t => ({ t, val: refMap.get(t) }))
+    .filter(p => p.val != null);
+
+  let holtRef = null;
+  if (refTrainPairs.length >= 5) {
+    const refValues = refTrainPairs.map(p => p.val);
+    holtRef = holtForecast(refValues, HORIZON);
+  }
+
+  // Build forecast date strings
+  const fcDates = [];
+  for (let i = 1; i <= HORIZON; i++) {
+    const d = new Date(lastDate.getTime() + i * 86400000);
+    fcDates.push(d.toISOString().slice(0, 10));
+  }
+
+  // Reference data for display window (interpolated from anchors)
+  const displayDates = displayData.map(d => d.t);
+  const displayRefMap = buildReferencialHistory(displayDates);
+  const displayRef = displayDates.map(d => displayRefMap.get(d) ?? null);
+
+  const allDates = [...displayDates, ...fcDates];
+  const labels = allDates.map(formatDate);
+  const N = displayData.length;
+  const fillNulls = (n) => new Array(n).fill(null);
+
+  // Paralelo dataset: hist + forecast
+  const histDataset = displayMids.concat(fillNulls(HORIZON));
+  const bridgePar = displayMids[N - 1];
+  const holtParDataset = fillNulls(N - 1)
+    .concat([bridgePar])
+    .concat(holtPar.forecast.map(f => +f.point.toFixed(3)));
+  const lrParDataset = fillNulls(N - 1)
+    .concat([bridgePar])
+    .concat(lrPar.forecast.map(y => +y.toFixed(3)));
+  const upperParDataset = fillNulls(N - 1)
+    .concat([bridgePar])
+    .concat(holtPar.forecast.map(f => +f.upper.toFixed(3)));
+  const lowerParDataset = fillNulls(N - 1)
+    .concat([bridgePar])
+    .concat(holtPar.forecast.map(f => +f.lower.toFixed(3)));
+
+  // Referencial datasets (only if we have enough data)
+  let refHistDataset = null, holtRefDataset = null, upperRefDataset = null, lowerRefDataset = null;
+  if (holtRef) {
+    const lastRefIdx = displayRef.findLastIndex(v => v != null);
+    refHistDataset = displayRef.concat(fillNulls(HORIZON));
+    if (lastRefIdx >= 0) {
+      const bridgeRef = displayRef[lastRefIdx];
+      // Forecast extends from the last known referencial point (which may not be at end of display window)
+      // Pad forecast: nulls until last ref point, then bridge, then forecast
+      // Simpler: bridge from the very last historical point assumed to be close enough
+      const lastRefValue = displayRef[N - 1] ?? bridgeRef;
+      holtRefDataset = fillNulls(N - 1)
+        .concat([lastRefValue])
+        .concat(holtRef.forecast.map(f => +f.point.toFixed(3)));
+      upperRefDataset = fillNulls(N - 1)
+        .concat([lastRefValue])
+        .concat(holtRef.forecast.map(f => +f.upper.toFixed(3)));
+      lowerRefDataset = fillNulls(N - 1)
+        .concat([lastRefValue])
+        .concat(holtRef.forecast.map(f => +f.lower.toFixed(3)));
+    }
+  }
+
+  const datasets = [
+    // Paralelo IC band (light fill in background)
+    { label: 'IC paralelo sup', data: upperParDataset, borderColor: 'transparent',
+      backgroundColor: COLORS.ciFill, fill: '+1', pointRadius: 0 },
+    { label: 'IC paralelo inf', data: lowerParDataset, borderColor: 'transparent',
+      backgroundColor: COLORS.ciFill, fill: false, pointRadius: 0 },
+  ];
+
+  // Referencial IC band if available
+  if (holtRef) {
+    datasets.push(
+      { label: 'IC ref sup', data: upperRefDataset, borderColor: 'transparent',
+        backgroundColor: 'rgba(224, 138, 74, 0.08)', fill: '+1', pointRadius: 0 },
+      { label: 'IC ref inf', data: lowerRefDataset, borderColor: 'transparent',
+        backgroundColor: 'rgba(224, 138, 74, 0.08)', fill: false, pointRadius: 0 }
+    );
+  }
+
+  // Historical line + 3 scenario lines for paralelo
+  datasets.push(
+    { label: 'Paralelo (histórico)', data: histDataset, borderColor: COLORS.compra,
+      fill: false, borderWidth: 2.5, pointRadius: 0 },
+    // Three scenarios (Alcista / Base / Conservador)
+    { label: 'Alcista (techo IC 80%)', data: upperParDataset, borderColor: '#a878d4',
+      borderDash: [3, 3], fill: false, borderWidth: 1.8, pointRadius: 0 },
+    { label: 'Base (proy. central)', data: holtParDataset, borderColor: COLORS.forecastHolt,
+      fill: false, borderWidth: 2.5, pointRadius: 1.5 },
+    { label: 'Conservador (piso IC 80%)', data: lowerParDataset, borderColor: '#5fb3d6',
+      borderDash: [3, 3], fill: false, borderWidth: 1.8, pointRadius: 0 }
+  );
+
+  if (holtRef) {
+    datasets.push(
+      { label: 'Referencial BCB', data: refHistDataset, borderColor: '#e08a4a',
+        fill: false, pointRadius: 0, borderWidth: 2, spanGaps: false },
+      { label: 'Proy. referencial', data: holtRefDataset, borderColor: '#e08a4a',
+        borderDash: [4, 4], fill: false, pointRadius: 1, borderWidth: 2 }
+    );
+  }
+
+  if (chartFc) chartFc.destroy();
+  chartFc = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      ...baseChartOpts,
+      plugins: {
+        ...baseChartOpts.plugins,
+        legend: { ...baseChartOpts.plugins.legend,
+          labels: { ...baseChartOpts.plugins.legend.labels,
+            filter: it => !it.text.startsWith('IC ')  // hide confidence band labels
+          }
+        }
+      }
+    }
+  });
+
+  // ---- Update stat cards dynamically based on horizon ----
+  const horizonLabel = HORIZON === 30 ? '30d' : HORIZON === 90 ? '3 meses' : '6 meses';
+
+  // ---- Populate ensemble decomposition card ----
+  if (holtPar.components && holtPar.weights) {
+    const finalIdxComp = HORIZON - 1;
+    const holtVal = holtPar.components.holt[finalIdxComp];
+    const meanRevVal = holtPar.components.meanRev[finalIdxComp];
+    const persistVal = holtPar.components.persistence[finalIdxComp];
+    const ensembleVal = holtPar.forecast[finalIdxComp].point;
+    const w = holtPar.weights;
+
+    // Update result header
+    const resultEl = document.getElementById('ensemble-result');
+    if (resultEl) {
+      resultEl.textContent = `Bs ${ensembleVal.toFixed(2)} a ${horizonLabel}`;
+    }
+
+    // Build bar rows
+    const rows = [
+      {
+        name: 'Tendencia técnica',
+        detail: 'Holt suavizado',
+        weight: w.holt,
+        value: holtVal,
+        color: '#d4a647'
+      },
+      {
+        name: 'Reversión a la media',
+        detail: 'media 60d como ancla',
+        weight: w.meanRev,
+        value: meanRevVal,
+        color: '#7fae8f'
+      },
+      {
+        name: 'Persistencia',
+        detail: 'precio actual + drift débil',
+        weight: w.persistence,
+        value: persistVal,
+        color: '#7a8a9a'
+      }
+    ];
+
+    const barsHtml = rows.map(r => `
+      <div class="ensemble-row">
+        <div class="ensemble-row-name">${r.name}<span class="row-detail">${r.detail}</span></div>
+        <div class="ensemble-bar-track">
+          <div class="ensemble-bar-fill" style="width:${(r.weight * 100).toFixed(0)}%; background:${r.color};"></div>
+        </div>
+        <div class="ensemble-row-weight">${(r.weight * 100).toFixed(0)}%</div>
+        <div class="ensemble-row-value" style="color:${r.color}">Bs ${r.value.toFixed(2)}</div>
+      </div>
+    `).join('');
+
+    const barsEl = document.getElementById('ensemble-bars');
+    if (barsEl) barsEl.innerHTML = barsHtml;
+  }
+
+  // 3 scenarios at horizon end
+  const finalIdx = HORIZON - 1;
+  const valConservador = holtPar.forecast[finalIdx].lower;
+  const valBase = holtPar.forecast[finalIdx].point;
+  const valAlcista = holtPar.forecast[finalIdx].upper;
+
+  document.getElementById('fc-label-1').textContent = 'Conservador · ' + horizonLabel;
+  document.getElementById('fc-val-1').innerHTML = 'Bs ' + valConservador.toFixed(2);
+  document.getElementById('fc-val-1').style.color = '#5fb3d6';
+
+  document.getElementById('fc-label-2').textContent = 'Base · ' + horizonLabel;
+  document.getElementById('fc-val-2').innerHTML = 'Bs ' + valBase.toFixed(2);
+  document.getElementById('fc-val-2').style.color = COLORS.forecastHolt;
+
+  document.getElementById('fc-label-3').textContent = 'Alcista · ' + horizonLabel;
+  document.getElementById('fc-val-3').innerHTML = 'Bs ' + valAlcista.toFixed(2);
+  document.getElementById('fc-val-3').style.color = '#a878d4';
+
+  document.getElementById('fc-label-4').textContent = 'Tendencia paralelo';
+  const trendPct = (holtPar.dailyTrend / trainMids[trainMids.length - 1]) * 100;
+  const trendEl = document.getElementById('fc-val-4');
+  trendEl.textContent = (holtPar.dailyTrend >= 0 ? '+' : '') + holtPar.dailyTrend.toFixed(3) + ' Bs/d (' +
+    (trendPct >= 0 ? '+' : '') + trendPct.toFixed(2) + '%)';
+  trendEl.style.color = holtPar.dailyTrend > 0.005 ? COLORS.venta :
+                        holtPar.dailyTrend < -0.005 ? COLORS.compra : '#a8a394';
+
+  // ---- Build monthly projection table (3 scenarios) ----
+  const tbody = document.getElementById('projection-table-body');
+  if (tbody) {
+    const todayMid = trainMids[trainMids.length - 1];
+
+    // Update table headers to 3 scenarios
+    const thead = document.querySelector('#projection-table thead tr');
+    if (thead) {
+      thead.innerHTML = `
+        <th>Mes</th>
+        <th>Conservador</th>
+        <th>Base</th>
+        <th>Alcista</th>
+        <th>Δ vs hoy</th>
+      `;
+    }
+
+    const monthsCount = Math.round(HORIZON / 30);
+    let html = '';
+    // First row: today
+    html += `<tr class="actual-row">
+      <td>Hoy</td>
+      <td colspan="3" style="text-align:center;">Bs ${todayMid.toFixed(2)}</td>
+      <td>—</td>
+    </tr>`;
+
+    for (let m = 1; m <= monthsCount; m++) {
+      const dayIdx = Math.min(HORIZON - 1, m * 30 - 1);
+      const cons = holtPar.forecast[dayIdx].lower;
+      const base = holtPar.forecast[dayIdx].point;
+      const alc = holtPar.forecast[dayIdx].upper;
+      const delta = ((base - todayMid) / todayMid * 100);
+      const deltaClass = delta > 0.5 ? 'delta-up' : delta < -0.5 ? 'delta-down' : 'delta-flat';
+
+      html += `<tr>
+        <td>Mes ${m}</td>
+        <td style="color:#5fb3d6">Bs ${cons.toFixed(2)}</td>
+        <td style="color:${COLORS.forecastHolt}">Bs ${base.toFixed(2)}</td>
+        <td style="color:#a878d4">Bs ${alc.toFixed(2)}</td>
+        <td class="${deltaClass}">${delta >= 0 ? '+' : ''}${delta.toFixed(1)}%</td>
+      </tr>`;
+    }
+    tbody.innerHTML = html;
+  }
+
+  // ---- Update intro and disclaimer based on horizon ----
+  const intro = document.getElementById('forecast-intro');
+  if (intro) {
+    intro.innerHTML = `
+      Proyección a <strong>${horizonLabel}</strong> entrenada con los últimos
+      <strong>${trainingDays} días</strong>. Usa un <strong>ensemble de 3 modelos</strong>
+      (tendencia técnica + reversión a la media + persistencia) para evitar sobrerreacciones.
+      Las líneas muestran tres escenarios: <strong style="color:#5fb3d6">Conservador</strong>,
+      <strong style="color:${COLORS.forecastHolt}">Base</strong> y <strong style="color:#a878d4">Alcista</strong>.
+      ${HORIZON >= 90 ? '<br><strong style="color:#c97070">A este horizonte la incertidumbre es muy alta — usar con cautela.</strong>' : ''}
+    `;
+  }
+
+  const disclaimer = document.getElementById('forecast-disclaimer');
+  if (disclaimer) {
+    if (HORIZON >= 180) {
+      disclaimer.innerHTML = `
+        <strong>⚠ ATENCIÓN — proyección a 6 meses es altamente especulativa:</strong>
+        Ningún modelo estadístico puede predecir 180 días en un mercado con tipo de cambio
+        intervenido y bajo presión política. Las elecciones bolivianas, decisiones del BCB,
+        ajustes regulatorios, o cualquier shock externo (Fed, commodities, Medio Oriente)
+        invalidan la proyección instantáneamente. La banda de confianza es deliberadamente
+        amplia para reflejar esa incertidumbre. <strong>NO usar para tomar decisiones financieras.</strong>
+      `;
+    } else if (HORIZON >= 90) {
+      disclaimer.innerHTML = `
+        <strong>⚠ Atención — proyección a 3 meses tiene incertidumbre alta:</strong>
+        A este horizonte cualquier evento político o de política monetaria (BCB, Fed) puede
+        cambiar bruscamente la tendencia. Es razonable como referencia direccional pero NO como
+        pronóstico de precio. La banda de confianza es amplia por diseño.
+      `;
+    } else {
+      disclaimer.innerHTML = `
+        <strong>⚠ Atención — limitaciones del modelo:</strong>
+        Esta proyección a 30 días extrapola la tendencia reciente. La incertidumbre crece con
+        el horizonte. <strong>El modelo NO incorpora</strong> cambios de régimen (decisiones del BCB,
+        política monetaria, eventos políticos, shocks externos). Usar como referencia direccional únicamente.
+      `;
+    }
+  }
+}
+
+function renderInflation() {
+  const ctx = document.getElementById('chart-inflation').getContext('2d');
+  if (chartInf) chartInf.destroy();
+  chartInf = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: INFLATION_DATA.map(d => d.label),
+      datasets: [{
+        label: 'IPC mensual %',
+        data: INFLATION_DATA.map(d => d.val),
+        backgroundColor: INFLATION_DATA.map(d => d.val >= 0 ? COLORS.inflation + 'cc' : COLORS.inflationNeg + 'cc'),
+        borderColor: INFLATION_DATA.map(d => d.val >= 0 ? COLORS.inflation : COLORS.inflationNeg),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...baseChartOpts.plugins.tooltip,
+          callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' + (INFLATION_DATA[ctx.dataIndex].est ? ' (est.)' : '') }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#a8a394', font: { family: "'IBM Plex Mono', monospace", size: 10 } },
+             grid: { display: false } },
+        y: { ticks: { color: '#a8a394', font: { family: "'IBM Plex Mono', monospace", size: 10 },
+                      callback: v => v + '%' },
+             grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+}
+
+function renderIndicators() {
+  const list = document.getElementById('indicator-list');
+  list.innerHTML = INDICATORS.map(i => `
+    <div class="indicator-row">
+      <div>
+        <div class="ind-name">${i.name}</div>
+        <div style="font-size:0.66rem; color:var(--text-mute); margin-top:0.2rem; font-family:var(--mono); letter-spacing:0.05em;">${i.src}</div>
+      </div>
+      <div class="ind-val">${i.val}<span class="delta" style="color:var(--text-mute)">${i.delta}</span></div>
+    </div>
+  `).join('');
+}
+
+function renderNewsList(elementId, items) {
+  const tagColor = (t) => {
+    if (t === 'HOY') return 'background:rgba(127,174,143,0.15); color:#7fae8f; border:1px solid rgba(127,174,143,0.3);';
+    if (t === 'AYER') return 'background:rgba(212,166,71,0.12); color:#d4a647; border:1px solid rgba(212,166,71,0.3);';
+    if (t === 'SEMANA') return 'background:rgba(122,138,154,0.12); color:#7a8a9a; border:1px solid rgba(122,138,154,0.3);';
+    return 'background:transparent; color:var(--text-mute); border:1px solid var(--border);';
+  };
+  const escapeHtml = (s) => String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const buildItem = (n) => `
+    <a href="${escapeHtml(n.url)}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">
+      <div class="news-card">
+        <div class="news-meta">
+          <span style="display:inline-block; padding:0.1rem 0.4rem; border-radius:2px; font-size:0.6rem; ${tagColor(n.tag)}">${escapeHtml(n.tag)}</span>
+          <span style="margin-left:0.5rem">${escapeHtml(n.date)} · ${escapeHtml(n.source)}</span>
+        </div>
+        <div class="news-title">${escapeHtml(n.title)}</div>
+      </div>
+    </a>
+  `;
+  const target = document.getElementById(elementId);
+  if (target) target.innerHTML = items.map(buildItem).join('');
+}
+
+function renderNews() {
+  // Render curated immediately as initial state, then refreshNews() will
+  // attempt to overwrite with live data.
+  renderNewsList('news-list-nacional', NEWS_NACIONAL);
+  renderNewsList('news-list-internacional', NEWS_INTERNACIONAL);
+}
+
+/* ============================================================
+   METRICS
+============================================================ */
+function updateMetrics(data, latest) {
+  const last7 = data.slice(-7);
+  if (last7.length < 2) return;
+  const prices = last7.map(d => (d.compra + d.venta) / 2);
+  const max = Math.max(...prices);
+  const min = Math.min(...prices);
+  const maxIdx = prices.indexOf(max);
+  const minIdx = prices.indexOf(min);
+
+  document.getElementById('m-max').textContent = 'Bs ' + max.toFixed(2);
+  document.getElementById('m-max-date').textContent = formatDate(last7[maxIdx].t);
+  document.getElementById('m-min').textContent = 'Bs ' + min.toFixed(2);
+  document.getElementById('m-min-date').textContent = formatDate(last7[minIdx].t);
+
+  // Volatility (std dev of last 7 days mid prices)
+  const mean = prices.reduce((a, b) => a + b, 0) / prices.length;
+  const variance = prices.reduce((s, p) => s + (p - mean) * (p - mean), 0) / prices.length;
+  const std = Math.sqrt(variance);
+  const volEl = document.getElementById('m-vol');
+  if (volEl) {
+    volEl.textContent = '±' + std.toFixed(3);
+    // color hint: <0.05 calmo, 0.05-0.15 normal, >0.15 nervioso
+    volEl.style.color = std > 0.15 ? COLORS.venta : std < 0.05 ? COLORS.compra : COLORS.compra;
+  }
+
+  const mid = (latest.compra + latest.venta) / 2;
+  const brOf = ((mid - OFICIAL_FIJO) / OFICIAL_FIJO * 100);
+  const brRef = ((mid - REFERENCIAL_VENTA) / REFERENCIAL_VENTA * 100);
+  // Hero brecha — show as plain large number
+  document.getElementById('m-brecha-of').textContent = '+' + brOf.toFixed(1) + '%';
+  document.getElementById('m-brecha-ref').innerHTML =
+    (brRef >= 0 ? '<span style="color:var(--negative)">+' : '<span style="color:var(--positive)">') +
+    brRef.toFixed(1) + '%</span>';
+}
+
+function updateHero(data, latest) {
+  const heroBox = document.querySelector('.hero-prices');
+  heroBox.classList.remove('skeleton');
+  document.getElementById('hero-compra').innerHTML = '<span class="currency">Bs</span>' + latest.compra.toFixed(2);
+  document.getElementById('hero-venta').innerHTML = '<span class="currency">Bs</span>' + latest.venta.toFixed(2);
+
+  // weekly variation
+  const week = data.slice(-8, -1);
+  if (week.length > 0) {
+    const ref = week[0];
+    const cChg = ((latest.compra - ref.compra) / ref.compra * 100);
+    const vChg = ((latest.venta - ref.venta) / ref.venta * 100);
+    setChange('hero-compra-chg', cChg, 'sem.');
+    setChange('hero-venta-chg', vChg, 'sem.');
+  }
+
+  // Hero sparkline — last 7 days mid
+  renderHeroSparkline(data);
+}
+
+let heroSparkChart = null;
+function renderHeroSparkline(data) {
+  const canvas = document.getElementById('hero-spark-canvas');
+  if (!canvas || typeof Chart === 'undefined') return;
+  const last7 = data.slice(-7);
+  if (last7.length < 2) return;
+
+  const mids = last7.map(d => (d.compra + d.venta) / 2);
+  const isUp = mids[mids.length - 1] >= mids[0];
+  const color = isUp ? '#c97070' : '#7fae8f';  // red if up (paralelo subiendo es malo), green if down
+
+  if (heroSparkChart) heroSparkChart.destroy();
+  heroSparkChart = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: last7.map((_, i) => i),
+      datasets: [{
+        data: mids,
+        borderColor: color,
+        backgroundColor: color + '20',
+        fill: true,
+        pointRadius: 0,
+        borderWidth: 2,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: { x: { display: false }, y: { display: false } },
+      animation: { duration: 600 },
+      elements: { line: { borderJoinStyle: 'round' } }
+    }
+  });
+}
+
+function setChange(id, pct, suffix) {
+  const el = document.getElementById(id);
+  const arrow = pct > 0.05 ? '▲' : pct < -0.05 ? '▼' : '◆';
+  const cls = pct > 0.05 ? 'change-up' : pct < -0.05 ? 'change-down' : 'change-flat';
+  el.className = 'price-change ' + cls;
+  el.innerHTML = `<span>${arrow}</span> ${(pct >= 0 ? '+' : '') + pct.toFixed(2)}% <span style="color:var(--text-mute)">${suffix}</span>`;
+}
+
+function formatDate(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('es-BO', { day: '2-digit', month: 'short' });
+}
+
+/* ============================================================
+   NEWS AUTO-REFRESH — Google News RSS via public CORS proxy
+   Falls back to curated NEWS_NACIONAL/NEWS_INTERNACIONAL if proxy fails.
+============================================================ */
+const NEWS_QUERIES = {
+  // Bolivia: dolar paralelo + reservas BCB + escasez + UDAPE + BID + criptomonedas
+  nacional: 'dolar+paralelo+Bolivia+OR+BCB+reservas+OR+escasez+OR+UDAPE+OR+BID+Bolivia+OR+USDT+Bolivia',
+  // Internacional: Fed + DXY + FMI + commodities + USDT regulacion
+  internacional: 'Fed+tasas+OR+DXY+dolar+OR+FMI+economia+OR+petroleo+commodities+OR+USDT+stablecoin+regulacion'
+};
+
+function buildGoogleNewsURL(query) {
+  return `https://news.google.com/rss/search?q=${query}+when:7d&hl=es-419&gl=BO&ceid=BO:es-419`;
+}
+
+/**
+ * Parse RSS XML response into news items array
+ */
+function parseNewsXML(xmlText) {
+  if (!xmlText) return null;
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(xmlText, 'text/xml');
+  const items = [...xml.querySelectorAll('item')].slice(0, 6);
+  if (!items.length) return null;
+
+  return items.map(item => {
+    const title = item.querySelector('title')?.textContent || '';
+    const link = item.querySelector('link')?.textContent || '#';
+    const pubDate = item.querySelector('pubDate')?.textContent || '';
+    const source = item.querySelector('source')?.textContent || 'Google News';
+
+    const date = new Date(pubDate);
+    const now = new Date();
+    const hoursAgo = (now - date) / 3600000;
+    let tag = 'SEMANA';
+    if (hoursAgo < 24) tag = 'HOY';
+    else if (hoursAgo < 48) tag = 'AYER';
+    else if (hoursAgo < 168) tag = 'SEMANA';
+    else tag = 'MES';
+
+    const dateStr = date.toLocaleDateString('es-BO', {
+      day: '2-digit', month: 'short', year: '2-digit'
+    });
+
+    const cleanTitle = title.replace(/\s*-\s*[^-]+$/, '').trim();
+    return { date: dateStr, source, tag, title: cleanTitle, url: link };
+  });
+}
+
+/**
+ * Fetch a Google News RSS feed via our own Cloudflare Worker proxy.
+ * The Worker fetches Google News server-side (no CORS issues) and returns
+ * the RSS XML with proper CORS headers.
+ */
+async function fetchNewsFeed(query) {
+  const workerNewsUrl = USDT_SHEET_URL.replace(/\/$/, '') + '/news?q=' + encodeURIComponent(query);
+
+  // Try 1: Worker proxy (preferred)
+  try {
+    const resp = await fetchWithTimeout(workerNewsUrl, {}, 8000);
+    if (resp.ok) {
+      const text = await resp.text();
+      const parsed = parseNewsXML(text);
+      if (parsed && parsed.length) return parsed;
+    }
+  } catch (_) {}
+
+  // Try 2: Public proxies as last resort (may fail due to CORS issues)
+  const directURL = buildGoogleNewsURL(query);
+  const encoded = encodeURIComponent(directURL);
+
+  try {
+    const resp = await fetchWithTimeout('https://corsproxy.io/?' + encoded, {}, 5000);
+    if (resp.ok) {
+      const text = await resp.text();
+      const parsed = parseNewsXML(text);
+      if (parsed && parsed.length) return parsed;
+    }
+  } catch (_) {}
+
+  return null;
+}
+
+async function refreshNews() {
+  const updateTimeEl = document.getElementById('news-update-time');
+
+  const [nacionalNews, intlNews] = await Promise.all([
+    fetchNewsFeed(NEWS_QUERIES.nacional),
+    fetchNewsFeed(NEWS_QUERIES.internacional)
+  ]);
+
+  let liveCount = 0;
+  if (nacionalNews && nacionalNews.length > 0) {
+    renderNewsList('news-list-nacional', nacionalNews);
+    liveCount++;
+  } else {
+    renderNewsList('news-list-nacional', NEWS_NACIONAL);
+  }
+
+  if (intlNews && intlNews.length > 0) {
+    renderNewsList('news-list-internacional', intlNews);
+    liveCount++;
+  } else {
+    renderNewsList('news-list-internacional', NEWS_INTERNACIONAL);
+  }
+
+  if (updateTimeEl) {
+    if (liveCount === 2) {
+      updateTimeEl.innerHTML = '<span class="live-dot"></span>Actualizado en vivo · ' +
+        new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+    } else if (liveCount === 1) {
+      updateTimeEl.innerHTML = '⚠ Solo una columna en vivo · resto curado';
+    } else {
+      updateTimeEl.innerHTML = '⚠ Sin conexión a fuentes · mostrando noticias curadas';
+    }
+  }
+}
+
+/* ============================================================
+   XLSX EXPORT — generates real Excel file with 3 sheets
+============================================================ */
+function aggregateData(history, granularity) {
+  if (granularity === 'day') {
+    return history.map((d, i) => {
+      const mid = (d.compra + d.venta) / 2;
+      const prev = i > 0 ? (history[i - 1].compra + history[i - 1].venta) / 2 : null;
+      const chg = prev ? ((mid - prev) / prev * 100) : 0;
+      return {
+        Fecha: d.t,
+        Compra: +d.compra.toFixed(2),
+        Venta: +d.venta.toFixed(2),
+        Promedio: +mid.toFixed(2),
+        'Variación diaria %': +chg.toFixed(3),
+        'Brecha vs Oficial %': +((mid / OFICIAL_FIJO - 1) * 100).toFixed(2),
+        Origen: d.seed ? 'Estimado' : 'Live'
+      };
+    });
+  }
+
+  const bucketKey = (dateStr) => {
+    const d = new Date(dateStr + 'T00:00:00');
+    if (granularity === 'month') {
+      return d.toISOString().slice(0, 7);
+    }
+    const tmp = new Date(d);
+    tmp.setHours(0, 0, 0, 0);
+    tmp.setDate(tmp.getDate() + 4 - (tmp.getDay() || 7));
+    const yearStart = new Date(tmp.getFullYear(), 0, 1);
+    const weekNum = Math.ceil((((tmp - yearStart) / 86400000) + 1) / 7);
+    return tmp.getFullYear() + '-W' + String(weekNum).padStart(2, '0');
+  };
+
+  const buckets = new Map();
+  for (const d of history) {
+    const key = bucketKey(d.t);
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(d);
+  }
+
+  const out = [];
+  const keys = [...buckets.keys()].sort();
+  let prevAvg = null;
+  for (const key of keys) {
+    const points = buckets.get(key);
+    const mids = points.map(p => (p.compra + p.venta) / 2);
+    const avg = mids.reduce((a, b) => a + b, 0) / mids.length;
+    const max = Math.max(...mids);
+    const min = Math.min(...mids);
+    const open = mids[0];
+    const close = mids[mids.length - 1];
+    const chgPct = prevAvg ? ((avg - prevAvg) / prevAvg * 100) : 0;
+
+    out.push({
+      Periodo: key,
+      'Fecha inicio': points[0].t,
+      'Fecha fin': points[points.length - 1].t,
+      Apertura: +open.toFixed(2),
+      Cierre: +close.toFixed(2),
+      Máximo: +max.toFixed(2),
+      Mínimo: +min.toFixed(2),
+      Promedio: +avg.toFixed(2),
+      'Variación %': +chgPct.toFixed(3)
+    });
+    prevAvg = avg;
+  }
+  return out;
+}
+
+function downloadXLSX(history, primaryGranularity) {
+  if (typeof XLSX === 'undefined') {
+    showBanner('La librería de Excel no se cargó (¿conexión bloqueada?). Recargá la página.', 'error');
+    return;
+  }
+
+  const wb = XLSX.utils.book_new();
+
+  // Build all three sheets
+  const sheets = [
+    { name: 'Diario', granularity: 'day' },
+    { name: 'Semanal', granularity: 'week' },
+    { name: 'Mensual', granularity: 'month' }
+  ];
+
+  // Order: put primary first so Excel opens to that tab
+  sheets.sort((a, b) =>
+    a.granularity === primaryGranularity ? -1 :
+    b.granularity === primaryGranularity ? 1 : 0
+  );
+
+  for (const s of sheets) {
+    const data = aggregateData(history, s.granularity);
+    if (!data.length) continue;
+    const ws = XLSX.utils.json_to_sheet(data);
+
+    // Auto-width: rough estimate based on content
+    const cols = Object.keys(data[0]);
+    ws['!cols'] = cols.map(k => {
+      const maxLen = Math.max(
+        k.length,
+        ...data.map(row => String(row[k] ?? '').length)
+      );
+      return { wch: Math.min(maxLen + 2, 22) };
+    });
+
+    XLSX.utils.book_append_sheet(wb, ws, s.name);
+  }
+
+  // Add metadata sheet
+  const meta = [
+    { Campo: 'Reporte', Valor: 'Observatorio BOB/USD — Mercado Paralelo Bolivia' },
+    { Campo: 'Fecha de generación', Valor: new Date().toISOString().slice(0, 19).replace('T', ' ') },
+    { Campo: 'Período cubierto', Valor: history[0].t + ' al ' + history[history.length - 1].t },
+    { Campo: 'Total registros', Valor: history.length },
+    { Campo: 'Tipo oficial BCB', Valor: 'Bs ' + OFICIAL_FIJO + ' (fijo desde 2011)' },
+    { Campo: 'Fuente paralelo', Valor: 'CriptoYa USDT/BOB agregado P2P' },
+    { Campo: 'Fuente histórica', Valor: 'Datos estimados a partir de medios bolivianos + cotizaciones en vivo acumuladas' },
+    { Campo: 'Aviso', Valor: 'Datos referenciales. No constituyen asesoría financiera.' }
+  ];
+  const wsMeta = XLSX.utils.json_to_sheet(meta);
+  wsMeta['!cols'] = [{ wch: 22 }, { wch: 60 }];
+  XLSX.utils.book_append_sheet(wb, wsMeta, 'Info');
+
+  const today = new Date().toISOString().slice(0, 10);
+  const filename = `bob-usd-paralelo_${today}.xlsx`;
+  XLSX.writeFile(wb, filename);
+}
+
+/* ============================================================
+   ORCHESTRATION
+============================================================ */
+async function main() {
+  // Verify Chart.js loaded
+  if (typeof Chart === 'undefined') {
+    showBanner('Error: la librería Chart.js no se pudo cargar (¿conexión a CDN bloqueada?). Recargá la página.', 'error');
+    return;
+  }
+
+  const STORE_KEY = 'bob_usd_history_v2';
+  let history = null;
+  let dataSource = 'desconocida';
+  let sourceDetail = '';
+  let primaryData = null;
+
+  // Read user's source preference (auto / usdt-sheet / cache / seed)
+  let sourcePref = 'auto';
+  try { sourcePref = localStorage.getItem('bob_source_pref') || 'auto'; } catch (_) {}
+
+  // Always load USDT result (for cache and the "force USDT" option)
+  // Cache TTL is 5 min, matching the Worker's update frequency
+  const USDT_CACHE_KEY = 'bob_usdt_sheet_v1';
+  const USDT_CACHE_TS_KEY = 'bob_usdt_sheet_ts_v1';
+  let usdtResult = null;
+  try {
+    const cached = await Store.get(USDT_CACHE_KEY);
+    const cachedTs = await Store.get(USDT_CACHE_TS_KEY);
+    const cacheFresh = cachedTs && (Date.now() - cachedTs) < 5 * 60 * 1000;
+    if (cached && cacheFresh) {
+      usdtResult = cached;
+    } else {
+      const fresh = await fetchUsdtSheet();
+      if (fresh.ok) {
+        usdtResult = fresh;
+        await Store.set(USDT_CACHE_KEY, fresh);
+        await Store.set(USDT_CACHE_TS_KEY, Date.now());
+      } else if (cached) {
+        usdtResult = cached;
+      } else {
+        usdtResult = fresh;
+      }
+    }
+  } catch (_) {
+    usdtResult = { ok: false, reason: 'error-cache' };
+  }
+
+  // Always check cache (for the "force cache" option and as fallback)
+  const cached = await Store.get(STORE_KEY);
+  const hasCache = cached && Array.isArray(cached) && cached.length > 0;
+
+  // Always check user's custom Sheet (for the "force user-sheet" option)
+  let userSheet = null;
+  if (getSheetURL() && getSheetURL() !== DEFAULT_SHEET_URL) {
+    const sheetResult = await loadFromGoogleSheet();
+    if (sheetResult.ok) userSheet = sheetResult;
+  }
+
+  // Apply user's choice
+  if (sourcePref === 'usdt-sheet') {
+    // FORCED: Google Sheet remoto
+    if (usdtResult && usdtResult.ok) {
+      primaryData = usdtResult.points.map(p => ({
+        t: p.t, compra: p.compra, venta: p.venta, source: 'usdt-sheet'
+      }));
+      dataSource = 'usdt-sheet';
+      sourceDetail = `${usdtResult.stats.count} días de ${usdtResult.stats.firstDate} a ${usdtResult.stats.lastDate}`;
+    } else {
+      showBanner('No se pudo cargar el Google Sheet. Cambiá a otra fuente o reintentá.', 'error');
+    }
+  } else if (sourcePref === 'cache') {
+    // FORCED: Cache local
+    if (hasCache) {
+      history = cached;
+      dataSource = 'cache';
+      sourceDetail = `${cached.length} registros guardados`;
+    } else {
+      showBanner('No hay cache local guardado. Elegí otra fuente.', 'error');
+    }
+  } else if (sourcePref === 'seed') {
+    // FORCED: Seed estimado
+    history = generateSeed();
+    dataSource = 'seed';
+    sourceDetail = `${history.length} registros estimados`;
+  } else {
+    // AUTO mode — original cascade
+    // 1. PRIORIDAD: Sheet USDT histórico (default)
+    if (usdtResult && usdtResult.ok) {
+      primaryData = usdtResult.points.map(p => ({
+        t: p.t, compra: p.compra, venta: p.venta, source: 'usdt-sheet'
+      }));
+      dataSource = 'usdt-sheet';
+      sourceDetail = `${usdtResult.stats.count} días de ${usdtResult.stats.firstDate} a ${usdtResult.stats.lastDate}`;
+    }
+
+    // 2. FALLBACK: Tu Google Sheet propio
+    if (!primaryData && userSheet) {
+      primaryData = userSheet.data;
+      dataSource = 'sheet';
+      sourceDetail = `${primaryData.length} registros desde ${primaryData[0].t}`;
+    }
+  }
+
+  // Live captures from CriptoYa
+  const cachedLive = (cached && Array.isArray(cached))
+    ? cached.filter(d => !d.seed && d.source !== 'sheet' && d.source !== 'usdt-sheet')
+    : [];
+
+  // Build merged history when we have primary data
+  if (primaryData && primaryData.length > 0) {
+    const merged = new Map(primaryData.map(d => [d.t, d]));
+    for (const lp of cachedLive) {
+      if (!merged.has(lp.t)) merged.set(lp.t, lp);
+    }
+    history = [...merged.values()].sort((a, b) => a.t.localeCompare(b.t));
+
+    // Fill gaps if primary ends before today
+    const lastDate = primaryData[primaryData.length - 1].t;
+    const today = new Date().toISOString().slice(0, 10);
+    if (lastDate < today) {
+      const seed = generateSeed();
+      for (const s of seed) {
+        if (s.t > lastDate && !merged.has(s.t)) {
+          merged.set(s.t, s);
+        }
+      }
+      history = [...merged.values()].sort((a, b) => a.t.localeCompare(b.t));
+    }
+  } else if (!history) {
+    // No primary data, no forced choice with data — use auto-fallback chain
+    if (hasCache) {
+      history = cached;
+      dataSource = 'cache';
+      sourceDetail = `${cached.length} registros guardados`;
+    } else {
+      history = generateSeed();
+      dataSource = 'seed';
+      sourceDetail = `${history.length} registros estimados`;
+      showBanner(
+        `No se pudo cargar el USDT histórico ni hay cache. Mostrando datos estimados desde enero 2025.`,
+        'soft'
+      );
+    }
+  }
+
+  await Store.set(STORE_KEY, history);
+  updateDataSourceIndicator(dataSource, sourceDetail);
+
+  // try fetch live point
+  let latest = null;
+  try {
+    latest = await fetchLiveQuote();
+  } catch (e) { /* network blocked */ }
+
+  if (latest) {
+    // dedupe by date: replace today's entry if exists
+    const todayKey = latest.t;
+    const livePoint = {
+      t: todayKey,
+      compra: latest.compra,
+      venta: latest.venta,
+      ts: latest.ts,
+      method: latest.method,
+      source: 'criptoya'
+    };
+    let liveHistory = await Store.get('bob_live_captures_v1') || [];
+    liveHistory = liveHistory.filter(d => d.t !== todayKey);
+    liveHistory.push(livePoint);
+    liveHistory.sort((a, b) => a.t.localeCompare(b.t));
+    if (liveHistory.length > 365) liveHistory = liveHistory.slice(-365);
+    await Store.set('bob_live_captures_v1', liveHistory);
+
+    const hasNonLiveToday = history.some(d => d.t === todayKey && d.source !== 'criptoya');
+    if (!hasNonLiveToday) {
+      history = history.filter(d => d.t !== todayKey);
+      history.push(livePoint);
+      history.sort((a, b) => a.t.localeCompare(b.t));
+      await Store.set(STORE_KEY, history);
+    }
+
+    setLastUpdateLabel('live-criptoya', new Date());
+    latest = livePoint;
+  } else {
+    latest = history[history.length - 1];
+    // Soft notice instead of alarming red banner — this is normal in some environments
+    showBanner(
+      'Cotización en vivo no disponible en este momento. Mostrando últimos datos guardados.',
+      'soft'
+    );
+    const cacheDate = latest.ts ? new Date(latest.ts) : new Date();
+    setLastUpdateLabel(latest.ts ? 'cache' : 'viewing', cacheDate);
+  }
+
+  // Load all live captures for chart overlay
+  const liveCaptures = await Store.get('bob_live_captures_v1') || [];
+
+  // The USDT sheet was already loaded at top of main() as priority #1.
+  // We pass usdtResult directly to the chart for the optional secondary line
+  // (only drawn if user has a CUSTOM sheet so USDT becomes a comparison line).
+  const usdtSheet = (usdtResult && usdtResult.ok) ? usdtResult : null;
+
+  // Show diagnostic about the USDT sheet
+  if (usdtSheet) {
+    const s = usdtSheet.stats;
+    const lastUpdateStr = new Date(s.lastUpdateTs).toLocaleString('es-BO', {
+      day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+    });
+    showDiagnosticBanner(
+      `✓ Binance P2P cargado: <strong>${s.count} días</strong> ` +
+      `(${s.firstDate} a ${s.lastDate}, último dato del bot: <strong>${lastUpdateStr}</strong>). ` +
+      `${dataSource === 'usdt-sheet' ? 'Fuente principal de Compra/Venta.' : 'Disponible como línea adicional.'}`,
+      'success'
+    );
+  }
+
+  // If CriptoYa did NOT succeed (latest comes from cache or has no criptoya source),
+  // fall back to showing the bot CSV timestamp so the user knows when the data is from.
+  // CriptoYa is preferred when available because it's the actual current quote.
+  const cameFromCriptoYa = latest && latest.source === 'criptoya';
+  if (usdtResult && usdtResult.ok && usdtResult.latestRecord && !cameFromCriptoYa) {
+    setLastUpdateLabel('live-bot', new Date(usdtResult.latestRecord.ts));
+  }
+
+  await Store.set(STORE_KEY, history);
+  updateDataSourceIndicator(dataSource, sourceDetail);
+
+  // Render everything — each wrapped so a failure in one section doesn't break others
+  const safe = (name, fn) => {
+    try { fn(); }
+    catch (e) {
+      console.error('[' + name + '] error:', e);
+      showBanner('Error en sección "' + name + '": ' + e.message + ' — revisá la consola.', 'error');
+    }
+  };
+
+  safe('hero', () => updateHero(history, latest));
+  safe('métricas', () => updateMetrics(history, latest));
+  safe('histórico', () => renderHistoric(history, '90', liveCaptures, usdtSheet));
+  safe('proyección', () => renderForecast(history));
+  safe('inflación', () => renderInflation());
+  safe('indicadores', () => renderIndicators());
+  safe('noticias', () => renderNews());
+
+  // Async background fetches — don't block UI
+  refreshNews().catch(e => console.warn('refreshNews error:', e));
+  refreshCrypto().catch(e => console.warn('refreshCrypto error:', e));
+
+  // wire range buttons (historic chart)
+  document.querySelectorAll('#range-controls .pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#range-controls .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      safe('histórico', () => renderHistoric(history, btn.dataset.range, liveCaptures, usdtSheet));
+    });
+  });
+
+  // populate refreshState so the standalone refresh function can use it
+  refreshState.history = history;
+  refreshState.liveCaptures = liveCaptures;
+  refreshState.STORE_KEY = STORE_KEY;
+
+  // wire manual refresh button
+  const refreshBtn = document.getElementById('btn-refresh');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => liveRefresh());
+  }
+
+  // wire auto-refresh toggle (persists between sessions)
+  const autoToggle = document.getElementById('auto-refresh-toggle');
+  if (autoToggle) {
+    let savedAuto = false;
+    try { savedAuto = localStorage.getItem('bob_auto_refresh') === '1'; } catch (_) {}
+    autoToggle.checked = savedAuto;
+    if (savedAuto) startAutoRefresh();
+    autoToggle.addEventListener('change', (e) => {
+      if (e.target.checked) startAutoRefresh();
+      else stopAutoRefresh();
+    });
+  }
+
+  // wire forecast horizon buttons
+  document.querySelectorAll('#forecast-controls .pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#forecast-controls .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const horizon = parseInt(btn.dataset.horizon, 10);
+      safe('proyección', () => renderForecast(history, horizon));
+    });
+  });
+
+  // wire download buttons
+  document.querySelectorAll('.dl-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Skip settings panel buttons (handled separately below)
+      if (['btn-save-url', 'btn-reset-url'].includes(btn.id)) return;
+      if (!btn.dataset.granularity) return;
+      try {
+        downloadXLSX(history, btn.dataset.granularity);
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Descargado';
+        setTimeout(() => { btn.textContent = originalText; }, 1400);
+      } catch (e) {
+        console.error('Download error:', e);
+        showBanner('Error al generar Excel: ' + e.message, 'error');
+      }
+    });
+  });
+}
+
+/* ============================================================
+   CRYPTO MARKET — CoinGecko public API (CORS-open, no key needed)
+   Fetches BTC, ETH, USDT, USDC: current price + 7d sparkline.
+   Special handling for stablecoins: peg deviation alert if |∆| > 0.5%.
+============================================================ */
+const CRYPTO_COINS = ['bitcoin', 'ethereum', 'tether', 'usd-coin'];
+const PEG_COINS = new Set(['tether', 'usd-coin']);
+const sparkCharts = {};
+
+async function fetchCryptoData() {
+  const ids = CRYPTO_COINS.join(',');
+  const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&sparkline=true&price_change_percentage=24h`;
+
+  try {
+    const resp = await fetchWithTimeout(url, {}, 8000);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    if (!Array.isArray(data) || !data.length) throw new Error('respuesta vacía');
+    return data;
+  } catch (e) {
+    return null;
+  }
+}
+
+function formatCryptoPrice(price, isPeg) {
+  if (price == null) return '—';
+  if (isPeg) return '$' + price.toFixed(4);
+  if (price >= 10000) return '$' + price.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  if (price >= 1) return '$' + price.toFixed(2);
+  return '$' + price.toFixed(4);
+}
+
+function renderSparkline(canvas, prices, isPeg) {
+  if (!canvas || !prices || prices.length < 2) return;
+  const ctx = canvas.getContext('2d');
+  const isUp = prices[prices.length - 1] >= prices[0];
+  const color = isUp ? COLORS.compra : COLORS.venta;
+
+  if (sparkCharts[canvas.dataset.spark]) sparkCharts[canvas.dataset.spark].destroy();
+
+  sparkCharts[canvas.dataset.spark] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: prices.map((_, i) => i),
+      datasets: [{
+        data: prices,
+        borderColor: color,
+        backgroundColor: color + '15',
+        fill: true,
+        pointRadius: 0,
+        borderWidth: 1.5,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: {
+        x: { display: false },
+        y: { display: false, ...(isPeg ? {} : {}) }
+      },
+      animation: { duration: 600 },
+      elements: { line: { borderJoinStyle: 'round' } }
+    }
+  });
+}
+
+function renderCryptoCard(coinData) {
+  const card = document.querySelector(`.crypto-card[data-coin="${coinData.id}"]`);
+  if (!card) return;
+
+  const priceEl = card.querySelector('[data-field="price"]');
+  const changeEl = card.querySelector('[data-field="change"]');
+  const sparkCanvas = card.querySelector('canvas[data-spark]');
+
+  const isPeg = PEG_COINS.has(coinData.id);
+  const price = coinData.current_price;
+  const change24h = coinData.price_change_percentage_24h;
+
+  priceEl.textContent = formatCryptoPrice(price, isPeg);
+
+  // Change formatting
+  if (isPeg) {
+    // For stablecoins: show peg deviation in % from $1.00
+    const pegDelta = ((price - 1) * 100);
+    const arrow = Math.abs(pegDelta) < 0.05 ? '◆' : pegDelta > 0 ? '▲' : '▼';
+    changeEl.textContent = `${arrow} peg ${pegDelta >= 0 ? '+' : ''}${pegDelta.toFixed(3)}%`;
+    changeEl.className = 'crypto-change ' +
+      (Math.abs(pegDelta) < 0.05 ? 'flat' :
+       Math.abs(pegDelta) > 0.5 ? 'down' : 'flat');
+    // Visual warning if peg drifts >0.5%
+    if (Math.abs(pegDelta) > 0.5) card.classList.add('peg-warning');
+    else card.classList.remove('peg-warning');
+  } else {
+    // For BTC/ETH: 24h change %
+    const arrow = change24h > 0.05 ? '▲' : change24h < -0.05 ? '▼' : '◆';
+    const cls = change24h > 0.05 ? 'up' : change24h < -0.05 ? 'down' : 'flat';
+    changeEl.textContent = `${arrow} ${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}% 24h`;
+    changeEl.className = 'crypto-change ' + cls;
+  }
+
+  // Sparkline (7d)
+  if (coinData.sparkline_in_7d && coinData.sparkline_in_7d.price) {
+    renderSparkline(sparkCanvas, coinData.sparkline_in_7d.price, isPeg);
+  }
+}
+
+async function refreshCrypto() {
+  const updateEl = document.getElementById('crypto-update-time');
+  if (updateEl) updateEl.textContent = 'Actualizando…';
+
+  const data = await fetchCryptoData();
+  if (!data) {
+    if (updateEl) updateEl.innerHTML = '<span style="color:var(--negative)">⚠ Sin conexión a CoinGecko</span>';
+    return;
+  }
+
+  for (const coinData of data) {
+    try { renderCryptoCard(coinData); }
+    catch (e) { console.error('Crypto render error:', coinData.id, e); }
+  }
+
+  if (updateEl) {
+    const now = new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+    updateEl.innerHTML = `<span style="color:var(--positive)">●</span> Precios USD · 7d · Actualizado ${now}`;
+  }
+}
+
+function updateDataSourceIndicator(source, detail) {
+  const el = document.getElementById('data-source-badge');
+  if (!el) return;
+  const config = {
+    sheet:       { color: '#7fae8f', label: '● Google Sheet',      title: 'Datos cargados desde tu Google Sheet personalizado' },
+    'usdt-sheet':{ color: '#5fb3d6', label: '● Binance P2P',       title: 'Datos USDT/BOB del bot que actualiza cada 15 min desde Binance P2P' },
+    cache:       { color: '#d4a647', label: '● Cache local',       title: 'Datos guardados de visitas anteriores' },
+    seed:        { color: '#7a8a9a', label: '● Histórico estim.',  title: 'Datos estimados a partir de noticias' },
+    desconocida: { color: '#6e6a5e', label: '○ Sin datos',         title: 'Sin fuente disponible' }
+  };
+  const c = config[source] || config.desconocida;
+  el.innerHTML = `<span style="color:${c.color}">${c.label}</span> <span style="color:var(--text-mute)">· ${detail}</span>`;
+  el.title = c.title;
+}
+
+function showBanner(msg, kind) {
+  let cls;
+  if (kind === 'error') cls = 'error-banner';
+  else if (kind === 'soft') cls = 'soft-banner';
+  else cls = 'info-banner';
+  document.getElementById('banner-area').innerHTML =
+    `<div class="${cls}">${msg}</div>`;
+}
+
+function showDiagnosticBanner(msg, kind) {
+  // Separate banner area below the main one, so it doesn't overwrite live cache notices
+  let area = document.getElementById('diag-banner-area');
+  if (!area) {
+    area = document.createElement('div');
+    area.id = 'diag-banner-area';
+    const main = document.getElementById('banner-area');
+    if (main && main.parentNode) main.parentNode.insertBefore(area, main.nextSibling);
+  }
+  const cls = kind === 'success' ? 'diag-success' :
+              kind === 'warning' ? 'diag-warning' : 'diag-info';
+  area.innerHTML = `<div class="diag-banner ${cls}">${msg}</div>`;
+}
+
+/* ============================================================
+   LIVE REFRESH — refreshes "live" data without full page reload.
+   Updates: hero quote, metrics, crypto cards, news.
+   Does NOT touch: historic chart, forecast, inflation
+   (those depend on CSV data which doesn't change in-session).
+============================================================ */
+let refreshState = {
+  history: null,
+  liveCaptures: null,
+  STORE_KEY: 'bob_usd_history_v2',
+  autoTimer: null
+};
+
+async function liveRefresh() {
+  const btn = document.getElementById('btn-refresh');
+  if (btn) btn.classList.add('spinning');
+
+  try {
+    const latest = await fetchLiveQuote();
+
+    if (latest) {
+      // Update history with new live point
+      const todayKey = latest.t;
+      const livePoint = {
+        t: todayKey,
+        compra: latest.compra,
+        venta: latest.venta,
+        ts: latest.ts,
+        source: 'criptoya'
+      };
+
+      // Update live captures
+      let liveHistory = refreshState.liveCaptures || [];
+      liveHistory = liveHistory.filter(d => d.t !== todayKey);
+      liveHistory.push(livePoint);
+      liveHistory.sort((a, b) => a.t.localeCompare(b.t));
+      if (liveHistory.length > 365) liveHistory = liveHistory.slice(-365);
+      refreshState.liveCaptures = liveHistory;
+      await Store.set('bob_live_captures_v1', liveHistory);
+
+      // Update main history if no CSV/Sheet point exists for today
+      const hasNonLiveToday = refreshState.history.some(
+        d => d.t === todayKey && d.source !== 'criptoya'
+      );
+      if (!hasNonLiveToday) {
+        refreshState.history = refreshState.history.filter(d => d.t !== todayKey);
+        refreshState.history.push(livePoint);
+        refreshState.history.sort((a, b) => a.t.localeCompare(b.t));
+        await Store.set(refreshState.STORE_KEY, refreshState.history);
+      }
+
+      setLastUpdateLabel('live-criptoya', new Date());
+
+      // Update hero and metrics
+      try { updateHero(refreshState.history, livePoint); } catch (e) { console.error(e); }
+      try { updateMetrics(refreshState.history, livePoint); } catch (e) { console.error(e); }
+    } else {
+      // Live fetch failed — just update the "viewed at" timestamp
+      setLastUpdateLabel('viewing', new Date());
+    }
+
+    // Refresh crypto and news in parallel (these don't depend on CriptoYa)
+    await Promise.all([
+      refreshCrypto().catch(e => console.warn('crypto refresh failed:', e)),
+      refreshNews().catch(e => console.warn('news refresh failed:', e))
+    ]);
+
+  } finally {
+    if (btn) {
+      // Keep spinning briefly so the user sees feedback
+      setTimeout(() => btn.classList.remove('spinning'), 600);
+    }
+  }
+}
+
+function startAutoRefresh() {
+  stopAutoRefresh();
+  refreshState.autoTimer = setInterval(() => {
+    liveRefresh();
+  }, 5 * 60 * 1000); // 5 minutes
+  try { localStorage.setItem('bob_auto_refresh', '1'); } catch (_) {}
+}
+
+function stopAutoRefresh() {
+  if (refreshState.autoTimer) {
+    clearInterval(refreshState.autoTimer);
+    refreshState.autoTimer = null;
+  }
+  try { localStorage.removeItem('bob_auto_refresh'); } catch (_) {}
+}
+
+function setLastUpdateLabel(mode, date, source) {
+  const el = document.getElementById('last-update');
+  if (!el) return;
+  const fmt = date.toLocaleString('es-BO', {
+    day: '2-digit', month: 'short',
+    hour: '2-digit', minute: '2-digit'
+  });
+  let text, color;
+  if (mode === 'live-criptoya') {
+    text = 'EN VIVO · CriptoYa · ' + fmt;
+    color = 'var(--positive)';
+  } else if (mode === 'live-bot') {
+    text = 'BOT 15min · ' + fmt;
+    color = 'var(--accent)';
+  } else if (mode === 'live') {
+    text = 'EN VIVO · ' + fmt;
+    color = 'var(--positive)';
+  } else if (mode === 'cache') {
+    text = 'CACHE · ' + fmt;
+    color = 'var(--accent)';
+  } else {
+    text = 'Visto · ' + fmt;
+    color = 'var(--text-mute)';
+  }
+  el.textContent = text;
+  el.style.color = color;
+}
+
+
+main();
+</script>
+
+<script>
+// Hamburger menu mobile
+document.getElementById('nav-hamburger').addEventListener('click', () => {
+  document.getElementById('nav-links').classList.toggle('open');
+});
+// Dropdown en mobile (tap)
+document.getElementById('nav-blog').addEventListener('click', function(e) {
+  if (window.innerWidth <= 768) {
+    e.stopPropagation();
+    this.classList.toggle('open');
+  }
+});
+</script>
+</body>
+</html>
