@@ -1109,8 +1109,8 @@
     </div>
     <div class="block-body">
       <p class="block-intro">
-        Noticias con mayor impacto sobre el tipo de cambio, <strong>auto-actualizadas al abrir el dashboard</strong>
-        desde Google News (últimos 7 días). La columna <strong>nacional</strong> cubre BCB, ASFI y Gobierno;
+        Noticias con mayor impacto sobre el tipo de cambio, <strong>curadas con IA y actualizadas cada 3 horas</strong>
+        desde medios bolivianos (Los Tiempos, Eju.tv, El Deber, Página Siete). La columna <strong>nacional</strong> cubre BCB, dólar paralelo y cripto;
         la columna <strong>internacional</strong> cubre Fed, índice DXY y eventos globales que mueven el dólar.
         Si la conexión falla, se muestra una selección curada manualmente.
       </p>
@@ -1657,6 +1657,7 @@ function loadFromLocalCSV() {
    Para el dashboard usamos siempre el CSV completo (raíz).
 ============================================================ */
 const USDT_SHEET_URL = 'https://monitor-p2p-bolivia.reynaldoft.workers.dev/';
+const NEWS_WORKER_URL = 'https://noticias-bolivia.reynaldoft.workers.dev/';
 
 function parseSpanishCSVRow(line) {
   // Robust: handles quoted fields containing commas
@@ -2866,10 +2867,45 @@ async function fetchNewsFeed(query) {
 async function refreshNews() {
   const updateTimeEl = document.getElementById('news-update-time');
 
-  const [nacionalNews, intlNews] = await Promise.all([
-    fetchNewsFeed(NEWS_QUERIES.nacional),
-    fetchNewsFeed(NEWS_QUERIES.internacional)
-  ]);
+  // Convierte formato del Worker → formato de renderNewsList
+  function mapWorkerNews(items) {
+    return items.map(n => {
+      const date = n.fecha ? new Date(n.fecha) : null;
+      const now = new Date();
+      const hoursAgo = date ? (now - date) / 3600000 : 999;
+      let tag = 'SEMANA';
+      if (hoursAgo < 24) tag = 'HOY';
+      else if (hoursAgo < 48) tag = 'AYER';
+      else if (hoursAgo >= 168) tag = 'MES';
+      const dateStr = date ? date.toLocaleDateString('es-BO', {
+        day: '2-digit', month: 'short', year: '2-digit'
+      }) : '—';
+      return { title: n.titulo, url: n.url || '#', source: n.fuente || '—', date: dateStr, tag };
+    });
+  }
+
+  let nacionalNews = null;
+  let intlNews = null;
+
+  // Intento 1: Worker de noticias propio (fuentes bolivianas + curación IA)
+  try {
+    const [rBolivia, rIntl] = await Promise.all([
+      fetchWithTimeout(NEWS_WORKER_URL + 'noticias/bolivia', {}, 8000),
+      fetchWithTimeout(NEWS_WORKER_URL + 'noticias/internacional', {}, 8000)
+    ]);
+    if (rBolivia.ok) {
+      const data = await rBolivia.json();
+      if (data.noticias && data.noticias.length > 0) nacionalNews = mapWorkerNews(data.noticias);
+    }
+    if (rIntl.ok) {
+      const data = await rIntl.json();
+      if (data.noticias && data.noticias.length > 0) intlNews = mapWorkerNews(data.noticias);
+    }
+  } catch (_) {}
+
+  // Intento 2: fallback a RSS Google News si el Worker no tiene datos aún
+  if (!nacionalNews) nacionalNews = await fetchNewsFeed(NEWS_QUERIES.nacional);
+  if (!intlNews) intlNews = await fetchNewsFeed(NEWS_QUERIES.internacional);
 
   let liveCount = 0;
   if (nacionalNews && nacionalNews.length > 0) {
