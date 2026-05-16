@@ -14,12 +14,15 @@
     --bg: #0b0d10;
     --bg-elevated: #131619;
     --bg-soft: #181b1f;
+    --bg-glass: rgba(19, 22, 25, 0.72);
     --border: #25292e;
     --border-soft: #1d2025;
+    --border-glow: rgba(212, 166, 71, 0.2);
     --text: #ece6d6;
     --text-soft: #a8a394;
     --text-mute: #6e6a5e;
     --accent: #d4a647;
+    --accent-bright: #efc164;
     --accent-soft: #b88a2c;
     --positive: #7fae8f;
     --negative: #c97070;
@@ -28,14 +31,16 @@
     --serif: 'Fraunces', Georgia, serif;
     --sans: 'IBM Plex Sans', system-ui, sans-serif;
     --mono: 'IBM Plex Mono', 'Courier New', monospace;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--accent); color: var(--bg); }
   body {
     background-image:
-      radial-gradient(ellipse at 15% 0%, var(--gold-glow) 0%, transparent 50%),
-      radial-gradient(ellipse at 85% 100%, rgba(127, 174, 143, 0.04) 0%, transparent 50%);
+      radial-gradient(ellipse 800px 400px at 15% -100px, var(--gold-glow) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 400px at 85% 110%, rgba(127, 174, 143, 0.04) 0%, transparent 60%);
     background-attachment: fixed;
     min-height: 100vh;
     padding: 2rem 1rem 4rem;
@@ -44,42 +49,58 @@
   .wrap { max-width: 1180px; margin: 0 auto; }
 
   /* ============= NAVBAR ============= */
-  .navbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.85rem 0; margin-bottom: 0.5rem;
+  .nav-wrap {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    background: var(--bg-glass);
     border-bottom: 1px solid var(--border-soft);
+    margin: -2rem -1rem 0; /* compensar padding del body */
+  }
+  .navbar {
+    max-width: 1180px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.85rem 1rem; gap: 1rem;
     position: relative;
   }
   .nav-logo {
-    display: flex; align-items: center; gap: 0.65rem;
+    display: flex; align-items: center; gap: 0.6rem;
     text-decoration: none; user-select: none;
   }
-  .nav-logo svg { width: 32px; height: 32px; flex-shrink: 0; }
+  .nav-iso {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: #000; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; flex-shrink: 0;
+    transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .nav-logo:hover .nav-iso { border-color: var(--accent); transform: rotate(-3deg); }
+  .nav-iso svg { width: 24px; height: 24px; display: block; }
   .nav-logo-text {
-    font-family: var(--sans); font-weight: 600; font-size: 0.95rem;
+    font-family: var(--sans); font-weight: 500; font-size: 0.92rem;
     color: var(--text); letter-spacing: 0.01em; line-height: 1.1;
   }
   .nav-logo-text span { color: var(--accent); }
   .nav-logo-sub {
-    font-family: var(--mono); font-size: 0.6rem; color: var(--text-mute);
-    letter-spacing: 0.1em; text-transform: uppercase; display: block;
+    font-family: var(--mono); font-size: 0.58rem; color: var(--text-mute);
+    letter-spacing: 0.14em; text-transform: uppercase; display: block;
+    margin-top: 2px;
   }
   .nav-links {
-    display: flex; align-items: center; gap: 0.2rem; list-style: none;
+    display: flex; align-items: center; gap: 0.15rem; list-style: none;
   }
   .nav-links a, .nav-dropdown-toggle {
-    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.07em;
-    text-transform: uppercase; color: var(--text-mute);
-    text-decoration: none; padding: 0.45rem 0.75rem; border-radius: 2px;
-    transition: color 0.15s, background 0.15s; background: transparent;
+    font-family: var(--sans); font-size: 0.82rem; letter-spacing: 0.01em;
+    color: var(--text-soft);
+    text-decoration: none; padding: 0.5rem 0.85rem; border-radius: 6px;
+    transition: all 0.15s var(--ease); background: transparent;
     border: none; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;
+    font-weight: 400;
   }
   .nav-links a:hover, .nav-dropdown-toggle:hover {
-    color: var(--text); background: var(--bg-soft);
+    color: var(--text); background: rgba(255,255,255,0.04);
   }
-  .nav-links a.active {
-    color: var(--accent); background: var(--gold-glow);
-  }
+  .nav-links a.active { color: var(--accent); }
   .nav-dropdown { position: relative; }
   .nav-dropdown-toggle .arrow {
     font-size: 0.55rem; transition: transform 0.2s; display: inline-block;
@@ -88,42 +109,46 @@
   .nav-dropdown-menu {
     display: none; position: absolute; top: calc(100% + 4px); left: 0;
     background: var(--bg-elevated); border: 1px solid var(--border);
-    border-radius: 3px; min-width: 160px; z-index: 100;
+    border-radius: 8px; min-width: 180px; z-index: 100;
     box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     overflow: hidden;
   }
   .nav-dropdown:hover .nav-dropdown-menu { display: block; }
   .nav-dropdown-menu a {
-    display: block; padding: 0.6rem 1rem; font-size: 0.7rem;
+    display: block; padding: 0.65rem 1rem; font-size: 0.8rem;
     border-bottom: 1px solid var(--border-soft); border-radius: 0;
+    color: var(--text-soft); font-family: var(--sans);
+    transition: all 0.15s var(--ease);
   }
   .nav-dropdown-menu a:last-child { border-bottom: none; }
   .nav-dropdown-menu a:hover { background: var(--bg-soft); color: var(--accent); }
   .nav-cta {
-    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.07em;
-    text-transform: uppercase; color: var(--accent) !important;
-    border: 1px solid var(--accent) !important; padding: 0.4rem 0.75rem !important;
-    border-radius: 2px; transition: all 0.15s !important;
+    background: var(--accent); color: var(--bg) !important;
+    font-weight: 500 !important; font-size: 0.82rem !important;
+    padding: 0.5rem 1rem !important; border-radius: 6px !important;
+    transition: all 0.15s var(--ease) !important;
+    letter-spacing: 0 !important; text-transform: none !important;
   }
-  .nav-cta:hover { background: var(--accent) !important; color: var(--bg) !important; }
+  .nav-cta:hover { background: var(--accent-bright) !important; transform: translateY(-1px); }
   .nav-hamburger {
     display: none; flex-direction: column; gap: 4px; cursor: pointer;
     padding: 6px; background: none; border: none;
   }
   .nav-hamburger span {
     display: block; width: 20px; height: 1.5px; background: var(--text-mute);
-    transition: all 0.2s;
+    transition: all 0.2s var(--ease);
   }
   @media (max-width: 768px) {
     .nav-hamburger { display: flex; }
     .nav-links { display: none; flex-direction: column; align-items: flex-start;
       position: absolute; top: 100%; left: 0; right: 0; z-index: 200;
       background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 0 0 8px 8px;
       padding: 0.5rem; gap: 0;
     }
     .nav-links.open { display: flex; }
     .nav-dropdown-menu { position: static; box-shadow: none; border: none;
-      background: var(--bg-soft); padding-left: 0.5rem; }
+      background: var(--bg-soft); padding-left: 0.5rem; border-radius: 6px; }
     .nav-dropdown:hover .nav-dropdown-menu { display: none; }
     .nav-dropdown.open .nav-dropdown-menu { display: block; }
   }
@@ -767,30 +792,27 @@
 <div class="wrap">
 
   <!-- ============ NAVBAR ============ -->
+  <div class="nav-wrap">
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
-      <!-- Logo chip SVG replicando el ícono DataHunter -->
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Perfil de cabeza -->
-        <path d="M50 14 C62 14 68 24 68 36 C68 46 63 54 55 58 L55 66 L38 66 L38 58 C30 57 26 52 26 46 C26 44 27 42 29 41 C28 39 28 36 29 34 C31 26 40 14 50 14Z"
-              stroke="#d4a647" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
-        <!-- Chip CPU en el centro -->
-        <rect x="36" y="28" width="20" height="20" rx="2"
-              stroke="#d4a647" stroke-width="2" fill="none"/>
-        <rect x="40" y="32" width="12" height="12" rx="1"
-              stroke="#d4a647" stroke-width="1.5" fill="rgba(212,166,71,0.12)"/>
-        <!-- Pines del chip -->
-        <line x1="40" y1="28" x2="40" y2="24" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="46" y1="28" x2="46" y2="24" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="52" y1="28" x2="52" y2="24" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="40" y1="48" x2="40" y2="52" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="46" y1="48" x2="46" y2="52" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="52" y1="48" x2="52" y2="52" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="36" y1="34" x2="32" y2="34" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="36" y1="40" x2="32" y2="40" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="56" y1="34" x2="60" y2="34" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="56" y1="40" x2="60" y2="40" stroke="#d4a647" stroke-width="1.5"/>
-      </svg>
+      <div class="nav-iso">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 14 C62 14 68 24 68 36 C68 46 63 54 55 58 L55 66 L38 66 L38 58 C30 57 26 52 26 46 C26 44 27 42 29 41 C28 39 28 36 29 34 C31 26 40 14 50 14Z"
+                stroke="#d4a647" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+          <rect x="36" y="28" width="20" height="20" rx="2" stroke="#d4a647" stroke-width="2" fill="none"/>
+          <rect x="40" y="32" width="12" height="12" rx="1" stroke="#d4a647" stroke-width="1.5" fill="rgba(212,166,71,0.12)"/>
+          <line x1="40" y1="28" x2="40" y2="24" stroke="#d4a647" stroke-width="1.5"/>
+          <line x1="46" y1="28" x2="46" y2="24" stroke="#d4a647" stroke-width="1.5"/>
+          <line x1="52" y1="28" x2="52" y2="24" stroke="#d4a647" stroke-width="1.5"/>
+          <line x1="40" y1="48" x2="40" y2="52" stroke="#d4a647" stroke-width="1.5"/>
+          <line x1="46" y1="48" x2="46" y2="52" stroke="#d4a647" stroke-width="1.5"/>
+          <line x1="52" y1="48" x2="52" y2="52" stroke="#d4a647" stroke-width="1.5"/>
+          <line x1="36" y1="34" x2="32" y2="34" stroke="#d4a647" stroke-width="1.5"/>
+          <line x1="36" y1="40" x2="32" y2="40" stroke="#d4a647" stroke-width="1.5"/>
+          <line x1="56" y1="34" x2="60" y2="34" stroke="#d4a647" stroke-width="1.5"/>
+          <line x1="56" y1="40" x2="60" y2="40" stroke="#d4a647" stroke-width="1.5"/>
+        </svg>
+      </div>
       <div>
         <div class="nav-logo-text">Data<span>Hunter</span> Labs</div>
         <span class="nav-logo-sub">Observatorio USDT/BOB</span>
@@ -817,6 +839,7 @@
       <li><a href="contacto.html" class="nav-cta">Contacto</a></li>
     </ul>
   </nav>
+  </div>
 
   <header class="topbar">
     <div>
