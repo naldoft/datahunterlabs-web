@@ -1962,13 +1962,14 @@ const NEWS_INTERNACIONAL = [
 ];
 
 const OFICIAL_FIJO = 6.96;
-const REFERENCIAL_VENTA = 9.74;
+const REFERENCIAL_VENTA = 10.04;  // BCB referencial actual — actualizar cuando cambie
 
 /* ============================================================
    HISTORIAL DEL REFERENCIAL BCB (venta)
    El BCB publica el referencial diariamente desde 1 dic 2025.
    Anclas confirmadas en notas de prensa; interpolación lineal entre ellas.
    Antes del 1 dic 2025 → null (no existía).
+   Actualizar este array cada vez que el BCB publique un nuevo valor.
 ============================================================ */
 const REFERENCIAL_ANCHORS = [
   { date: '2025-12-01', val: 7.85 },  // primera publicación, cerca del oficial
@@ -1983,7 +1984,8 @@ const REFERENCIAL_ANCHORS = [
   { date: '2026-04-20', val: 9.55 },
   { date: '2026-04-27', val: 9.74 },  // confirmado: máximo histórico Red Uno
   { date: '2026-04-28', val: 9.74 },
-  { date: '2026-04-29', val: 9.72 }
+  { date: '2026-04-29', val: 9.72 },
+  { date: '2026-05-17', val: 10.04 }  // confirmado: BCB sitio oficial
 ];
 
 function buildReferencialHistory(targetDates) {
