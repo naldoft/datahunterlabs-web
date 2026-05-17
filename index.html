@@ -4047,6 +4047,9 @@ async function refreshCrypto() {
     catch (e) { console.error('Crypto render error:', coinData.id, e); }
   }
 
+  // Actualizar ticker con precios cripto reales
+  if (window.updateTickerCrypto) window.updateTickerCrypto(data);
+
   if (updateEl) {
     const now = new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
     updateEl.innerHTML = `<span style="color:var(--positive)">●</span> Precios USD · 7d · Actualizado ${now}`;
@@ -4228,16 +4231,37 @@ main();
 })();
 
 // ============ LIVE TICKER ============
-function buildTicker(compra, venta) {
+// ============ TICKER STATE ============
+window._tickerState = {
+  compra: null, venta: null,
+  btcPrice: null, btcChg: null,
+  ethPrice: null, ethChg: null,
+  usdtPrice: 1.0,
+  dxyPrice: null,
+};
+
+function buildTicker() {
+  const s = window._tickerState;
+
+  const fmtUsd = v => {
+    if (v == null) return '—';
+    if (v >= 10000) return '$' + v.toLocaleString('en-US', { maximumFractionDigits: 0 });
+    return '$' + v.toFixed(2);
+  };
+  const fmtChg = v => v != null ? (v >= 0 ? '▲ +' : '▼ ') + Math.abs(v).toFixed(2) + '%' : '';
+  const chgDir = v => v == null ? 'flat' : v > 0.05 ? 'up' : v < -0.05 ? 'down' : 'flat';
+
   const items = [
-    { sym: 'USDT/BOB COMPRA (ASK)', price: compra ? 'Bs ' + compra : '—', chg: '', dir: 'flat' },
-    { sym: 'USDT/BOB VENTA (BID)',  price: venta  ? 'Bs ' + venta  : '—', chg: '', dir: 'flat' },
-    { sym: 'BCB OFICIAL',     price: 'Bs 6.96',  chg: '', dir: 'flat' },
-    { sym: 'BCB REFERENCIAL', price: 'Bs 10.15', chg: '', dir: 'flat' },
-    { sym: 'BTC',  price: '—', chg: '', dir: 'flat' },
-    { sym: 'USDT', price: '$1.00', chg: 'STABLE', dir: 'flat' },
-    { sym: 'DXY',  price: '—', chg: '', dir: 'flat' },
+    { sym: 'USDT/BOB COMPRA',  price: s.compra ? 'Bs ' + s.compra.toFixed(2) : '—', chg: '', dir: 'flat' },
+    { sym: 'USDT/BOB VENTA',   price: s.venta  ? 'Bs ' + s.venta.toFixed(2)  : '—', chg: '', dir: 'flat' },
+    { sym: 'BCB OFICIAL',      price: 'Bs ' + OFICIAL_FIJO.toFixed(2), chg: 'FIJO', dir: 'flat' },
+    { sym: 'BCB REF',          price: 'Bs ' + REFERENCIAL_VENTA.toFixed(2), chg: '', dir: 'flat' },
+    { sym: 'BTC',  price: fmtUsd(s.btcPrice),  chg: fmtChg(s.btcChg),  dir: chgDir(s.btcChg) },
+    { sym: 'ETH',  price: fmtUsd(s.ethPrice),  chg: fmtChg(s.ethChg),  dir: chgDir(s.ethChg) },
+    { sym: 'USDT', price: fmtUsd(s.usdtPrice), chg: 'STABLE', dir: 'flat' },
+    { sym: 'DXY',  price: s.dxyPrice ? s.dxyPrice.toFixed(2) : '—', chg: '', dir: 'flat' },
   ];
+
   const track = document.getElementById('ticker-track');
   if (!track) return;
   const html = items.map(t => `
@@ -4250,12 +4274,40 @@ function buildTicker(compra, venta) {
   `).join('');
   track.innerHTML = html + html; // duplicar para loop infinito
 }
-buildTicker(null, null);
+buildTicker();
 
-// Cuando los datos reales lleguen, actualizar el ticker
+// Actualizar BOB cuando llegan precios en vivo
 window.updateTickerPrices = function(compra, venta) {
-  buildTicker(compra.toFixed(2), venta.toFixed(2));
+  window._tickerState.compra = compra;
+  window._tickerState.venta  = venta;
+  buildTicker();
 };
+
+// Actualizar cripto cuando CoinGecko responde
+window.updateTickerCrypto = function(data) {
+  const btc  = data.find(d => d.id === 'bitcoin');
+  const eth  = data.find(d => d.id === 'ethereum');
+  const usdt = data.find(d => d.id === 'tether');
+  if (btc)  { window._tickerState.btcPrice  = btc.current_price;  window._tickerState.btcChg  = btc.price_change_percentage_24h; }
+  if (eth)  { window._tickerState.ethPrice  = eth.current_price;  window._tickerState.ethChg  = eth.price_change_percentage_24h; }
+  if (usdt) { window._tickerState.usdtPrice = usdt.current_price; }
+  buildTicker();
+};
+
+// DXY desde Yahoo Finance (CORS-open endpoint)
+async function fetchDXY() {
+  try {
+    const r = await fetch(
+      'https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB?interval=1d&range=1d',
+      { signal: AbortSignal.timeout(6000) }
+    );
+    if (!r.ok) return;
+    const j = await r.json();
+    const price = j?.chart?.result?.[0]?.meta?.regularMarketPrice;
+    if (price) { window._tickerState.dxyPrice = price; buildTicker(); }
+  } catch(e) { /* DXY no disponible, se queda en — */ }
+}
+fetchDXY();
 </script>
 
 <script>
