@@ -48,6 +48,43 @@
 
   .wrap { max-width: 1180px; margin: 0 auto; }
 
+  /* ============= LIVE TICKER ============= */
+  .ticker {
+    background: #06070a;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    height: 32px;
+    display: flex;
+    align-items: center;
+  }
+  .ticker::before, .ticker::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2;
+    pointer-events: none;
+  }
+  .ticker::before { left: 0; background: linear-gradient(to right, #06070a, transparent); }
+  .ticker::after { right: 0; background: linear-gradient(to left, #06070a, transparent); }
+  .ticker-track {
+    display: flex; gap: 2.5rem; white-space: nowrap;
+    animation: ticker-scroll 50s linear infinite;
+    padding-left: 2rem;
+  }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .ticker-item {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  }
+  .ticker-symbol { color: var(--text-mute); }
+  .ticker-price { color: var(--text); font-weight: 500; }
+  .ticker-chg.up { color: var(--positive); }
+  .ticker-chg.down { color: var(--negative); }
+  .ticker-chg.flat { color: var(--text-mute); }
+  .ticker-divider { color: var(--border); margin: 0 0.25rem; }
+
   /* ============= NAVBAR ============= */
   .nav-wrap {
     position: sticky; top: 0; z-index: 50;
@@ -789,10 +826,16 @@
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <!-- ============ NAVBAR ============ -->
-  <div class="nav-wrap">
+<!-- ============ LIVE TICKER ============ -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker-track">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<!-- ============ NAVBAR ============ -->
+<div class="nav-wrap">
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
       <div class="nav-iso">
@@ -824,7 +867,9 @@
       <li><a href="contacto.html" class="nav-cta">Contacto</a></li>
     </ul>
   </nav>
-  </div>
+</div>
+
+<div class="wrap">
 
   <header class="topbar">
     <div>
@@ -2725,6 +2770,8 @@ function updateHero(data, latest) {
   heroBox.classList.remove('skeleton');
   document.getElementById('hero-compra').innerHTML = '<span class="currency">Bs</span>' + latest.compra.toFixed(2);
   document.getElementById('hero-venta').innerHTML = '<span class="currency">Bs</span>' + latest.venta.toFixed(2);
+  // Actualizar ticker con precios reales
+  if (window.updateTickerPrices) window.updateTickerPrices(latest.compra, latest.venta);
 
   // weekly variation
   const week = data.slice(-8, -1);
@@ -3667,6 +3714,38 @@ function setLastUpdateLabel(mode, date, source) {
 
 
 main();
+</script>
+
+<script>
+// ============ LIVE TICKER ============
+function buildTicker(compra, venta) {
+  const items = [
+    { sym: 'USDT/BOB COMPRA', price: compra ? 'Bs ' + compra : '—', chg: '', dir: 'flat' },
+    { sym: 'USDT/BOB VENTA',  price: venta  ? 'Bs ' + venta  : '—', chg: '', dir: 'flat' },
+    { sym: 'BCB OFICIAL',     price: 'Bs 6.96',  chg: '', dir: 'flat' },
+    { sym: 'BCB REFERENCIAL', price: 'Bs 10.15', chg: '', dir: 'flat' },
+    { sym: 'BTC',  price: '—', chg: '', dir: 'flat' },
+    { sym: 'USDT', price: '$1.00', chg: 'STABLE', dir: 'flat' },
+    { sym: 'DXY',  price: '—', chg: '', dir: 'flat' },
+  ];
+  const track = document.getElementById('ticker-track');
+  if (!track) return;
+  const html = items.map(t => `
+    <div class="ticker-item">
+      <span class="ticker-symbol">${t.sym}</span>
+      <span class="ticker-price">${t.price}</span>
+      ${t.chg ? `<span class="ticker-chg ${t.dir}">${t.chg}</span>` : ''}
+      <span class="ticker-divider">·</span>
+    </div>
+  `).join('');
+  track.innerHTML = html + html; // duplicar para loop infinito
+}
+buildTicker(null, null);
+
+// Cuando los datos reales lleguen, actualizar el ticker
+window.updateTickerPrices = function(compra, venta) {
+  buildTicker(compra.toFixed(2), venta.toFixed(2));
+};
 </script>
 
 <script>
