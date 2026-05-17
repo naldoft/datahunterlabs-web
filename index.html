@@ -276,76 +276,165 @@
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
   /* ============= HERO ============= */
-  .hero {
-    display: grid; grid-template-columns: 1fr; gap: 2.5rem;
-    margin-bottom: 3rem; padding: 1rem 0 2rem;
-  }
-  @media (min-width: 768px) { .hero { grid-template-columns: 1.1fr 1fr; align-items: end; } }
+  .hero { padding: 3rem 0 2rem; position: relative; }
 
-  .hero-left .eyebrow {
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
     font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem;
+    padding: 0.35rem 0.8rem;
+    background: var(--gold-glow);
+    border: 1px solid rgba(212, 166, 71, 0.2);
+    border-radius: 30px;
   }
-  .hero-left h1 {
-    font-family: var(--serif); font-weight: 300; font-style: italic;
-    font-size: clamp(2.4rem, 5vw, 3.6rem); line-height: 1; color: var(--text);
-    letter-spacing: -0.01em; font-variation-settings: 'opsz' 60;
+  .hero-eyebrow .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--positive);
+    animation: pulse-dot 2s infinite;
   }
-  .hero-left h1 .em {
-    font-style: normal; font-weight: 400; color: var(--accent);
-  }
-  .hero-left p.lead {
-    margin-top: 1rem; max-width: 38ch; color: var(--text-soft);
-    font-size: 0.95rem; line-height: 1.55;
+  @keyframes pulse-dot {
+    0% { box-shadow: 0 0 0 0 rgba(127,174,143,0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(127,174,143,0); }
+    100% { box-shadow: 0 0 0 0 rgba(127,174,143,0); }
   }
 
-  .hero-prices {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-    border: 1px solid var(--border); border-radius: 2px;
-    background: var(--bg-elevated);
-    overflow: hidden;
+  .wordmark {
+    font-family: var(--serif); font-weight: 200;
+    font-size: clamp(3rem, 10vw, 7rem);
+    line-height: 0.95; letter-spacing: -0.04em; color: var(--text);
+    font-variation-settings: 'opsz' 144;
+    margin-bottom: 0.4rem;
+    display: flex; align-items: center; gap: 0.15em; flex-wrap: wrap;
   }
-  .hero-sparkline {
-    grid-column: 1 / -1;
-    border-top: 1px solid var(--border);
-    padding: 0.7rem 1.4rem 0.5rem;
-    background: var(--bg-soft);
-    position: relative; height: 70px;
+  .wordmark .iso {
+    width: 0.9em; height: 0.9em; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    transform: translateY(-0.04em);
   }
-  .hero-spark-label {
-    font-family: var(--mono); font-size: 0.62rem;
-    color: var(--text-mute); letter-spacing: 0.18em;
-    text-transform: uppercase; margin-bottom: 0.2rem;
+  .wordmark .iso img { width: 100%; height: 100%; display: block; }
+  .wordmark .hunter { color: var(--accent); font-style: italic; font-weight: 300; }
+
+  .hero-tag {
+    font-family: var(--mono); font-size: 0.75rem;
+    color: var(--text-mute); letter-spacing: 0.16em;
+    text-transform: uppercase; margin-bottom: 2.5rem;
   }
-  .hero-sparkline canvas {
-    position: absolute; left: 1.4rem; right: 1.4rem;
-    top: 1.7rem; bottom: 0.5rem;
-    width: calc(100% - 2.8rem) !important; height: calc(100% - 2.2rem) !important;
+  .hero-tag .pipe { margin: 0 0.7rem; opacity: 0.35; }
+
+  .hero-grid {
+    display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1rem;
   }
+  @media (min-width: 900px) {
+    .hero-grid { grid-template-columns: 1.15fr 1fr; gap: 2rem; }
+  }
+
+  /* Price card */
+  .price-card {
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; position: relative;
+  }
+  .price-card-grid { display: grid; grid-template-columns: 1fr 1fr; }
   .price-cell {
-    padding: 1.6rem 1.4rem; position: relative;
+    padding: 1.4rem 1.5rem 1.5rem; position: relative;
+    transition: background 0.2s var(--ease);
   }
   .price-cell:first-child { border-right: 1px solid var(--border); }
-  .price-label {
-    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--text-mute); margin-bottom: 0.5rem;
+  .price-cell:hover { background: var(--bg-soft); }
+  .price-cell-label {
+    font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-mute); margin-bottom: 0.6rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .price-cell-tag {
+    font-family: var(--mono); font-size: 0.58rem; padding: 2px 6px;
+    border-radius: 3px; background: rgba(127,174,143,0.1); color: var(--positive);
+    border: 1px solid rgba(127,174,143,0.2);
   }
   .price-value {
-    font-family: var(--serif); font-weight: 400;
-    font-size: 2.4rem; line-height: 1; color: var(--text);
-    font-variation-settings: 'opsz' 90;
+    font-family: var(--serif); font-weight: 300;
+    font-size: 3rem; line-height: 1; color: var(--text);
+    font-variation-settings: 'opsz' 144; letter-spacing: -0.02em;
   }
   .price-value .currency {
-    font-size: 1rem; color: var(--accent); margin-right: 0.3rem;
-    font-weight: 500;
+    font-size: 1rem; color: var(--accent); font-weight: 500;
+    font-family: var(--mono); letter-spacing: 0.05em; margin-right: 0.2rem;
   }
   .price-change {
-    margin-top: 0.7rem; font-family: var(--mono); font-size: 0.78rem;
-    display: flex; align-items: center; gap: 0.4rem;
+    margin-top: 0.7rem; font-family: var(--mono); font-size: 0.76rem;
+    display: flex; align-items: center; gap: 0.5rem;
   }
   .change-up { color: var(--negative); }
   .change-down { color: var(--positive); }
   .change-flat { color: var(--text-mute); }
+
+  /* Sparkline inside price card */
+  .price-spark {
+    grid-column: 1 / -1; border-top: 1px solid var(--border);
+    padding: 0.7rem 1.5rem 1rem; background: rgba(0,0,0,0.2);
+    position: relative; height: 80px;
+  }
+  .price-spark-label {
+    font-family: var(--mono); font-size: 0.6rem; color: var(--text-mute);
+    letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.3rem;
+  }
+  .price-spark canvas {
+    position: absolute; left: 1.5rem; right: 1.5rem;
+    top: 1.8rem; bottom: 0.5rem;
+    width: calc(100% - 3rem) !important; height: calc(100% - 2.3rem) !important;
+  }
+
+  /* AI narrative card */
+  .ai-card {
+    background: linear-gradient(155deg, var(--bg-elevated), #0e1114);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.5rem; position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .ai-card::before {
+    content: ''; position: absolute; inset: -1px;
+    background: linear-gradient(135deg, transparent, var(--gold-glow), transparent);
+    border-radius: 12px; pointer-events: none; opacity: 0.5;
+  }
+  .ai-card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1rem; position: relative;
+  }
+  .ai-card-title {
+    font-family: var(--mono); font-size: 0.7rem; color: var(--accent);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .ai-card-title::before {
+    content: '✦'; font-size: 1rem;
+    animation: spin-slow 6s linear infinite; display: inline-block;
+  }
+  @keyframes spin-slow { to { transform: rotate(360deg); } }
+  .ai-card-body {
+    font-family: var(--serif); font-weight: 350;
+    font-size: 1rem; line-height: 1.6; color: var(--text-soft);
+    position: relative; flex: 1;
+  }
+  .ai-card-body strong { color: var(--text); font-weight: 500; }
+  .ai-card-body em { color: var(--accent); font-style: italic; }
+  .ai-card-foot {
+    margin-top: 1rem; padding-top: 0.8rem;
+    border-top: 1px dashed var(--border);
+    font-family: var(--mono); font-size: 0.65rem; color: var(--text-mute);
+    letter-spacing: 0.06em;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* Quick actions */
+  .quick-actions { margin-top: 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .qa-btn {
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    color: var(--text-soft); font-family: var(--sans);
+    font-size: 0.82rem; padding: 0.55rem 0.95rem; border-radius: 8px;
+    cursor: pointer; transition: all 0.15s var(--ease);
+    display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 400;
+  }
+  .qa-btn:hover { border-color: var(--accent); color: var(--text); }
+  .qa-btn svg { width: 14px; height: 14px; }
 
   /* ============= METRICS STRIP ============= */
   .metrics-layout {
@@ -893,32 +982,92 @@
   </header>
 
   <!-- HERO -->
-  <div class="hero">
-    <div class="hero-left">
-      <div class="eyebrow">Mercado paralelo · Bolivia</div>
-      <h1>El precio real <span class="em">del dólar</span>, día a día</h1>
-      <p class="lead">
-        Cotización del paralelo USDT/BOB agregada de exchanges P2P,
-        con histórico persistente, brechas frente al oficial y proyección a corto plazo.
-      </p>
+  <section class="hero" id="hero-section">
+
+    <div class="hero-eyebrow">
+      <span class="live-dot"></span>
+      <span>EN VIVO · Mercado P2P Bolivia</span>
     </div>
-    <div class="hero-prices skeleton">
-      <div class="price-cell">
-        <div class="price-label">Compra</div>
-        <div class="price-value" id="hero-compra"><span class="currency">Bs</span>—</div>
-        <div class="price-change" id="hero-compra-chg">—</div>
+
+    <h1 class="wordmark">
+      <span>Data</span>
+      <span class="iso" aria-hidden="true">
+        <img src="isotype.svg" alt="" />
+      </span>
+      <span class="hunter">Hunter</span>
+    </h1>
+    <div class="hero-tag">
+      Observatorio del Dólar Paralelo <span class="pipe">·</span>
+      USDT/BOB <span class="pipe">·</span>
+      <span id="hero-date">—</span>
+    </div>
+
+    <div class="hero-grid">
+      <!-- Price card -->
+      <div class="price-card">
+        <div class="price-card-grid">
+          <div class="price-cell">
+            <div class="price-cell-label">
+              <span>Compra</span>
+              <span class="price-cell-tag">P2P</span>
+            </div>
+            <div class="price-value" id="hero-compra"><span class="currency">Bs</span>—</div>
+            <div class="price-change" id="hero-compra-chg">—</div>
+          </div>
+          <div class="price-cell">
+            <div class="price-cell-label">
+              <span>Venta</span>
+              <span class="price-cell-tag">P2P</span>
+            </div>
+            <div class="price-value" id="hero-venta"><span class="currency">Bs</span>—</div>
+            <div class="price-change" id="hero-venta-chg">—</div>
+          </div>
+          <div class="price-spark">
+            <div class="price-spark-label">Variación 7 días</div>
+            <canvas id="hero-spark-canvas"></canvas>
+          </div>
+        </div>
       </div>
-      <div class="price-cell">
-        <div class="price-label">Venta</div>
-        <div class="price-value" id="hero-venta"><span class="currency">Bs</span>—</div>
-        <div class="price-change" id="hero-venta-chg">—</div>
-      </div>
-      <div class="hero-sparkline">
-        <div class="hero-spark-label">Variación 7 días</div>
-        <canvas id="hero-spark-canvas"></canvas>
+
+      <!-- AI narrative card -->
+      <div class="ai-card">
+        <div class="ai-card-header">
+          <div class="ai-card-title">Hoy en el Mercado</div>
+        </div>
+        <div class="ai-card-body" id="ai-body">
+          El mercado paralelo boliviano mantiene actividad en exchanges P2P.
+          La brecha frente al tipo oficial del BCB refleja la presión sobre las
+          <strong>reservas internacionales</strong> y la escasez de divisas.
+          Los precios se actualizan cada 15 minutos desde fuentes en vivo.
+        </div>
+        <div class="ai-card-foot">
+          <span>Monitor en vivo · USDT/BOB</span>
+          <span id="ai-time">—</span>
+        </div>
       </div>
     </div>
-  </div>
+
+    <!-- Quick actions -->
+    <div class="quick-actions">
+      <button class="qa-btn" id="btn-refresh-qa" onclick="document.getElementById('btn-refresh').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Actualizar datos
+      </button>
+      <button class="qa-btn" onclick="document.getElementById('btn-export-xlsx') && document.getElementById('btn-export-xlsx').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar Excel
+      </button>
+      <a href="nosotros.html" class="qa-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Sobre el proyecto
+      </a>
+      <a href="contacto.html" class="qa-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Contacto
+      </a>
+    </div>
+
+  </section>
 
   <div id="banner-area"></div>
 
@@ -3715,6 +3864,18 @@ main();
 </script>
 
 <script>
+// ============ HERO DATE ============
+(function() {
+  const el = document.getElementById('hero-date');
+  if (!el) return;
+  const now = new Date();
+  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  el.textContent = now.getDate() + ' de ' + months[now.getMonth()] + ' ' + now.getFullYear();
+  // ai-time
+  const at = document.getElementById('ai-time');
+  if (at) at.textContent = 'Actualizado · ' + now.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+})();
+
 // ============ LIVE TICKER ============
 function buildTicker(compra, venta) {
   const items = [
