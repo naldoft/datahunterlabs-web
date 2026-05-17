@@ -4240,6 +4240,14 @@ window._tickerState = {
   dxyPrice: null,
 };
 
+function getReferencialHoy() {
+  // Usa la misma lógica que los gráficos — interpolación entre anclas BCB reales.
+  // Si hoy está más allá del último anchor, devuelve ese último valor confirmado.
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const m = buildReferencialHistory([todayKey]);
+  return m.get(todayKey) ?? REFERENCIAL_VENTA;
+}
+
 function buildTicker() {
   const s = window._tickerState;
 
@@ -4255,7 +4263,7 @@ function buildTicker() {
     { sym: 'USDT/BOB COMPRA',  price: s.compra ? 'Bs ' + s.compra.toFixed(2) : '—', chg: '', dir: 'flat' },
     { sym: 'USDT/BOB VENTA',   price: s.venta  ? 'Bs ' + s.venta.toFixed(2)  : '—', chg: '', dir: 'flat' },
     { sym: 'BCB OFICIAL',      price: 'Bs ' + OFICIAL_FIJO.toFixed(2), chg: 'FIJO', dir: 'flat' },
-    { sym: 'BCB REF',          price: 'Bs ' + REFERENCIAL_VENTA.toFixed(2), chg: '', dir: 'flat' },
+    { sym: 'BCB REF',          price: 'Bs ' + getReferencialHoy().toFixed(2), chg: '', dir: 'flat' },
     { sym: 'BTC',  price: fmtUsd(s.btcPrice),  chg: fmtChg(s.btcChg),  dir: chgDir(s.btcChg) },
     { sym: 'ETH',  price: fmtUsd(s.ethPrice),  chg: fmtChg(s.ethChg),  dir: chgDir(s.ethChg) },
     { sym: 'USDT', price: fmtUsd(s.usdtPrice), chg: 'STABLE', dir: 'flat' },
