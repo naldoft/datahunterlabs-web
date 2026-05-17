@@ -1216,17 +1216,17 @@
       <!-- Price card -->
       <div class="price-card">
         <div class="price-card-grid">
-          <div class="price-cell" title="Precio al que el mercado compra tus USD · el más bajo (BID)">
+          <div class="price-cell" title="Precio que pagás para comprar USD · el más alto (ASK)">
             <div class="price-cell-label">
-              <span>Compra <small style="opacity:.55;font-size:.7em;">BID</small></span>
+              <span>Compra <small style="opacity:.55;font-size:.7em;">ASK</small></span>
               <span class="price-cell-tag">P2P</span>
             </div>
             <div class="price-value" id="hero-compra"><span class="currency">Bs</span>—</div>
             <div class="price-change" id="hero-compra-chg">—</div>
           </div>
-          <div class="price-cell" title="Precio al que el mercado te vende USD · el más alto (ASK)">
+          <div class="price-cell" title="Precio que recibís al vender tus USD · el más bajo (BID)">
             <div class="price-cell-label">
-              <span>Venta <small style="opacity:.55;font-size:.7em;">ASK</small></span>
+              <span>Venta <small style="opacity:.55;font-size:.7em;">BID</small></span>
               <span class="price-cell-tag">P2P</span>
             </div>
             <div class="price-value" id="hero-venta"><span class="currency">Bs</span>—</div>
@@ -1853,8 +1853,8 @@ function generateSeed() {
     const d = new Date(startDate.getTime() + i * 86400000);
     seed.push({
       t: d.toISOString().slice(0, 10),
-      compra: +(mid - spread / 2).toFixed(2),
-      venta: +(mid + spread / 2).toFixed(2),
+      compra: +(mid + spread / 2).toFixed(2),  // ASK · precio de compra (mayor)
+      venta:  +(mid - spread / 2).toFixed(2),  // BID · precio de venta (menor)
       seed: true
     });
   }
@@ -2270,14 +2270,12 @@ async function fetchUsdtSheet() {
     const p2pVenta = parseSpanishNumber(cells[4]);
 
     if (p2pCompra == null && p2pVenta == null) continue;
-    // Normalizar: compra = menor (BID · el mercado compra tu USD),
-    //             venta  = mayor (ASK · el mercado te vende USD).
-    // El bot puede guardar los precios con la convención opuesta (usuario),
-    // por eso usamos min/max para garantizar el orden correcto siempre.
-    const raw1 = p2pCompra ?? p2pVenta;
-    const raw2 = p2pVenta ?? p2pCompra;
-    const compra = Math.min(raw1, raw2);
-    const venta  = Math.max(raw1, raw2);
+    // Perspectiva CriptoYa (= perspectiva usuario):
+    //   compra = ASK = precio que pagás para comprar USD = mayor
+    //   venta  = BID = precio que recibís al vender USD  = menor
+    // El bot de Tesla usa la misma convención → no invertir.
+    const compra = p2pCompra ?? p2pVenta;
+    const venta  = p2pVenta  ?? p2pCompra;
     if (compra < 5 || compra > 30 || venta < 5 || venta > 30) continue;
 
     allRecords.push({
@@ -2448,8 +2446,8 @@ async function fetchLiveQuote() {
   return {
     t: new Date().toISOString().slice(0, 10),
     ts: time ? time * 1000 : Date.now(),
-    compra: +bid.toFixed(2),
-    venta: +ask.toFixed(2),
+    compra: +ask.toFixed(2),   // ASK · precio que pagás para comprar USD (perspectiva CriptoYa)
+    venta:  +bid.toFixed(2),   // BID · precio que recibís al vender USD
     method: usedMethod
   };
 }
@@ -2735,9 +2733,9 @@ function renderHistoric(data, range, liveCaptures = [], usdtSheet = null) {
   const hasRefData = refData.some(v => v != null);
 
   const datasets = [
-    { label: 'Precio compra (BID)', data: compraData, borderColor: COLORS.compra,
+    { label: 'Precio compra (ASK)', data: compraData, borderColor: COLORS.compra,
       backgroundColor: COLORS.compra + '15', fill: false },
-    { label: 'Precio venta (ASK)', data: ventaData, borderColor: COLORS.venta,
+    { label: 'Precio venta (BID)', data: ventaData, borderColor: COLORS.venta,
       backgroundColor: COLORS.venta + '15', fill: false },
     { label: 'Oficial BCB (fijo)', data: oficialData, borderColor: COLORS.oficial,
       borderDash: [4, 4], pointRadius: 0, fill: false }
@@ -3481,8 +3479,8 @@ function aggregateData(history, granularity) {
       const chg = prev ? ((mid - prev) / prev * 100) : 0;
       return {
         Fecha: d.t,
-        'Precio compra Bs (BID)': +d.compra.toFixed(2),
-        'Precio venta Bs (ASK)':  +d.venta.toFixed(2),
+        'Precio compra Bs (ASK)': +d.compra.toFixed(2),
+        'Precio venta Bs (BID)':  +d.venta.toFixed(2),
         'Promedio (mid)': +mid.toFixed(2),
         'Variación diaria %': +chg.toFixed(3),
         'Brecha vs Oficial %': +((mid / OFICIAL_FIJO - 1) * 100).toFixed(2),
@@ -4209,8 +4207,8 @@ main();
 // ============ LIVE TICKER ============
 function buildTicker(compra, venta) {
   const items = [
-    { sym: 'USDT/BOB BID (compra)', price: compra ? 'Bs ' + compra : '—', chg: '', dir: 'flat' },
-    { sym: 'USDT/BOB ASK (venta)',  price: venta  ? 'Bs ' + venta  : '—', chg: '', dir: 'flat' },
+    { sym: 'USDT/BOB COMPRA (ASK)', price: compra ? 'Bs ' + compra : '—', chg: '', dir: 'flat' },
+    { sym: 'USDT/BOB VENTA (BID)',  price: venta  ? 'Bs ' + venta  : '—', chg: '', dir: 'flat' },
     { sym: 'BCB OFICIAL',     price: 'Bs 6.96',  chg: '', dir: 'flat' },
     { sym: 'BCB REFERENCIAL', price: 'Bs 10.15', chg: '', dir: 'flat' },
     { sym: 'BTC',  price: '—', chg: '', dir: 'flat' },
