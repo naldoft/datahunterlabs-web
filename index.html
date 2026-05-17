@@ -885,23 +885,38 @@
   .crypto-card.peg-warning .crypto-symbol { color: var(--negative); }
 
   /* ============= LEGAL DISCLAIMER ============= */
-  .legal-disclaimer {
+  /* ============= LEGAL DISCLAIMER (colapsable) ============= */
+  .legal {
     background: var(--bg-elevated);
     border: 1px solid var(--border-soft);
-    border-left: 3px solid var(--accent);
-    border-radius: 2px; padding: 1.4rem 1.6rem;
-    margin-bottom: 2rem;
+    border-radius: 8px;
+    margin: 2rem 0 1.5rem;
+    overflow: hidden;
   }
-  .legal-title {
-    font-family: var(--mono); font-size: 0.78rem;
-    color: var(--accent); letter-spacing: 0.14em;
-    text-transform: uppercase; font-weight: 500;
-    margin-bottom: 1rem;
+  .legal-head {
+    padding: 0.85rem 1.1rem;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; user-select: none;
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--text-mute); letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.15s;
   }
-  .legal-body p {
-    font-size: 0.82rem; line-height: 1.7;
-    color: var(--text-soft); margin-bottom: 0.9rem;
+  .legal-head:hover { color: var(--text-soft); }
+  .legal-head-left { display: flex; align-items: center; gap: 0.5rem; }
+  .legal-head-left::before { content: '⚠'; color: var(--accent); }
+  .legal-arrow {
+    font-size: 0.6rem; transition: transform 0.3s var(--ease);
+    color: var(--text-mute);
   }
+  .legal.open .legal-arrow { transform: rotate(180deg); }
+  .legal-body {
+    max-height: 0; overflow: hidden; padding: 0 1.1rem;
+    transition: max-height 0.4s var(--ease), padding 0.4s var(--ease);
+    font-size: 0.82rem; line-height: 1.7; color: var(--text-soft);
+  }
+  .legal.open .legal-body { max-height: 1500px; padding: 0 1.1rem 1.1rem; }
+  .legal-body p { margin-bottom: 0.9rem; }
   .legal-body p:last-child { margin-bottom: 0; }
   .legal-body strong { color: var(--text); font-weight: 500; }
   .legal-body a {
@@ -1573,9 +1588,12 @@
   <!-- FOOTER -->
   <footer class="foot">
 
-    <!-- LEGAL DISCLAIMER -->
-    <div class="legal-disclaimer">
-      <h5 class="legal-title">⚠ Aviso Legal · Términos de Uso</h5>
+    <!-- LEGAL DISCLAIMER (colapsable) -->
+    <div class="legal" id="legal-block">
+      <div class="legal-head" id="legal-toggle">
+        <span class="legal-head-left">Aviso Legal · Términos de Uso</span>
+        <span class="legal-arrow">▼</span>
+      </div>
       <div class="legal-body">
         <p>
           <strong>Naturaleza referencial de la información.</strong>
@@ -4297,6 +4315,13 @@ document.querySelectorAll('.block-header:not(.no-collapse)').forEach(header => {
     const block = header.closest('.block');
     if (block) block.classList.toggle('collapsed');
   });
+});
+</script>
+
+<script>
+// ============ LEGAL COLAPSABLE ============
+document.getElementById('legal-toggle').addEventListener('click', () => {
+  document.getElementById('legal-block').classList.toggle('open');
 });
 </script>
 
