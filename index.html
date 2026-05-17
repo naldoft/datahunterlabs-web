@@ -800,24 +800,38 @@
   .news-col-flag { font-size: 1rem; }
   .news-list { display: grid; gap: 0.6rem; }
   .news-card {
-    padding: 1rem 1.1rem;
+    padding: 0.95rem 1.1rem;
     border-left: 2px solid var(--border);
     background: var(--bg-soft);
-    transition: border-color 0.2s;
+    border-radius: 0 6px 6px 0;
+    transition: all 0.18s var(--ease);
+    cursor: pointer;
   }
-  .news-card:hover { border-left-color: var(--accent); }
+  .news-card:hover {
+    border-left-color: var(--accent);
+    background: var(--bg-elevated);
+    transform: translateX(2px);
+  }
   .news-meta {
-    font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
-    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.4rem;
+    font-family: var(--mono); font-size: 0.62rem; color: var(--text-mute);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.35rem;
+    display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
   }
-  .news-title { font-size: 0.95rem; line-height: 1.45; color: var(--text); }
-  .news-source { font-size: 0.72rem; color: var(--text-mute); margin-top: 0.4rem; }
+  .impact {
+    padding: 1px 6px; border-radius: 3px; font-size: 0.6rem;
+    background: rgba(212,166,71,0.15); color: var(--accent);
+    border: 1px solid rgba(212,166,71,0.25); letter-spacing: 0.05em;
+  }
+  .impact.high { color: var(--negative); background: rgba(201,112,112,0.1); border-color: rgba(201,112,112,0.25); }
+  .impact.low { color: var(--neutral); background: rgba(122,138,154,0.1); border-color: rgba(122,138,154,0.2); }
+  .news-title { font-size: 0.93rem; line-height: 1.45; color: var(--text); font-weight: 400; }
+  .news-source { font-size: 0.7rem; color: var(--text-mute); margin-top: 0.4rem; font-family: var(--mono); }
 
   /* ============= CRYPTO MARKET ============= */
   .crypto-grid {
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
     background: var(--border); border: 1px solid var(--border);
-    border-radius: 2px; overflow: hidden;
+    border-radius: 12px; overflow: hidden;
   }
   @media (min-width: 900px) { .crypto-grid { grid-template-columns: repeat(4, 1fr); } }
   .crypto-card {
@@ -1219,12 +1233,10 @@
   <!-- CRYPTO MARKET -->
   <section class="block">
     <div class="block-header">
-      <div>
-        <div class="block-title"><span class="num">02</span>Mercado Cripto Global</div>
-        <div class="data-source-line" id="crypto-update-time" style="font-family:var(--mono); font-size:0.65rem; letter-spacing:0.08em; margin-top:0.4rem; color:var(--text-mute);">Cargando…</div>
-      </div>
+      <div class="block-title"><span class="block-num">02</span>Mercado Cripto Global</div>
       <div class="block-actions">
-        <span class="pill" style="cursor:default; pointer-events:none;">CoinGecko</span>
+        <span id="crypto-update-time" style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">Cargando…</span>
+        <span class="block-collapse-icon">▼</span>
       </div>
     </div>
     <div class="block-body">
@@ -1352,9 +1364,10 @@
   <!-- ECONOMIC INDICATORS -->
   <section class="block">
     <div class="block-header">
-      <div class="block-title"><span class="num">04</span>Contexto Económico</div>
+      <div class="block-title"><span class="block-num">04</span>Contexto Económico</div>
       <div class="block-actions">
-        <span class="pill" style="cursor:default; pointer-events:none;">Datos oficiales</span>
+        <span style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">Datos oficiales</span>
+        <span class="block-collapse-icon">▼</span>
       </div>
     </div>
     <div class="block-body">
@@ -1376,9 +1389,10 @@
   <!-- NEWS -->
   <section class="block">
     <div class="block-header">
-      <div class="block-title"><span class="num">05</span>Pulso Informativo</div>
+      <div class="block-title"><span class="block-num">05</span>Pulso Informativo</div>
       <div class="block-actions">
-        <span class="pill" id="news-update-time" style="cursor:default; pointer-events:none;">Cargando…</span>
+        <span id="news-update-time" style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">Cargando…</span>
+        <span class="block-collapse-icon">▼</span>
       </div>
     </div>
     <div class="block-body">
@@ -2917,11 +2931,15 @@ function renderIndicators() {
 }
 
 function renderNewsList(elementId, items) {
-  const tagColor = (t) => {
-    if (t === 'HOY') return 'background:rgba(127,174,143,0.15); color:#7fae8f; border:1px solid rgba(127,174,143,0.3);';
-    if (t === 'AYER') return 'background:rgba(212,166,71,0.12); color:#d4a647; border:1px solid rgba(212,166,71,0.3);';
-    if (t === 'SEMANA') return 'background:rgba(122,138,154,0.12); color:#7a8a9a; border:1px solid rgba(122,138,154,0.3);';
-    return 'background:transparent; color:var(--text-mute); border:1px solid var(--border);';
+  const impactClass = (t) => {
+    if (t === 'HOY') return 'impact high';
+    if (t === 'AYER') return 'impact';
+    return 'impact low';
+  };
+  const impactLabel = (t) => {
+    if (t === 'HOY') return 'Alto';
+    if (t === 'AYER') return 'Medio';
+    return 'Bajo';
   };
   const escapeHtml = (s) => String(s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -2930,10 +2948,11 @@ function renderNewsList(elementId, items) {
     <a href="${escapeHtml(n.url)}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">
       <div class="news-card">
         <div class="news-meta">
-          <span style="display:inline-block; padding:0.1rem 0.4rem; border-radius:2px; font-size:0.6rem; ${tagColor(n.tag)}">${escapeHtml(n.tag)}</span>
-          <span style="margin-left:0.5rem">${escapeHtml(n.date)} · ${escapeHtml(n.source)}</span>
+          <span class="${impactClass(n.tag)}">${impactLabel(n.tag)}</span>
+          <span>${escapeHtml(n.date)} · ${escapeHtml(n.source)}</span>
         </div>
         <div class="news-title">${escapeHtml(n.title)}</div>
+        <div class="news-source">${escapeHtml(n.source)}</div>
       </div>
     </a>
   `;
