@@ -907,21 +907,165 @@
 
   /* ============= FOOTER ============= */
   footer.foot {
-    margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-soft);
-    color: var(--text-mute); font-size: 0.78rem; line-height: 1.6;
+    margin-top: 4rem; padding: 2.5rem 0 1rem;
+    border-top: 1px solid var(--border-soft);
+    color: var(--text-mute); font-size: 0.82rem; line-height: 1.6;
   }
-  footer.foot a { color: var(--text-soft); text-decoration: underline; text-decoration-color: var(--border); }
-  footer.foot a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+  footer.foot a { color: var(--text-soft); text-decoration: none; transition: color 0.15s; }
+  footer.foot a:hover { color: var(--accent); }
   .foot-grid {
-    display: grid; grid-template-columns: 1fr; gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem;
+    margin-bottom: 2rem;
   }
-  @media (min-width: 768px) { .foot-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 800px) { .foot-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .foot-grid { grid-template-columns: 1fr; } }
   .foot-grid h4 {
-    font-family: var(--mono); font-size: 0.68rem; color: var(--accent);
-    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem;
+    font-family: var(--mono); font-size: 0.66rem; color: var(--accent);
+    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.9rem;
     font-weight: 500;
   }
+  .foot-grid ul { list-style: none; display: grid; gap: 0.5rem; }
+  .foot-brand-iso {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: #000; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; margin-bottom: 0.8rem; padding: 6px;
+  }
+  .foot-newsletter {
+    margin-top: 0.7rem; display: flex; gap: 0.4rem;
+  }
+  .foot-newsletter input {
+    flex: 1; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 0.5rem 0.7rem;
+    border-radius: 6px; font-family: var(--sans); font-size: 0.82rem; outline: none;
+  }
+  .foot-newsletter input:focus { border-color: var(--accent); }
+  .foot-newsletter button {
+    background: var(--accent); color: var(--bg);
+    border: none; padding: 0 1rem; border-radius: 6px;
+    cursor: pointer; font-family: var(--sans); font-weight: 500;
+    font-size: 0.82rem; transition: background 0.15s;
+  }
+  .foot-newsletter button:hover { background: var(--accent-bright); }
+  .foot-bottom {
+    padding-top: 1.5rem; border-top: 1px solid var(--border-soft);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em;
+  }
+
+  /* ============= CALCULATOR FAB + PANEL ============= */
+  .calc-fab {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    width: 58px; height: 58px; border-radius: 50%;
+    background: var(--accent); color: var(--bg);
+    border: none; cursor: pointer; font-size: 1.5rem;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(212, 166, 71, 0.35), 0 0 0 0 rgba(212, 166, 71, 0.5);
+    z-index: 90; transition: all 0.25s var(--ease);
+  }
+  .calc-fab:hover { transform: scale(1.06); box-shadow: 0 12px 32px rgba(212, 166, 71, 0.5); }
+  .calc-fab.open { transform: scale(0.9); background: var(--bg-soft); color: var(--accent); border: 1px solid var(--border); }
+  .calc-fab svg { width: 22px; height: 22px; }
+  .calc-fab .calc-pulse {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 2px solid var(--accent);
+    animation: calc-pulse 2.4s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes calc-pulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+  .calc-fab.open .calc-pulse { display: none; }
+  .calc-panel {
+    position: fixed; bottom: 6.5rem; right: 1.5rem;
+    width: 360px; max-width: calc(100vw - 3rem);
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(212, 166, 71, 0.05);
+    z-index: 89;
+    transform: translateY(20px) scale(0.96);
+    opacity: 0; pointer-events: none;
+    transition: all 0.25s var(--ease);
+    backdrop-filter: blur(20px);
+  }
+  .calc-panel.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: all; }
+  .calc-header {
+    padding: 1rem 1.2rem; border-bottom: 1px solid var(--border-soft);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .calc-title { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.1rem; }
+  .calc-rate { font-family: var(--mono); font-size: 0.65rem; color: var(--text-mute); letter-spacing: 0.08em; margin-top: 0.15rem; }
+  .calc-rate strong { color: var(--accent); }
+  .calc-close {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-mute); width: 26px; height: 26px;
+    border-radius: 50%; cursor: pointer; font-family: var(--mono);
+    font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .calc-close:hover { color: var(--text); border-color: var(--accent); }
+  .calc-body { padding: 1rem 1.2rem 1.2rem; }
+  .calc-row {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.85rem 1rem;
+    margin-bottom: 0.6rem; transition: border-color 0.15s;
+  }
+  .calc-row:focus-within { border-color: var(--accent); }
+  .calc-row-label {
+    font-family: var(--mono); font-size: 0.62rem; color: var(--text-mute);
+    letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.3rem;
+    display: flex; justify-content: space-between;
+  }
+  .calc-row-input { display: flex; align-items: center; gap: 0.5rem; }
+  .calc-row input {
+    background: transparent; border: none; outline: none;
+    font-family: var(--serif); font-weight: 350;
+    font-size: 1.6rem; color: var(--text); width: 100%; min-width: 0;
+    font-variation-settings: 'opsz' 90; letter-spacing: -0.01em;
+  }
+  .calc-row .calc-currency { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); font-weight: 500; flex-shrink: 0; }
+  .calc-arrow {
+    text-align: center; color: var(--text-mute); font-size: 1.1rem;
+    margin: -0.3rem 0 -0.1rem; cursor: pointer; user-select: none;
+    transition: color 0.15s, transform 0.2s;
+  }
+  .calc-arrow:hover { color: var(--accent); transform: scale(1.15); }
+  .calc-mode { display: flex; gap: 0.3rem; margin-bottom: 0.8rem; }
+  .calc-mode button {
+    flex: 1; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text-soft); font-family: var(--mono); font-size: 0.7rem;
+    padding: 0.4rem; border-radius: 6px; cursor: pointer;
+    transition: all 0.15s; letter-spacing: 0.05em;
+  }
+  .calc-mode button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .calc-presets { display: flex; gap: 0.3rem; margin-top: 0.7rem; flex-wrap: wrap; }
+  .calc-preset {
+    background: var(--bg); border: 1px solid var(--border-soft);
+    color: var(--text-soft); font-family: var(--mono); font-size: 0.7rem;
+    padding: 0.3rem 0.55rem; border-radius: 4px; cursor: pointer; transition: all 0.12s;
+  }
+  .calc-preset:hover { border-color: var(--accent); color: var(--accent); }
+  .calc-foot {
+    margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px dashed var(--border);
+    font-family: var(--mono); font-size: 0.65rem; color: var(--text-mute);
+    letter-spacing: 0.05em; line-height: 1.5;
+  }
+
+  /* ============= TOAST ============= */
+  .toast {
+    position: fixed; bottom: 5.5rem; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-elevated); border: 1px solid var(--accent);
+    padding: 0.7rem 1.2rem; border-radius: 8px;
+    font-size: 0.85rem; color: var(--text);
+    z-index: 300; opacity: 0; pointer-events: none;
+    transition: all 0.25s var(--ease);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* loading */
   .skeleton { color: var(--text-mute); }
@@ -1467,29 +1611,116 @@
 
     <div class="foot-grid">
       <div>
-        <h4>Fuentes</h4>
-        Cotización paralela: <a href="https://criptoya.com/bo" target="_blank" rel="noopener">CriptoYa API</a> (USDT/BOB agregado P2P).
-        Inflación: <a href="https://www.ine.gob.bo/" target="_blank" rel="noopener">INE Bolivia</a>.
-        Tipo oficial y referencial: <a href="https://www.bcb.gob.bo/" target="_blank" rel="noopener">Banco Central de Bolivia</a>.
+        <div class="foot-brand-iso">
+          <img src="isotype.svg" alt="DataHunter" style="width:100%; height:100%; display:block;" />
+        </div>
+        <div style="color:var(--text); font-family:var(--serif); font-style:italic; font-size:1.1rem; margin-bottom:0.4rem;">Data<span style="color:var(--accent);">Hunter</span> Labs</div>
+        <p style="font-size:0.78rem; line-height:1.5;">Observatorio independiente del dólar paralelo en Bolivia. Sin tracking, sin terceros.</p>
+        <form class="foot-newsletter" onsubmit="event.preventDefault(); if(window.showToast) showToast('¡Te suscribiste! Te enviaremos el resumen diario.');">
+          <input type="email" placeholder="tu@email.com" required>
+          <button type="submit">Suscribir</button>
+        </form>
       </div>
       <div>
-        <h4>Metodología</h4>
-        Auto-actualización al abrir; histórico persistente entre sesiones.
-        Proyección con suavizamiento exponencial doble (α=0.6, β=0.3) y regresión
-        lineal sobre 30 días.
+        <h4>Producto</h4>
+        <ul>
+          <li><a href="#" onclick="if(window.openCalc) openCalc(); return false;">Calculadora</a></li>
+          <li><a href="#" onclick="if(window.showToast) showToast('🔔 Alertas: próximamente con Telegram'); return false;">Alertas</a></li>
+          <li><a href="#" onclick="if(window.showToast) showToast('🔌 API pública en construcción'); return false;">API pública</a></li>
+          <li><a href="#" onclick="if(window.showToast) showToast('📦 Embed widget próximamente'); return false;">Embed widget</a></li>
+        </ul>
       </div>
       <div>
-        <h4>Aviso</h4>
-        Información de carácter referencial. Las cotizaciones P2P varían entre exchanges
-        y por momento del día. No constituye asesoría financiera.
+        <h4>Recursos</h4>
+        <ul>
+          <li><a href="#" onclick="if(window.showToast) showToast('📖 Glosario en construcción'); return false;">Glosario</a></li>
+          <li><a href="#" onclick="document.querySelector('#bloque-metodologia, .block')?.scrollIntoView({behavior:'smooth'}); return false;">Metodología</a></li>
+          <li><a href="nosotros.html">Blog</a></li>
+          <li><a href="#" id="foot-dl-csv" onclick="if(window.showToast) showToast('⬇ Descargá el Excel desde la sección Histórico'); return false;">Histórico CSV</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Datos</h4>
+        <ul>
+          <li><a href="https://criptoya.com/bo" target="_blank" rel="noopener">CriptoYa</a></li>
+          <li><a href="https://www.bcb.gob.bo/" target="_blank" rel="noopener">BCB</a></li>
+          <li><a href="https://www.ine.gob.bo/" target="_blank" rel="noopener">INE</a></li>
+          <li><a href="https://www.asfi.gob.bo/" target="_blank" rel="noopener">ASFI</a></li>
+        </ul>
       </div>
     </div>
-    <div style="opacity:0.5; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em;">
-      v1.0 · datos cacheados localmente · sin tracking · sin terceros
+    <div class="foot-bottom">
+      <span>v2.0 · cache local · sin tracking · sin terceros</span>
+      <span>© 2026 DataHunter Labs · La Paz · Bolivia</span>
     </div>
   </footer>
 
 </div>
+
+<!-- =============== CALCULATOR FAB =============== -->
+<button class="calc-fab" id="calc-fab" aria-label="Abrir calculadora">
+  <span class="calc-pulse"></span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" id="calc-icon">
+    <rect x="4" y="2" width="16" height="20" rx="2"/>
+    <line x1="8" y1="6" x2="16" y2="6"/>
+    <circle cx="8.5" cy="11" r="0.5" fill="currentColor"/>
+    <circle cx="12" cy="11" r="0.5" fill="currentColor"/>
+    <circle cx="15.5" cy="11" r="0.5" fill="currentColor"/>
+    <circle cx="8.5" cy="14.5" r="0.5" fill="currentColor"/>
+    <circle cx="12" cy="14.5" r="0.5" fill="currentColor"/>
+    <circle cx="15.5" cy="14.5" r="0.5" fill="currentColor"/>
+    <circle cx="8.5" cy="18" r="0.5" fill="currentColor"/>
+    <circle cx="12" cy="18" r="0.5" fill="currentColor"/>
+    <circle cx="15.5" cy="18" r="0.5" fill="currentColor"/>
+  </svg>
+</button>
+
+<!-- =============== CALCULATOR PANEL =============== -->
+<div class="calc-panel" id="calc-panel">
+  <div class="calc-header">
+    <div>
+      <div class="calc-title">Calculadora</div>
+      <div class="calc-rate">Cotización: <strong id="calc-rate-display">Bs —</strong> · <span id="calc-rate-mode">paralelo mid</span></div>
+    </div>
+    <button class="calc-close" id="calc-close">✕</button>
+  </div>
+  <div class="calc-body">
+    <div class="calc-mode">
+      <button data-mode="parallel" class="active">Paralelo</button>
+      <button data-mode="ref">Referencial</button>
+      <button data-mode="oficial">Oficial BCB</button>
+    </div>
+    <div class="calc-row">
+      <div class="calc-row-label"><span>Tengo</span><span>USD</span></div>
+      <div class="calc-row-input">
+        <input type="number" id="calc-usd" value="100" min="0" step="any" />
+        <span class="calc-currency">USD</span>
+      </div>
+    </div>
+    <div class="calc-arrow" id="calc-swap" title="Intercambiar">⇅</div>
+    <div class="calc-row">
+      <div class="calc-row-label"><span>Equivale a</span><span>BOB</span></div>
+      <div class="calc-row-input">
+        <input type="number" id="calc-bob" min="0" step="any" />
+        <span class="calc-currency">Bs</span>
+      </div>
+    </div>
+    <div class="calc-presets">
+      <button class="calc-preset" data-usd="50">$50</button>
+      <button class="calc-preset" data-usd="100">$100</button>
+      <button class="calc-preset" data-usd="500">$500</button>
+      <button class="calc-preset" data-usd="1000">$1,000</button>
+      <button class="calc-preset" data-bob="10000">Bs 10K</button>
+    </div>
+    <div class="calc-foot" id="calc-foot-note">
+      <div>📌 Seleccioná un modo de cotización arriba.</div>
+      <div style="margin-top:0.3rem;">No incluye comisiones de exchange ni spreads.</div>
+    </div>
+  </div>
+</div>
+
+<!-- =============== TOAST =============== -->
+<div class="toast" id="toast">—</div>
 
 <script>
 /* ============================================================
@@ -3010,6 +3241,10 @@ function updateHero(data, latest) {
   if (heroBox) heroBox.classList.remove('skeleton');
   document.getElementById('hero-compra').innerHTML = '<span class="currency">Bs</span>' + latest.compra.toFixed(2);
   document.getElementById('hero-venta').innerHTML = '<span class="currency">Bs</span>' + latest.venta.toFixed(2);
+  // Store latest mid for calculator
+  const mid = (latest.compra + latest.venta) / 2;
+  window._latestMid = +mid.toFixed(2);
+  if (window._calcInit) window._calcInit();
   // Actualizar ticker con precios reales
   if (window.updateTickerPrices) window.updateTickerPrices(latest.compra, latest.venta);
 
@@ -4068,6 +4303,162 @@ document.getElementById('nav-blog').addEventListener('click', function(e) {
     this.classList.toggle('open');
   }
 });
+</script>
+
+<script>
+/* ============================================================
+   TOAST
+============================================================ */
+let _toastTimer = null;
+function showToast(text) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+window.showToast = showToast;
+
+/* ============================================================
+   CALCULATOR FAB
+============================================================ */
+(function() {
+  const calcFab   = document.getElementById('calc-fab');
+  const calcPanel = document.getElementById('calc-panel');
+  const calcUsdEl = document.getElementById('calc-usd');
+  const calcBobEl = document.getElementById('calc-bob');
+  const calcRateDisplay = document.getElementById('calc-rate-display');
+  const calcRateModeEl  = document.getElementById('calc-rate-mode');
+  const calcFootNote    = document.getElementById('calc-foot-note');
+
+  // Rates — use live data when available, else sensible defaults
+  const RATES = {
+    parallel: () => window._latestMid || 12,
+    ref:      () => REFERENCIAL_VENTA || 9.74,
+    oficial:  () => OFICIAL_FIJO || 6.96
+  };
+  const MODE_LABELS = {
+    parallel: 'paralelo mid',
+    ref: 'referencial BCB',
+    oficial: 'oficial BCB'
+  };
+
+  let currentMode = 'parallel';
+  let currentRate = RATES.parallel();
+  let calcLast = 'usd';
+
+  function getRate() { return RATES[currentMode](); }
+
+  function updateRateDisplay() {
+    currentRate = getRate();
+    calcRateDisplay.textContent = 'Bs ' + currentRate.toFixed(2);
+    calcRateModeEl.textContent = MODE_LABELS[currentMode];
+    if (calcFootNote) {
+      calcFootNote.querySelector('div').textContent =
+        '📌 $1 USD = Bs ' + currentRate.toFixed(2) + ' al ' + MODE_LABELS[currentMode] + '.';
+    }
+  }
+
+  function calcFromUsd() {
+    const usd = parseFloat(calcUsdEl.value || 0);
+    calcBobEl.value = (usd * getRate()).toFixed(2);
+  }
+  function calcFromBob() {
+    const bob = parseFloat(calcBobEl.value || 0);
+    calcUsdEl.value = (bob / getRate()).toFixed(2);
+  }
+
+  function openCalc() {
+    updateRateDisplay();
+    calcFromUsd();
+    calcPanel.classList.add('open');
+    calcFab.classList.add('open');
+    const icon = document.getElementById('calc-icon');
+    if (icon) icon.innerHTML =
+      '<line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.2"/>' +
+      '<line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.2"/>';
+  }
+  function closeCalc() {
+    calcPanel.classList.remove('open');
+    calcFab.classList.remove('open');
+    const icon = document.getElementById('calc-icon');
+    if (icon) icon.innerHTML =
+      '<rect x="4" y="2" width="16" height="20" rx="2"/>' +
+      '<line x1="8" y1="6" x2="16" y2="6"/>' +
+      '<circle cx="8.5" cy="11" r="0.5" fill="currentColor"/>' +
+      '<circle cx="12" cy="11" r="0.5" fill="currentColor"/>' +
+      '<circle cx="15.5" cy="11" r="0.5" fill="currentColor"/>' +
+      '<circle cx="8.5" cy="14.5" r="0.5" fill="currentColor"/>' +
+      '<circle cx="12" cy="14.5" r="0.5" fill="currentColor"/>' +
+      '<circle cx="15.5" cy="14.5" r="0.5" fill="currentColor"/>' +
+      '<circle cx="8.5" cy="18" r="0.5" fill="currentColor"/>' +
+      '<circle cx="12" cy="18" r="0.5" fill="currentColor"/>' +
+      '<circle cx="15.5" cy="18" r="0.5" fill="currentColor"/>';
+  }
+  window.openCalc = openCalc;
+
+  // Expose re-init hook so updateHero can refresh the rate display if panel is open
+  window._calcInit = function() {
+    if (calcPanel.classList.contains('open')) updateRateDisplay();
+  };
+
+  calcFab.addEventListener('click', () => {
+    calcPanel.classList.contains('open') ? closeCalc() : openCalc();
+  });
+  document.getElementById('calc-close').addEventListener('click', closeCalc);
+
+  // Mode buttons
+  document.querySelectorAll('.calc-mode button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.calc-mode button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentMode = btn.dataset.mode;
+      updateRateDisplay();
+      if (calcLast === 'usd') calcFromUsd(); else calcFromBob();
+    });
+  });
+
+  // Inputs
+  calcUsdEl.addEventListener('input', () => { calcLast = 'usd'; calcFromUsd(); });
+  calcBobEl.addEventListener('input', () => { calcLast = 'bob'; calcFromBob(); });
+
+  // Presets
+  document.querySelectorAll('.calc-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.usd) {
+        calcUsdEl.value = btn.dataset.usd;
+        calcLast = 'usd'; calcFromUsd();
+      } else if (btn.dataset.bob) {
+        calcBobEl.value = btn.dataset.bob;
+        calcLast = 'bob'; calcFromBob();
+      }
+    });
+  });
+
+  // Swap
+  document.getElementById('calc-swap').addEventListener('click', () => {
+    const u = calcUsdEl.value, b = calcBobEl.value;
+    calcUsdEl.value = b; calcBobEl.value = u;
+    calcLast = calcLast === 'usd' ? 'bob' : 'usd';
+  });
+
+  // Wire quick-action calc button if present
+  const qaCalcBtn = document.getElementById('qa-calc');
+  if (qaCalcBtn) qaCalcBtn.addEventListener('click', openCalc);
+
+  // Wire quick-action alert/share/api toasts if present
+  const qaAlert = document.getElementById('qa-alert');
+  const qaShare = document.getElementById('qa-share');
+  const qaApi   = document.getElementById('qa-api');
+  if (qaAlert) qaAlert.addEventListener('click', () => showToast('🔔 Alertas: próximamente con bot de Telegram (gratis)'));
+  if (qaShare) qaShare.addEventListener('click', () => showToast('📷 Snapshot copiado al portapapeles · funcionalidad próxima'));
+  if (qaApi)   qaApi.addEventListener('click',   () => showToast('🔌 Docs API en construcción · GET /v1/quote/usdt-bob'));
+
+  // Initial display update
+  updateRateDisplay();
+  calcFromUsd();
+})();
 </script>
 </body>
 </html>
