@@ -3272,7 +3272,20 @@ function updateHero(data, latest) {
   const mid = (latest.compra + latest.venta) / 2;
   window._latestMid = +mid.toFixed(2);
   if (window._calcInit) window._calcInit();
-  // Actualizar ticker con precios reales
+  // Actualizar ticker — BOB paralelo + BCB real del bot (si disponible)
+  if (window._tickerState) {
+    window._tickerState.compra = latest.compra;
+    window._tickerState.venta  = latest.venta;
+    // bcbVenta viene del bot de Tesla (columna bcb_venta) — dato real del BCB.
+    // Buscamos el registro más reciente que tenga bcbVenta (no siempre es el último).
+    if (latest.bcbVenta != null) {
+      window._tickerState.bcbRef = latest.bcbVenta;
+    } else {
+      const withBcb = [...data].reverse().find(d => d.bcbVenta != null);
+      if (withBcb) window._tickerState.bcbRef = withBcb.bcbVenta;
+    }
+  }
+  if (window.buildTicker) window.buildTicker();
   if (window.updateTickerPrices) window.updateTickerPrices(latest.compra, latest.venta);
 
   // weekly variation
@@ -4234,6 +4247,7 @@ main();
 // ============ TICKER STATE ============
 window._tickerState = {
   compra: null, venta: null,
+  bcbRef: null,              // BCB referencial real del bot (bcb_venta); null = usar anclas
   btcPrice: null, btcChg: null,
   ethPrice: null, ethChg: null,
   usdtPrice: 1.0,
@@ -4263,7 +4277,7 @@ function buildTicker() {
     { sym: 'USDT/BOB COMPRA',  price: s.compra ? 'Bs ' + s.compra.toFixed(2) : '—', chg: '', dir: 'flat' },
     { sym: 'USDT/BOB VENTA',   price: s.venta  ? 'Bs ' + s.venta.toFixed(2)  : '—', chg: '', dir: 'flat' },
     { sym: 'BCB OFICIAL',      price: 'Bs ' + OFICIAL_FIJO.toFixed(2), chg: 'FIJO', dir: 'flat' },
-    { sym: 'BCB REF',          price: 'Bs ' + getReferencialHoy().toFixed(2), chg: '', dir: 'flat' },
+    { sym: 'BCB REF',          price: 'Bs ' + (s.bcbRef ?? getReferencialHoy()).toFixed(2), chg: '', dir: 'flat' },
     { sym: 'BTC',  price: fmtUsd(s.btcPrice),  chg: fmtChg(s.btcChg),  dir: chgDir(s.btcChg) },
     { sym: 'ETH',  price: fmtUsd(s.ethPrice),  chg: fmtChg(s.ethChg),  dir: chgDir(s.ethChg) },
     { sym: 'USDT', price: fmtUsd(s.usdtPrice), chg: 'STABLE', dir: 'flat' },
