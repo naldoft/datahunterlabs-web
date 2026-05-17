@@ -2913,8 +2913,8 @@ function updateMetrics(data, latest) {
 }
 
 function updateHero(data, latest) {
-  const heroBox = document.querySelector('.hero-prices');
-  heroBox.classList.remove('skeleton');
+  const heroBox = document.querySelector('.hero-prices, .price-card');
+  if (heroBox) heroBox.classList.remove('skeleton');
   document.getElementById('hero-compra').innerHTML = '<span class="currency">Bs</span>' + latest.compra.toFixed(2);
   document.getElementById('hero-venta').innerHTML = '<span class="currency">Bs</span>' + latest.venta.toFixed(2);
   // Actualizar ticker con precios reales
