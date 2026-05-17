@@ -436,98 +436,99 @@
   .qa-btn:hover { border-color: var(--accent); color: var(--text); }
   .qa-btn svg { width: 14px; height: 14px; }
 
-  /* ============= METRICS STRIP ============= */
-  .metrics-layout {
+  /* ============= METRICS GRID ============= */
+  .metrics-section { margin: 0 0 3rem; }
+  .metrics-grid {
     display: grid; grid-template-columns: 1fr; gap: 1px;
     background: var(--border); border: 1px solid var(--border);
-    margin-bottom: 3rem; border-radius: 2px; overflow: hidden;
+    border-radius: 12px; overflow: hidden;
   }
-  @media (min-width: 900px) {
-    .metrics-layout { grid-template-columns: 1fr 2fr; }
+  @media (min-width: 600px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 980px) { .metrics-grid { grid-template-columns: 1.4fr repeat(4, 1fr); } }
+  .metric-cell {
+    background: var(--bg-elevated); padding: 1.3rem;
+    position: relative; transition: background 0.2s var(--ease); cursor: default;
   }
-  .brecha-hero {
-    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-soft));
-    padding: 1.5rem 1.4rem;
-    display: flex; flex-direction: column; justify-content: center;
-    border-right: 1px solid var(--border);
-    position: relative; overflow: hidden;
+  .metric-cell:hover { background: var(--bg-soft); }
+  .metric-cell.featured {
+    background: linear-gradient(135deg, #161922, #0f1115);
   }
-  .brecha-hero::before {
-    content: ''; position: absolute; top: 0; left: 0;
-    width: 3px; height: 100%; background: var(--accent);
+  .metric-cell.featured::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: linear-gradient(to bottom, var(--accent), transparent);
   }
-  .brecha-label {
-    font-family: var(--mono); font-size: 0.68rem;
-    color: var(--text-mute); letter-spacing: 0.18em;
-    text-transform: uppercase; margin-bottom: 0.6rem;
+  .m-label {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-mute); margin-bottom: 0.5rem;
+    display: flex; align-items: center; gap: 0.4rem;
   }
-  .brecha-value {
-    font-family: var(--serif); font-weight: 400;
-    font-size: 2.6rem; line-height: 1; color: var(--accent);
-    font-variation-settings: 'opsz' 90;
-    letter-spacing: -0.01em;
+  .m-info {
+    width: 13px; height: 13px; border-radius: 50%;
+    border: 1px solid var(--text-mute); color: var(--text-mute);
+    font-size: 8px; display: inline-flex; align-items: center; justify-content: center;
+    cursor: help; transition: all 0.15s; flex-shrink: 0;
   }
-  .brecha-sub {
-    font-size: 0.78rem; color: var(--text-soft);
-    margin-top: 0.6rem; line-height: 1.4;
+  .m-info:hover { border-color: var(--accent); color: var(--accent); }
+  .m-value {
+    font-family: var(--serif); font-weight: 350;
+    font-size: 1.8rem; line-height: 1; color: var(--text); letter-spacing: -0.01em;
   }
-  .strip {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
-    background: var(--border);
+  .metric-cell.featured .m-value { font-size: 2.4rem; color: var(--accent); }
+  .m-sub {
+    font-family: var(--mono); font-size: 0.68rem; color: var(--text-soft);
+    margin-top: 0.5rem; letter-spacing: 0.02em;
   }
-  @media (min-width: 600px) { .strip { grid-template-columns: repeat(4, 1fr); } }
-  .strip-cell {
-    background: var(--bg-elevated); padding: 1.2rem 1.1rem;
-  }
-  .strip-label {
-    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.16em;
-    text-transform: uppercase; color: var(--text-mute);
-    margin-bottom: 0.55rem;
-  }
-  .strip-value {
-    font-family: var(--mono); font-size: 1.3rem; font-weight: 500;
-    color: var(--text); letter-spacing: -0.01em;
-  }
-  .strip-sub {
-    font-size: 0.72rem; color: var(--text-soft);
-    margin-top: 0.3rem; font-family: var(--sans);
-  }
+  .m-sub .delta { color: var(--positive); }
+  .m-sub .delta.neg { color: var(--negative); }
 
   /* ============= SECTIONS ============= */
   section.block {
-    margin-bottom: 3.5rem;
-    border: 1px solid var(--border-soft);
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--border);
     background: var(--bg-elevated);
-    border-radius: 3px;
+    border-radius: 12px;
     overflow: hidden;
   }
   .block-header {
-    display: flex; justify-content: space-between; align-items: baseline;
-    padding: 1.4rem 1.6rem 1.1rem;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.3rem 1.6rem 1.1rem;
     border-bottom: 1px solid var(--border-soft);
+    cursor: pointer; user-select: none;
+    transition: background 0.15s var(--ease);
+    gap: 1rem; flex-wrap: wrap;
   }
+  .block-header:hover { background: rgba(255,255,255,0.02); }
+  .block-header.no-collapse { cursor: default; }
+  .block-header.no-collapse:hover { background: transparent; }
   .block-title {
-    font-family: var(--serif); font-style: italic; font-weight: 400;
-    font-size: 1.45rem; letter-spacing: -0.005em;
+    font-family: var(--serif); font-style: italic; font-weight: 350;
+    font-size: 1.5rem; letter-spacing: -0.005em;
+    display: flex; align-items: baseline; gap: 0.7rem;
   }
-  .block-title .num {
-    font-family: var(--mono); font-style: normal; font-size: 0.7rem;
-    color: var(--accent); margin-right: 0.7rem; letter-spacing: 0.1em;
-    vertical-align: 0.3em;
+  .block-title .num, .block-num {
+    font-family: var(--mono); font-style: normal; font-size: 0.68rem;
+    color: var(--accent); letter-spacing: 0.1em;
+    padding: 2px 7px; border: 1px solid var(--border); border-radius: 3px;
   }
   .block-actions {
-    display: flex; gap: 0.3rem; flex-wrap: wrap;
+    display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center;
   }
+  .block-collapse-icon {
+    width: 22px; height: 22px; display: inline-flex;
+    align-items: center; justify-content: center;
+    color: var(--text-mute); transition: transform 0.25s var(--ease);
+    margin-left: 0.4rem; font-size: 0.75rem;
+  }
+  .block.collapsed .block-collapse-icon { transform: rotate(-90deg); }
+  .block.collapsed .block-body { display: none; }
   .pill {
     background: transparent; border: 1px solid var(--border);
     color: var(--text-soft); font-family: var(--mono);
-    font-size: 0.7rem; padding: 0.35rem 0.75rem; border-radius: 2px;
-    cursor: pointer; letter-spacing: 0.05em;
-    transition: all 0.15s ease;
+    font-size: 0.7rem; padding: 0.35rem 0.75rem; border-radius: 6px;
+    cursor: pointer; letter-spacing: 0.05em; transition: all 0.15s var(--ease);
   }
   .pill:hover { border-color: var(--accent); color: var(--text); }
   .pill.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-
   .block-body { padding: 1.4rem 1.6rem 1.8rem; }
   .block-intro {
     font-size: 0.88rem; color: var(--text-soft); line-height: 1.6;
@@ -535,6 +536,57 @@
   }
   .block-intro strong { color: var(--text); font-weight: 500; }
   .chart-wrap { position: relative; height: 380px; width: 100%; }
+
+  /* ============= SEGMENTED CONTROL ============= */
+  .segmented {
+    display: inline-flex; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 3px; position: relative;
+  }
+  .seg-btn {
+    background: transparent; border: none;
+    color: var(--text-mute); font-family: var(--mono);
+    font-size: 0.68rem; padding: 0.32rem 0.65rem; border-radius: 5px;
+    cursor: pointer; letter-spacing: 0.05em;
+    transition: color 0.2s var(--ease); position: relative; z-index: 2;
+  }
+  .seg-btn.active { color: var(--bg); }
+  .seg-btn:hover:not(.active) { color: var(--text); }
+  .seg-indicator {
+    position: absolute; top: 3px; bottom: 3px;
+    background: var(--accent); border-radius: 5px;
+    transition: left 0.22s var(--ease), width 0.22s var(--ease);
+    z-index: 1; pointer-events: none;
+  }
+
+  /* ============= CHART EVENT PINS ============= */
+  .chart-container { position: relative; }
+  .chart-event-pin {
+    position: absolute; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: var(--bg);
+    font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 10;
+    box-shadow: 0 2px 8px rgba(212,166,71,0.4);
+    transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+    transform: translate(-50%, -50%);
+  }
+  .chart-event-pin:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 0 4px 16px rgba(212,166,71,0.6);
+  }
+  .chart-event-tooltip {
+    display: none; position: absolute; z-index: 20;
+    background: var(--bg-elevated); border: 1px solid var(--border-glow);
+    border-radius: 8px; padding: 0.7rem 1rem; min-width: 200px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+  .chart-event-tooltip.visible { display: block; }
+  .ev-date {
+    font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
+    letter-spacing: 0.08em; margin-bottom: 0.3rem;
+  }
 
   /* ============= CHART MINI LEGEND ============= */
   .chart-legend-mini {
@@ -1072,76 +1124,94 @@
   <div id="banner-area"></div>
 
   <!-- METRICS STRIP -->
-  <div class="metrics-layout">
-    <div class="brecha-hero">
-      <div class="brecha-label">Brecha cambiaria</div>
-      <div class="brecha-value" id="m-brecha-of">—</div>
-      <div class="brecha-sub">paralelo vs oficial BCB · Bs 6.96 fijo desde 2011</div>
-    </div>
-    <div class="strip">
-      <div class="strip-cell">
-        <div class="strip-label">vs Referencial</div>
-        <div class="strip-value" id="m-brecha-ref">—</div>
-        <div class="strip-sub">BCB diario</div>
+  <div class="metrics-section">
+    <div class="metrics-grid">
+      <div class="metric-cell featured">
+        <div class="m-label">
+          Brecha cambiaria
+          <span class="m-info" title="Diferencia entre el paralelo P2P y el oficial fijo del BCB (Bs 6.96)">i</span>
+        </div>
+        <div class="m-value" id="m-brecha-of">—</div>
+        <div class="m-sub">paralelo vs oficial BCB · Bs 6.96 fijo desde 2011</div>
       </div>
-      <div class="strip-cell">
-        <div class="strip-label">Volatilidad 7d</div>
-        <div class="strip-value" id="m-vol">—</div>
-        <div class="strip-sub">desvío estándar</div>
+      <div class="metric-cell">
+        <div class="m-label">
+          vs Referencial
+          <span class="m-info" title="Diferencia entre el paralelo y el referencial diario del BCB">i</span>
+        </div>
+        <div class="m-value" id="m-brecha-ref">—</div>
+        <div class="m-sub">BCB diario</div>
       </div>
-      <div class="strip-cell">
-        <div class="strip-label">Máx 7 días</div>
-        <div class="strip-value" id="m-max">—</div>
-        <div class="strip-sub" id="m-max-date">—</div>
+      <div class="metric-cell">
+        <div class="m-label">Volatilidad 7d</div>
+        <div class="m-value" id="m-vol">—</div>
+        <div class="m-sub">desvío estándar</div>
       </div>
-      <div class="strip-cell">
-        <div class="strip-label">Mín 7 días</div>
-        <div class="strip-value" id="m-min">—</div>
-        <div class="strip-sub" id="m-min-date">—</div>
+      <div class="metric-cell">
+        <div class="m-label">Máx 7 días</div>
+        <div class="m-value" id="m-max">—</div>
+        <div class="m-sub" id="m-max-date">—</div>
+      </div>
+      <div class="metric-cell">
+        <div class="m-label">Mín 7 días</div>
+        <div class="m-value" id="m-min">—</div>
+        <div class="m-sub" id="m-min-date">—</div>
       </div>
     </div>
   </div>
 
   <!-- HISTORICAL CHART -->
-  <section class="block">
-    <div class="block-header">
-      <div>
-        <div class="block-title"><span class="num">01</span>Histórico</div>
-        <div class="data-source-line" id="data-source-badge" style="font-family:var(--mono); font-size:0.65rem; letter-spacing:0.08em; margin-top:0.4rem;">Cargando…</div>
-      </div>
-      <div class="block-actions" id="range-controls">
-        <button class="pill" data-range="7">7D</button>
-        <button class="pill" data-range="30">30D</button>
-        <button class="pill active" data-range="90">90D</button>
-        <button class="pill" data-range="365">1A</button>
-        <button class="pill" data-range="all">TODO</button>
+  <section class="block" id="historico">
+    <div class="block-header" id="historico-header">
+      <div class="block-title"><span class="block-num">01</span>Histórico</div>
+      <div class="block-actions">
+        <div class="segmented" id="range-controls">
+          <div class="seg-indicator" id="seg-ind-range"></div>
+          <button class="seg-btn" data-range="7">7D</button>
+          <button class="seg-btn" data-range="30">30D</button>
+          <button class="seg-btn active" data-range="90">90D</button>
+          <button class="seg-btn" data-range="365">1A</button>
+          <button class="seg-btn" data-range="all">TODO</button>
+        </div>
+        <span class="block-collapse-icon">▼</span>
       </div>
     </div>
     <div class="block-body">
-      <div class="chart-legend-mini">
-        <div class="legend-row">
-          <span class="legend-dot" style="background:#7fae8f"></span>
-          <span class="legend-text"><strong>Compra / Venta</strong> · Binance P2P (bot 15 min)</span>
-        </div>
-        <div class="legend-row">
-          <span class="legend-dot" style="background:repeating-linear-gradient(to right, #6e6a5e 0, #6e6a5e 4px, transparent 4px, transparent 8px);"></span>
-          <span class="legend-text"><strong>Oficial BCB</strong> · fijo en Bs 6.96 desde 2011</span>
-        </div>
-        <div class="legend-row">
-          <span class="legend-dot" style="background:#e08a4a"></span>
-          <span class="legend-text"><strong>Referencial BCB</strong> · diario, publicado desde dic-2025</span>
+      <p class="block-intro">
+        Cotización del paralelo USDT/BOB junto al <strong>histórico oficial del BCB</strong> y la línea referencial.
+        Pasá el cursor sobre el gráfico para ver los valores exactos. Los pines numerados marcarán eventos clave.
+      </p>
+      <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.2rem; font-family:var(--mono); font-size:0.72rem;">
+        <span style="display:flex; align-items:center; gap:0.5rem;">
+          <span style="width:20px; height:2px; background:#d4a647; display:inline-block; border-radius:1px;"></span>
+          Paralelo USDT/BOB
+        </span>
+        <span style="display:flex; align-items:center; gap:0.5rem;">
+          <span style="width:20px; height:2px; background:#e08a4a; display:inline-block; border-radius:1px; opacity:0.8;"></span>
+          Referencial BCB
+        </span>
+        <span style="display:flex; align-items:center; gap:0.5rem;">
+          <span style="width:20px; height:2px; background:#9aa0a6; display:inline-block; border-radius:1px; opacity:0.6; border-top:1px dashed #9aa0a6;"></span>
+          Oficial BCB
+        </span>
+        <span id="data-source-badge" style="margin-left:auto; color:var(--text-mute);">Cargando…</span>
+      </div>
+      <div class="chart-container">
+        <div class="chart-wrap"><canvas id="chart-historic"></canvas></div>
+        <!-- Pins de eventos (se posicionan con JS cuando llegue la data) -->
+        <div id="event-pins-container"></div>
+        <div class="chart-event-tooltip" id="event-tooltip">
+          <div class="ev-date" id="ev-date">—</div>
+          <div id="ev-text" style="font-size:0.82rem; color:var(--text-soft); margin-top:0.2rem;">—</div>
         </div>
       </div>
-      <div class="chart-wrap"><canvas id="chart-historic"></canvas></div>
-      <div class="download-bar">
-        <div class="download-label">
-          <span class="download-icon">↓</span> Descargar Excel:
-        </div>
-        <div class="download-buttons">
-          <button class="dl-btn" data-granularity="day">Diario</button>
-          <button class="dl-btn" data-granularity="week">Semanal</button>
-          <button class="dl-btn" data-granularity="month">Mensual</button>
-        </div>
+      <div style="margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <button class="qa-btn" data-granularity="day">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Excel diario
+        </button>
+        <button class="qa-btn" data-granularity="week">Excel semanal</button>
+        <button class="qa-btn" data-granularity="month">Excel mensual</button>
       </div>
     </div>
   </section>
@@ -1206,13 +1276,17 @@
   </section>
 
   <!-- FORECAST -->
-  <section class="block">
-    <div class="block-header">
-      <div class="block-title"><span class="num">03</span>Proyección</div>
-      <div class="block-actions" id="forecast-controls">
-        <button class="pill active" data-horizon="30">30 días</button>
-        <button class="pill" data-horizon="90">3 meses</button>
-        <button class="pill" data-horizon="180">6 meses</button>
+  <section class="block" id="proyeccion">
+    <div class="block-header" id="proyeccion-header">
+      <div class="block-title"><span class="block-num">03</span>Proyección</div>
+      <div class="block-actions">
+        <div class="segmented" id="forecast-controls">
+          <div class="seg-indicator" id="seg-ind-forecast"></div>
+          <button class="seg-btn active" data-horizon="30">30 días</button>
+          <button class="seg-btn" data-horizon="90">3 meses</button>
+          <button class="seg-btn" data-horizon="180">6 meses</button>
+        </div>
+        <span class="block-collapse-icon">▼</span>
       </div>
     </div>
     <div class="block-body">
@@ -3513,10 +3587,8 @@ async function main() {
   refreshCrypto().catch(e => console.warn('refreshCrypto error:', e));
 
   // wire range buttons (historic chart)
-  document.querySelectorAll('#range-controls .pill').forEach(btn => {
+  document.querySelectorAll('#range-controls .seg-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#range-controls .pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
       safe('histórico', () => renderHistoric(history, btn.dataset.range, liveCaptures, usdtSheet));
     });
   });
@@ -3546,17 +3618,15 @@ async function main() {
   }
 
   // wire forecast horizon buttons
-  document.querySelectorAll('#forecast-controls .pill').forEach(btn => {
+  document.querySelectorAll('#forecast-controls .seg-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#forecast-controls .pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
       const horizon = parseInt(btn.dataset.horizon, 10);
       safe('proyección', () => renderForecast(history, horizon));
     });
   });
 
-  // wire download buttons
-  document.querySelectorAll('.dl-btn').forEach(btn => {
+  // wire download buttons (dl-btn legacy + qa-btn with data-granularity)
+  document.querySelectorAll('.dl-btn, .qa-btn[data-granularity]').forEach(btn => {
     btn.addEventListener('click', () => {
       // Skip settings panel buttons (handled separately below)
       if (['btn-save-url', 'btn-reset-url'].includes(btn.id)) return;
@@ -3905,6 +3975,66 @@ buildTicker(null, null);
 window.updateTickerPrices = function(compra, venta) {
   buildTicker(compra.toFixed(2), venta.toFixed(2));
 };
+</script>
+
+<script>
+// ============ SEGMENTED CONTROLS ============
+function initSegmented(containerId, indicatorId, onSelect) {
+  const container = document.getElementById(containerId);
+  const indicator = document.getElementById(indicatorId);
+  if (!container || !indicator) return;
+  const btns = container.querySelectorAll('.seg-btn');
+
+  function moveIndicator(btn) {
+    const cRect = container.getBoundingClientRect();
+    const bRect = btn.getBoundingClientRect();
+    indicator.style.left = (bRect.left - cRect.left - 3) + 'px';
+    indicator.style.width = bRect.width + 'px';
+  }
+
+  // init position
+  const active = container.querySelector('.seg-btn.active');
+  if (active) setTimeout(() => moveIndicator(active), 50);
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      moveIndicator(btn);
+      if (onSelect) onSelect(btn);
+    });
+  });
+}
+
+// Wire range segmented → same as old pills
+initSegmented('range-controls', 'seg-ind-range', btn => {
+  const range = btn.dataset.range;
+  // trigger same event old pills used
+  document.querySelectorAll('[data-range]').forEach(b => {
+    if (b !== btn) b.classList.remove('active');
+  });
+  // dispatch synthetic click for the JS that listens to data-range
+  btn.dispatchEvent(new CustomEvent('range-change', { bubbles: true, detail: { range } }));
+});
+
+// Wire forecast segmented
+initSegmented('forecast-controls', 'seg-ind-forecast', btn => {
+  const horizon = btn.dataset.horizon;
+  document.querySelectorAll('[data-horizon]').forEach(b => {
+    if (b !== btn) b.classList.remove('active');
+  });
+  btn.dispatchEvent(new CustomEvent('horizon-change', { bubbles: true, detail: { horizon } }));
+});
+
+// ============ COLLAPSIBLE BLOCKS ============
+document.querySelectorAll('.block-header:not(.no-collapse)').forEach(header => {
+  header.addEventListener('click', e => {
+    // no colapsar si click en segmented o pill
+    if (e.target.closest('.segmented') || e.target.closest('.pill')) return;
+    const block = header.closest('.block');
+    if (block) block.classList.toggle('collapsed');
+  });
+});
 </script>
 
 <script>
