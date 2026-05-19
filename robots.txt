@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Social media scrapers — explicitly allowed
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://datahunterlabs.com/sitemap.xml
