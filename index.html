@@ -3,7 +3,35 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Observatorio BOB/USD — Paralelo</title>
+<title>DataHunter Labs — Dólar Paralelo Bolivia · USDT/BOB en vivo</title>
+<meta name="description" content="Observatorio independiente del dólar paralelo en Bolivia. Cotización USDT/BOB en vivo, histórico, proyecciones y noticias del mercado cambiario." />
+<meta name="keywords" content="dólar paralelo Bolivia, USDT BOB, tipo de cambio Bolivia, dólar blue Bolivia, BCB referencial" />
+<meta name="author" content="DataHunter Labs" />
+
+<!-- Open Graph (WhatsApp, LinkedIn, Facebook) -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://datahunterlabs.com" />
+<meta property="og:title" content="DataHunter Labs — Dólar Paralelo Bolivia" />
+<meta property="og:description" content="Cotización USDT/BOB en vivo · BCB Referencial · Histórico · Proyecciones. El observatorio más completo del mercado paralelo boliviano." />
+<meta property="og:image" content="https://datahunterlabs.com/og-image.svg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="es_BO" />
+<meta property="og:site_name" content="DataHunter Labs" />
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="DataHunter Labs — Dólar Paralelo Bolivia" />
+<meta name="twitter:description" content="Cotización USDT/BOB en vivo · BCB Referencial · Histórico · Proyecciones." />
+<meta name="twitter:image" content="https://datahunterlabs.com/og-image.svg" />
+
+<!-- PWA / mobile -->
+<meta name="theme-color" content="#d4a647" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="DataHunter" />
+<link rel="manifest" href="/manifest.json" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1281,7 +1309,17 @@
     <div class="quick-actions">
       <button class="qa-btn" id="btn-refresh-qa" onclick="document.getElementById('btn-refresh').click()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        Actualizar datos
+        Actualizar
+      </button>
+      <!-- Compartir cotización -->
+      <button class="qa-btn qa-btn-share" id="qa-share" title="Compartir cotización del día">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Compartir
+      </button>
+      <!-- Descargar gráfico PNG -->
+      <button class="qa-btn" id="qa-download-chart" title="Descargar gráfico histórico como imagen PNG">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+        Guardar gráfico
       </button>
       <button class="qa-btn" onclick="document.getElementById('btn-export-xlsx') && document.getElementById('btn-export-xlsx').click()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1289,7 +1327,7 @@
       </button>
       <a href="nosotros.html" class="qa-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Sobre el proyecto
+        Nosotros
       </a>
       <a href="contacto.html" class="qa-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -4417,6 +4455,90 @@ document.getElementById('nav-blog').addEventListener('click', function(e) {
 
 <script>
 /* ============================================================
+   COMPARTIR COTIZACIÓN — Web Share API (móvil) + clipboard (desktop)
+============================================================ */
+function buildShareText() {
+  const s = window._tickerState || {};
+  const now = new Date();
+  const fecha = now.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' });
+  const compra = s.compra ? 'Bs ' + s.compra.toFixed(2) : '—';
+  const venta  = s.venta  ? 'Bs ' + s.venta.toFixed(2)  : '—';
+  const ref    = s.bcbRef ? 'Bs ' + s.bcbRef.toFixed(2)  : 'Bs ' + REFERENCIAL_VENTA.toFixed(2);
+  return [
+    '📊 DataHunter Labs · ' + fecha,
+    'USDT/BOB  Compra: ' + compra + '  |  Venta: ' + venta,
+    'BCB Referencial: ' + ref + '  |  Oficial BCB: Bs 6.96',
+    '🔗 datahunterlabs.com'
+  ].join('\n');
+}
+
+document.getElementById('qa-share').addEventListener('click', async () => {
+  const text = buildShareText();
+  const url  = 'https://datahunterlabs.com';
+
+  // Móvil: Web Share API (WhatsApp, Telegram, etc.)
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'DataHunter Labs — Dólar Paralelo Bolivia', text, url });
+      return;
+    } catch (e) {
+      if (e.name === 'AbortError') return; // usuario canceló
+    }
+  }
+
+  // Desktop: copiar al portapapeles
+  try {
+    await navigator.clipboard.writeText(text + '\n' + url);
+    showToast('📋 Cotización copiada al portapapeles');
+  } catch (e) {
+    // Fallback manual selection
+    const ta = document.createElement('textarea');
+    ta.value = text + '\n' + url;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('📋 Cotización copiada al portapapeles');
+  }
+});
+
+/* ============================================================
+   DESCARGAR GRÁFICO HISTÓRICO COMO PNG
+============================================================ */
+document.getElementById('qa-download-chart').addEventListener('click', () => {
+  const canvas = document.getElementById('chart-historic');
+  if (!canvas) { showToast('⚠ El gráfico aún no está cargado'); return; }
+
+  // Crear canvas temporal con fondo oscuro (Chart.js exporta transparente por defecto)
+  const tmp = document.createElement('canvas');
+  tmp.width  = canvas.width;
+  tmp.height = canvas.height;
+  const tmpCtx = tmp.getContext('2d');
+
+  // Fondo
+  tmpCtx.fillStyle = '#0b0d10';
+  tmpCtx.fillRect(0, 0, tmp.width, tmp.height);
+
+  // Watermark sutil
+  tmpCtx.font = '14px "Courier New", monospace';
+  tmpCtx.fillStyle = 'rgba(110,106,94,0.6)';
+  tmpCtx.textAlign = 'right';
+  tmpCtx.fillText('datahunterlabs.com', tmp.width - 16, tmp.height - 12);
+
+  // Superponer el gráfico
+  tmpCtx.drawImage(canvas, 0, 0);
+
+  // Descargar
+  const now  = new Date().toISOString().slice(0, 10);
+  const link = document.createElement('a');
+  link.download = 'datahunter-dolar-paralelo-' + now + '.png';
+  link.href = tmp.toDataURL('image/png');
+  link.click();
+  showToast('🖼 Gráfico descargado como PNG');
+});
+
+/* ============================================================
    TOAST
 ============================================================ */
 let _toastTimer = null;
@@ -4559,10 +4681,8 @@ window.showToast = showToast;
 
   // Wire quick-action alert/share/api toasts if present
   const qaAlert = document.getElementById('qa-alert');
-  const qaShare = document.getElementById('qa-share');
   const qaApi   = document.getElementById('qa-api');
   if (qaAlert) qaAlert.addEventListener('click', () => showToast('🔔 Alertas: próximamente con bot de Telegram (gratis)'));
-  if (qaShare) qaShare.addEventListener('click', () => showToast('📷 Snapshot copiado al portapapeles · funcionalidad próxima'));
   if (qaApi)   qaApi.addEventListener('click',   () => showToast('🔌 Docs API en construcción · GET /v1/quote/usdt-bob'));
 
   // Initial display update

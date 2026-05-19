@@ -1,0 +1,29 @@
+{
+  "name": "DataHunter Labs — Dólar Paralelo Bolivia",
+  "short_name": "DataHunter",
+  "description": "Observatorio del dólar paralelo en Bolivia. USDT/BOB en vivo, histórico y proyecciones.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#d4a647",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/isotype.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Cotización en vivo",
+      "short_name": "Cotización",
+      "description": "Ver el precio actual del dólar paralelo",
+      "url": "/#hero",
+      "icons": [{ "src": "/isotype.svg", "sizes": "any" }]
+    }
+  ],
+  "categories": ["finance", "utilities"],
+  "lang": "es-BO"
+}

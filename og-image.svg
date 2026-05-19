@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0b0d10"/>
+      <stop offset="100%" style="stop-color:#131619"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(212,166,71,0.12)"/>
+      <stop offset="100%" style="stop-color:rgba(127,174,143,0.04)"/>
+    </linearGradient>
+    <filter id="blur-glow">
+      <feGaussianBlur stdDeviation="80" result="blur"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <ellipse cx="180" cy="80" rx="500" ry="280" fill="rgba(212,166,71,0.07)" filter="url(#blur-glow)"/>
+  <ellipse cx="1050" cy="560" rx="400" ry="260" fill="rgba(127,174,143,0.04)" filter="url(#blur-glow)"/>
+
+  <!-- Top border accent -->
+  <rect x="0" y="0" width="1200" height="2" fill="#d4a647"/>
+
+  <!-- Logo / brand -->
+  <text x="64" y="80" font-family="Georgia, serif" font-style="italic" font-size="32" fill="#ece6d6" font-weight="300">Data</text>
+  <text x="136" y="80" font-family="Georgia, serif" font-style="italic" font-size="32" fill="#d4a647" font-weight="300">Hunter</text>
+  <text x="258" y="80" font-family="Georgia, serif" font-style="italic" font-size="32" fill="#ece6d6" font-weight="300"> Labs</text>
+
+  <!-- Divider -->
+  <line x1="64" y1="104" x2="380" y2="104" stroke="#25292e" stroke-width="1"/>
+
+  <!-- Subtitle -->
+  <text x="64" y="128" font-family="'Courier New', monospace" font-size="13" fill="#6e6a5e" letter-spacing="3">OBSERVATORIO DEL DÓLAR PARALELO · BOLIVIA</text>
+
+  <!-- Main price label -->
+  <text x="64" y="230" font-family="'Courier New', monospace" font-size="15" fill="#a8a394" letter-spacing="4">USDT / BOB · MERCADO P2P</text>
+
+  <!-- Price big -->
+  <text x="60" y="360" font-family="Georgia, serif" font-style="italic" font-size="130" fill="#ece6d6" font-weight="300">Bs 10</text>
+  <text x="480" y="310" font-family="Georgia, serif" font-style="italic" font-size="70" fill="#d4a647" font-weight="300">.04</text>
+
+  <!-- BCB label -->
+  <rect x="62" y="390" width="160" height="36" rx="6" fill="#1d2025"/>
+  <text x="82" y="413" font-family="'Courier New', monospace" font-size="13" fill="#a8a394" letter-spacing="2">BCB REF · VENTA</text>
+
+  <!-- Separator line vertical -->
+  <line x1="700" y1="160" x2="700" y2="540" stroke="#25292e" stroke-width="1"/>
+
+  <!-- Right side — chart line decoration -->
+  <polyline points="740,460 800,420 860,390 900,400 950,350 1000,310 1050,280 1100,270 1140,250"
+    fill="none" stroke="#d4a647" stroke-width="2.5" opacity="0.6"/>
+  <polyline points="740,480 800,445 860,418 900,428 950,378 1000,335 1050,305 1100,295 1140,272"
+    fill="none" stroke="#7fae8f" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Right — stats -->
+  <text x="740" y="200" font-family="'Courier New', monospace" font-size="12" fill="#6e6a5e" letter-spacing="3">TIPO DE CAMBIO</text>
+  <text x="740" y="240" font-family="'Courier New', monospace" font-size="13" fill="#a8a394">Oficial BCB</text>
+  <text x="1000" y="240" font-family="Georgia, serif" font-style="italic" font-size="22" fill="#ece6d6">Bs 6.96</text>
+
+  <text x="740" y="290" font-family="'Courier New', monospace" font-size="13" fill="#a8a394">Referencial BCB</text>
+  <text x="1000" y="290" font-family="Georgia, serif" font-style="italic" font-size="22" fill="#d4a647">Bs 10.04</text>
+
+  <text x="740" y="340" font-family="'Courier New', monospace" font-size="13" fill="#a8a394">Brecha vs oficial</text>
+  <text x="1000" y="340" font-family="Georgia, serif" font-style="italic" font-size="22" fill="#c97070">+44%</text>
+
+  <!-- Dots indicator -->
+  <circle cx="740" cy="460" r="5" fill="#d4a647"/>
+  <text x="756" y="465" font-family="'Courier New', monospace" font-size="11" fill="#6e6a5e">Precio venta (ASK)</text>
+  <circle cx="740" cy="490" r="5" fill="#7fae8f"/>
+  <text x="756" y="495" font-family="'Courier New', monospace" font-size="11" fill="#6e6a5e">Precio compra (BID)</text>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="590" width="1200" height="40" fill="#0a0c0f"/>
+  <text x="64" y="615" font-family="'Courier New', monospace" font-size="12" fill="#6e6a5e" letter-spacing="2">datahunterlabs.com</text>
+  <text x="800" y="615" font-family="'Courier New', monospace" font-size="12" fill="#6e6a5e" letter-spacing="2">Sin tracking · Sin terceros · Datos en vivo</text>
+</svg>
