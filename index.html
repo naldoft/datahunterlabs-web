@@ -13,9 +13,10 @@
 <meta property="og:url" content="https://datahunterlabs.com" />
 <meta property="og:title" content="DataHunter Labs — Dólar Paralelo Bolivia" />
 <meta property="og:description" content="Cotización USDT/BOB en vivo · BCB Referencial · Histórico · Proyecciones. El observatorio más completo del mercado paralelo boliviano." />
-<meta property="og:image" content="https://datahunterlabs.com/og-image.svg" />
+<meta property="og:image" content="https://dh-og-image.reynaldoft.workers.dev/og-image" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/svg+xml" />
 <meta property="og:locale" content="es_BO" />
 <meta property="og:site_name" content="DataHunter Labs" />
 
@@ -23,7 +24,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="DataHunter Labs — Dólar Paralelo Bolivia" />
 <meta name="twitter:description" content="Cotización USDT/BOB en vivo · BCB Referencial · Histórico · Proyecciones." />
-<meta name="twitter:image" content="https://datahunterlabs.com/og-image.svg" />
+<meta name="twitter:image" content="https://dh-og-image.reynaldoft.workers.dev/og-image" />
 
 <!-- PWA / mobile -->
 <meta name="theme-color" content="#d4a647" />
@@ -995,6 +996,45 @@
     font-size: 0.82rem; transition: background 0.15s;
   }
   .foot-newsletter button:hover { background: var(--accent-bright); }
+  /* ── Embed section ── */
+  .foot-embed {
+    border-top: 1px solid var(--border-soft);
+    padding: 2rem 0 1.5rem;
+  }
+  .foot-embed-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+  }
+  @media (max-width: 600px) { .foot-embed-inner { grid-template-columns: 1fr; } }
+  .embed-title {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em;
+    color: var(--text-soft); margin-bottom: 0.4rem;
+  }
+  .embed-desc {
+    font-size: 0.8rem; color: var(--text-mute); margin-bottom: 0.6rem; line-height: 1.5;
+  }
+  .embed-code-wrap {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--bg-elevated); border: 1px solid var(--border-soft);
+    border-radius: 6px; padding: 0.5rem 0.75rem;
+  }
+  .embed-code-wrap code {
+    font-family: var(--mono); font-size: 0.68rem; color: var(--accent);
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    letter-spacing: 0;
+  }
+  .embed-copy-btn {
+    flex-shrink: 0; background: transparent; border: 1px solid var(--border);
+    color: var(--text-mute); font-family: var(--mono); font-size: 0.65rem;
+    padding: 0.2rem 0.6rem; border-radius: 4px; cursor: pointer;
+    transition: all 0.15s; letter-spacing: 0.05em;
+  }
+  .embed-copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .embed-copy-btn.copied { color: #7fae8f; border-color: #7fae8f; }
+  .embed-note {
+    font-size: 0.68rem; color: var(--text-mute); margin-top: 0.4rem;
+    font-family: var(--mono); letter-spacing: 0.04em;
+  }
+
   .foot-bottom {
     padding-top: 1.5rem; border-top: 1px solid var(--border-soft);
     display: flex; justify-content: space-between; align-items: center;
@@ -1169,6 +1209,46 @@
     color: var(--text-soft);
   }
 </style>
+
+<!-- JSON-LD Structured Data — Google rich results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "DataHunter Labs",
+  "url": "https://datahunterlabs.com",
+  "description": "Observatorio del dólar paralelo en Bolivia. Precio USDT/BOB en vivo, histórico y proyecciones.",
+  "inLanguage": "es-BO",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://datahunterlabs.com/?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "DataHunter Labs",
+    "url": "https://datahunterlabs.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://datahunterlabs.com/isotype.svg"
+    }
+  },
+  "mainEntity": {
+    "@type": "Dataset",
+    "name": "Cotización USDT/BOB — Mercado Paralelo Bolivia",
+    "description": "Precio de compra y venta del dólar estadounidense (USDT) en bolivianos (BOB) en el mercado P2P paralelo. Datos en tiempo real desde Binance P2P vía CriptoYa.",
+    "url": "https://datahunterlabs.com",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "isAccessibleForFree": true,
+    "creator": { "@type": "Organization", "name": "DataHunter Labs" },
+    "distribution": {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "https://dh-og-image.reynaldoft.workers.dev/price"
+    }
+  }
+}
+</script>
 </head>
 <body>
 
@@ -1710,6 +1790,29 @@
         </ul>
       </div>
     </div>
+    <!-- ── Sección Embed / API ── -->
+    <div class="foot-embed" id="embed-section">
+      <div class="foot-embed-inner">
+        <div class="embed-col">
+          <p class="embed-title">📦 Widget embebible</p>
+          <p class="embed-desc">Pega este código en cualquier sitio web para mostrar el precio en vivo:</p>
+          <div class="embed-code-wrap">
+            <code id="embed-code-widget">&lt;iframe src="https://dh-og-image.reynaldoft.workers.dev/widget" width="300" height="160" frameborder="0" style="border-radius:8px;overflow:hidden" title="USDT/BOB · DataHunter Labs"&gt;&lt;/iframe&gt;</code>
+            <button class="embed-copy-btn" onclick="copyEmbed('embed-code-widget', this)">Copiar</button>
+          </div>
+        </div>
+        <div class="embed-col">
+          <p class="embed-title">⚡ API JSON pública</p>
+          <p class="embed-desc">Precio en vivo para tus propias apps, bots o scripts:</p>
+          <div class="embed-code-wrap">
+            <code id="embed-code-api">https://dh-og-image.reynaldoft.workers.dev/price</code>
+            <button class="embed-copy-btn" onclick="copyEmbed('embed-code-api', this)">Copiar</button>
+          </div>
+          <p class="embed-note">CORS abierto · JSON · Cache 5 min · Sin registro</p>
+        </div>
+      </div>
+    </div>
+
     <div class="foot-bottom">
       <span>v2.0 · cache local · sin tracking · sin terceros</span>
       <span>© 2026 DataHunter Labs · La Paz · Bolivia</span>
@@ -4537,6 +4640,29 @@ document.getElementById('qa-download-chart').addEventListener('click', () => {
   link.click();
   showToast('🖼 Gráfico descargado como PNG');
 });
+
+/* ============================================================
+   EMBED COPY
+============================================================ */
+function copyEmbed(id, btn) {
+  const text = document.getElementById(id)?.textContent?.trim();
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '¡Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '¡Copiado!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+window.copyEmbed = copyEmbed;
 
 /* ============================================================
    TOAST
