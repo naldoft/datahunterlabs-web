@@ -1,0 +1,78 @@
+name: 🏦 Actualizar BCB Referencial
+
+# ── Cuándo corre ─────────────────────────────────────────────────────────────
+on:
+  schedule:
+    # 18:00 UTC = 14:00 La Paz (UTC-4) — el BCB publica en horas hábiles
+    # Días hábiles lunes-viernes. Si no publicaron ese día, el script sale sin cambios.
+    - cron: '0 18 * * 1-5'
+
+  # También permite ejecutarlo manualmente desde GitHub → Actions → Run workflow
+  workflow_dispatch:
+
+# ── Permisos ──────────────────────────────────────────────────────────────────
+permissions:
+  contents: write   # Necesario para hacer push del commit
+
+# ── Job ───────────────────────────────────────────────────────────────────────
+jobs:
+  update:
+    name: Actualizar referencial BCB
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # 1. Checkout del repo
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2. Configurar Node.js (ya viene instalado en ubuntu-latest)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. Ejecutar el script de actualización
+      - name: Descargar y parsear SVG del BCB
+        id: bcb
+        run: |
+          node .github/scripts/update-bcb.js
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true   # No falla el workflow si no hay dato nuevo
+
+      # 4. Verificar si hubo cambios reales (exit 0 = nuevo dato, exit 2 = ya al día)
+      - name: Verificar si hay cambios
+        id: check
+        run: |
+          if git diff --quiet index.html; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ index.html sin cambios — BCB no publicó hoy o ya estaba al día."
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "✅ index.html modificado — hay dato nuevo."
+          fi
+
+      # 5. Commit y push solo si hubo cambios
+      - name: Commit y push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "chore(bcb): referencial ${{ steps.bcb.outputs.fecha }} = Bs ${{ steps.bcb.outputs.valor }} [bot]"
+          git push
+
+      # 6. Resumen en el log de GitHub Actions
+      - name: Resumen
+        run: |
+          if [ "${{ steps.check.outputs.changed }}" == "true" ]; then
+            echo "### ✅ BCB actualizado" >> $GITHUB_STEP_SUMMARY
+            echo "| Campo | Valor |" >> $GITHUB_STEP_SUMMARY
+            echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+            echo "| Fecha | ${{ steps.bcb.outputs.fecha }} |" >> $GITHUB_STEP_SUMMARY
+            echo "| Valor referencial | Bs ${{ steps.bcb.outputs.valor }} |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ℹ️ Sin cambios — BCB no publicó nuevo valor hoy" >> $GITHUB_STEP_SUMMARY
+          fi
