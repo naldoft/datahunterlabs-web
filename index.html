@@ -2456,17 +2456,27 @@ function parseTimestampDDMMYYYY(s) {
 }
 
 async function fetchUsdtSheet() {
-  // GitHub raw CSV is CORS-open — direct fetch only, no proxies needed.
-  // Cache buster ensures we don't get stale CDN cache.
-  const url = USDT_SHEET_URL + '?_t=' + Date.now();
+  // Fuente primaria: Google Sheet del bot (datos correctos confirmados por el usuario).
+  // Fallback: Worker monitor-p2p-bolivia si el Sheet falla.
+  // Cache buster: usar & si la URL ya tiene parámetros, ? si no.
+  const primaryUrl = DEFAULT_SHEET_URL + '&_t=' + Date.now();
+  const fallbackUrl = USDT_SHEET_URL + '?_t=' + Date.now();
 
   let text = null;
+  // Intentar primero el Google Sheet
   try {
-    const resp = await fetchWithTimeout(url, { cache: 'no-cache' }, 10000);
-    if (resp.ok) {
-      text = await resp.text();
-    }
+    const resp = await fetchWithTimeout(primaryUrl, { cache: 'no-cache' }, 10000);
+    if (resp.ok) text = await resp.text();
   } catch (_) {}
+
+  // Si falla, intentar el Worker como fallback
+  if (!text || text.length < 50 || text.trim().startsWith('<')) {
+    text = null;
+    try {
+      const resp = await fetchWithTimeout(fallbackUrl, { cache: 'no-cache' }, 10000);
+      if (resp.ok) text = await resp.text();
+    } catch (_) {}
+  }
 
   if (!text || text.length < 50) return { ok: false, reason: 'fetch-fail' };
   if (text.trim().startsWith('<')) return { ok: false, reason: 'html-no-csv' };
@@ -2501,14 +2511,13 @@ async function fetchUsdtSheet() {
 
     const bcbCompra = parseSpanishNumber(cells[1]);
     const bcbVenta = parseSpanishNumber(cells[2]);
-    const p2pCompra = parseSpanishNumber(cells[3]);
-    const p2pVenta = parseSpanishNumber(cells[4]);
+    // Convención del Worker (y Google Sheet):
+    //   cells[3] = venta  (antepenúltimo) = BUY ads Binance → precio que recibís al vender USDT
+    //   cells[4] = compra (último)        = SELL ads Binance → precio que pagás para comprar USDT
+    const p2pVenta  = parseSpanishNumber(cells[3]);
+    const p2pCompra = parseSpanishNumber(cells[4]);
 
     if (p2pCompra == null && p2pVenta == null) continue;
-    // Perspectiva CriptoYa (= perspectiva usuario):
-    //   compra = ASK = precio que pagás para comprar USD = mayor
-    //   venta  = BID = precio que recibís al vender USD  = menor
-    // El bot de Tesla usa la misma convención → no invertir.
     const compra = p2pCompra ?? p2pVenta;
     const venta  = p2pVenta  ?? p2pCompra;
     if (compra < 5 || compra > 30 || venta < 5 || venta > 30) continue;
