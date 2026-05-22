@@ -2051,7 +2051,7 @@ function generateSeed() {
     const spread = mid > 12 ? 0.10 : 0.06; // wider spread in high-volatility periods
     const d = new Date(startDate.getTime() + i * 86400000);
     seed.push({
-      t: d.toISOString().slice(0, 10),
+      t: dateToStrBolivia(d),
       compra: +(mid + spread / 2).toFixed(2),  // ASK · precio de compra (mayor)
       venta:  +(mid - spread / 2).toFixed(2),  // BID · precio de venta (menor)
       seed: true
@@ -2140,6 +2140,21 @@ const NEWS_INTERNACIONAL = [
 const OFICIAL_FIJO = 6.96;
 const REFERENCIAL_VENTA  = 10.13;  // BCB ref. venta  21-may-2026 — actualizar vía cron
 const REFERENCIAL_COMPRA =  9.92;  // BCB ref. compra 21-may-2026 — actualizar vía cron
+
+/* ─── Fecha local Bolivia (UTC-4, sin DST) ───────────────────────────────────
+   NUNCA usar new Date().toISOString().slice(0,10) para "hoy":
+   eso devuelve UTC y a las 20:00 La Paz ya es medianoche del día siguiente.
+   Usar siempre hoyBolivia() para cualquier comparación con fechas del dashboard.
+──────────────────────────────────────────────────────────────────────────── */
+function hoyBolivia() {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/La_Paz' }).format(new Date());
+  // en-CA produce YYYY-MM-DD nativo — sin manipulación de strings
+}
+
+// Para convertir un Date object a fecha-string local Bolivia (loops de forecast, seed data)
+function dateToStrBolivia(d) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/La_Paz' }).format(d);
+}
 
 /* ============================================================
    HISTORIAL REAL DEL REFERENCIAL BCB (venta)
@@ -2511,7 +2526,7 @@ async function fetchUsdtSheet() {
   // Sort by timestamp ascending
   allRecords.sort((a, b) => a.ts - b.ts);
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = hoyBolivia();
   const latestRecord = allRecords[allRecords.length - 1];
 
   // Aggregate: average per day for PAST days, but use the latest record for TODAY
@@ -2662,7 +2677,7 @@ async function fetchLiveQuote() {
   if (!ask || !bid) return null;
 
   return {
-    t: new Date().toISOString().slice(0, 10),
+    t: hoyBolivia(),
     ts: time ? time * 1000 : Date.now(),
     compra: +ask.toFixed(2),   // ASK · precio que pagás para comprar USD (perspectiva CriptoYa)
     venta:  +bid.toFixed(2),   // BID · precio que recibís al vender USD
@@ -3056,7 +3071,7 @@ function renderForecast(historical, horizonDays = 30) {
   const fcDates = [];
   for (let i = 1; i <= HORIZON; i++) {
     const d = new Date(lastDate.getTime() + i * 86400000);
-    fcDates.push(d.toISOString().slice(0, 10));
+    fcDates.push(dateToStrBolivia(d));
   }
 
   // Reference data for display window (interpolated from anchors)
@@ -3831,7 +3846,7 @@ function downloadXLSX(history, primaryGranularity) {
   wsMeta['!cols'] = [{ wch: 22 }, { wch: 60 }];
   XLSX.utils.book_append_sheet(wb, wsMeta, 'Info');
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = hoyBolivia();
   const filename = `bob-usd-paralelo_${today}.xlsx`;
   XLSX.writeFile(wb, filename);
 }
@@ -3954,7 +3969,7 @@ async function main() {
 
     // Fill gaps if primary ends before today
     const lastDate = primaryData[primaryData.length - 1].t;
-    const today = new Date().toISOString().slice(0, 10);
+    const today = hoyBolivia();
     if (lastDate < today) {
       const seed = generateSeed();
       for (const s of seed) {
@@ -4460,7 +4475,7 @@ window._tickerState = {
 function getReferencialHoy() {
   // Usa la misma lógica que los gráficos — interpolación entre anclas BCB reales.
   // Si hoy está más allá del último anchor, devuelve ese último valor confirmado.
-  const todayKey = new Date().toISOString().slice(0, 10);
+  const todayKey = hoyBolivia();
   const m = buildReferencialHistory([todayKey]);
   return m.get(todayKey) ?? REFERENCIAL_VENTA;
 }
@@ -4693,7 +4708,7 @@ document.getElementById('qa-download-chart').addEventListener('click', () => {
   tmpCtx.drawImage(canvas, 0, 0);
 
   // Descargar
-  const now  = new Date().toISOString().slice(0, 10);
+  const now  = hoyBolivia();
   const link = document.createElement('a');
   link.download = 'datahunter-dolar-paralelo-' + now + '.png';
   link.href = tmp.toDataURL('image/png');
