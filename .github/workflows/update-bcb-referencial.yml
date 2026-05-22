@@ -3,9 +3,10 @@ name: 🏦 Actualizar BCB Referencial
 # ── Cuándo corre ─────────────────────────────────────────────────────────────
 on:
   schedule:
-    # 18:00 UTC = 14:00 La Paz (UTC-4) — el BCB publica en horas hábiles
-    # Días hábiles lunes-viernes. Si no publicaron ese día, el script sale sin cambios.
-    - cron: '0 18 * * 1-5'
+    # Cada hora entre 12:00 y 22:00 UTC (08:00 - 18:00 La Paz UTC-4), lunes a viernes.
+    # El BCB actualiza su referencial durante el día hábil y puede variar varias veces.
+    # Si el valor no cambió, el script sale con exit 2 y no genera commit.
+    - cron: '0 12-22 * * 1-5'
 
   # También permite ejecutarlo manualmente desde GitHub → Actions → Run workflow
   workflow_dispatch:
