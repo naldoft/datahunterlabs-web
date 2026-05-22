@@ -72,7 +72,8 @@ jobs:
             echo "| Campo | Valor |" >> $GITHUB_STEP_SUMMARY
             echo "|---|---|" >> $GITHUB_STEP_SUMMARY
             echo "| Fecha | ${{ steps.bcb.outputs.fecha }} |" >> $GITHUB_STEP_SUMMARY
-            echo "| Valor referencial | Bs ${{ steps.bcb.outputs.valor }} |" >> $GITHUB_STEP_SUMMARY
+            echo "| Ref. Venta | Bs ${{ steps.bcb.outputs.valor_venta }} |" >> $GITHUB_STEP_SUMMARY
+            echo "| Ref. Compra | Bs ${{ steps.bcb.outputs.valor_compra }} |" >> $GITHUB_STEP_SUMMARY
           else
             echo "### ℹ️ Sin cambios — BCB no publicó nuevo valor hoy" >> $GITHUB_STEP_SUMMARY
           fi
