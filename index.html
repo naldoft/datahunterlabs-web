@@ -3863,7 +3863,7 @@ async function main() {
     return;
   }
 
-  const STORE_KEY = 'bob_usd_history_v2';
+  const STORE_KEY = 'bob_usd_history_v3'; // v3: limpia caché corrupto por bug timezone (2026-05-22)
   let history = null;
   let dataSource = 'desconocida';
   let sourceDetail = '';
@@ -3875,8 +3875,8 @@ async function main() {
 
   // Always load USDT result (for cache and the "force USDT" option)
   // Cache TTL is 5 min, matching the Worker's update frequency
-  const USDT_CACHE_KEY = 'bob_usdt_sheet_v1';
-  const USDT_CACHE_TS_KEY = 'bob_usdt_sheet_ts_v1';
+  const USDT_CACHE_KEY = 'bob_usdt_sheet_v2';
+  const USDT_CACHE_TS_KEY = 'bob_usdt_sheet_ts_v2';
   let usdtResult = null;
   try {
     const cached = await Store.get(USDT_CACHE_KEY);
@@ -4018,12 +4018,12 @@ async function main() {
       method: latest.method,
       source: 'criptoya'
     };
-    let liveHistory = await Store.get('bob_live_captures_v1') || [];
+    let liveHistory = await Store.get('bob_live_captures_v2') || [];
     liveHistory = liveHistory.filter(d => d.t !== todayKey);
     liveHistory.push(livePoint);
     liveHistory.sort((a, b) => a.t.localeCompare(b.t));
     if (liveHistory.length > 365) liveHistory = liveHistory.slice(-365);
-    await Store.set('bob_live_captures_v1', liveHistory);
+    await Store.set('bob_live_captures_v2', liveHistory);
 
     const hasNonLiveToday = history.some(d => d.t === todayKey && d.source !== 'criptoya');
     if (!hasNonLiveToday) {
@@ -4047,7 +4047,7 @@ async function main() {
   }
 
   // Load all live captures for chart overlay
-  const liveCaptures = await Store.get('bob_live_captures_v1') || [];
+  const liveCaptures = await Store.get('bob_live_captures_v2') || [];
 
   // The USDT sheet was already loaded at top of main() as priority #1.
   // We pass usdtResult directly to the chart for the optional secondary line
@@ -4336,7 +4336,7 @@ function showDiagnosticBanner(msg, kind) {
 let refreshState = {
   history: null,
   liveCaptures: null,
-  STORE_KEY: 'bob_usd_history_v2',
+  STORE_KEY: 'bob_usd_history_v3',
   autoTimer: null
 };
 
@@ -4365,7 +4365,7 @@ async function liveRefresh() {
       liveHistory.sort((a, b) => a.t.localeCompare(b.t));
       if (liveHistory.length > 365) liveHistory = liveHistory.slice(-365);
       refreshState.liveCaptures = liveHistory;
-      await Store.set('bob_live_captures_v1', liveHistory);
+      await Store.set('bob_live_captures_v2', liveHistory);
 
       // Update main history if no CSV/Sheet point exists for today
       const hasNonLiveToday = refreshState.history.some(
