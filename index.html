@@ -402,30 +402,21 @@
   .change-down { color: var(--positive); }
   .change-flat { color: var(--text-mute); }
 
-  /* BCB Referencial inline — dentro de cada price-cell */
-  .price-bcb-inline {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-top: 0.75rem; padding-top: 0.6rem;
+  /* BCB row — misma estructura que P2P, variante más discreta */
+  .price-cell--bcb {
+    background: rgba(212,166,71,0.03);
     border-top: 1px solid var(--border-soft);
   }
-  .price-bcb-inline-label {
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--text-mute);
-    display: flex; align-items: center; gap: 0.4rem;
+  .price-cell--bcb:hover { background: rgba(212,166,71,0.06); }
+  .price-cell-tag--bcb {
+    background: rgba(212,166,71,0.1); color: var(--accent);
+    border: 1px solid rgba(212,166,71,0.25);
   }
-  .price-bcb-inline-tag {
-    font-family: var(--mono); font-size: 0.54rem; padding: 1px 5px;
-    border-radius: 3px; background: rgba(212,166,71,0.08); color: var(--accent);
-    border: 1px solid rgba(212,166,71,0.2); letter-spacing: 0.04em;
+  .price-value--bcb {
+    font-size: 2.1rem;   /* mismo estilo que .price-value pero algo más chico */
+    color: var(--text-soft);
   }
-  .price-bcb-inline-val {
-    font-family: var(--serif); font-weight: 400; font-style: italic;
-    font-size: 1.1rem; color: var(--accent); letter-spacing: -0.01em;
-  }
-  .price-bcb-inline-val .currency {
-    font-size: 0.65rem; font-family: var(--mono); margin-right: 0.1rem;
-    color: var(--accent); opacity: 0.7;
-  }
+  .price-value--bcb .currency { color: var(--accent); }
 
   /* Sparkline inside price card */
   .price-spark {
@@ -1377,10 +1368,6 @@
             </div>
             <div class="price-value" id="hero-compra"><span class="currency">Bs</span>—</div>
             <div class="price-change" id="hero-compra-chg">—</div>
-            <div class="price-bcb-inline" title="Valor referencial de compra publicado por el BCB">
-              <span class="price-bcb-inline-label">BCB Ref. <span class="price-bcb-inline-tag">BCB</span></span>
-              <span class="price-bcb-inline-val"><span class="currency">Bs</span><span id="hero-bcb-compra-val">—</span></span>
-            </div>
           </div>
           <div class="price-cell" title="Precio que recibís al vender tus USD · el más bajo (BID)">
             <div class="price-cell-label">
@@ -1389,10 +1376,23 @@
             </div>
             <div class="price-value" id="hero-venta"><span class="currency">Bs</span>—</div>
             <div class="price-change" id="hero-venta-chg">—</div>
-            <div class="price-bcb-inline" title="Valor referencial de venta publicado por el BCB">
-              <span class="price-bcb-inline-label">BCB Ref. <span class="price-bcb-inline-tag">BCB</span></span>
-              <span class="price-bcb-inline-val"><span class="currency">Bs</span><span id="hero-bcb-venta-val">—</span></span>
+          </div>
+
+          <!-- BCB Referencial — misma estructura que P2P, alineado por columna -->
+          <!-- Izq = mayor (Ref. Venta BCB 10.13) etiquetado "Compra" · Der = menor (Ref. Compra BCB 9.92) etiquetado "Venta" -->
+          <div class="price-cell price-cell--bcb" title="BCB Ref. Venta — el mayor, alineado con columna Compra">
+            <div class="price-cell-label">
+              <span>Compra <small style="opacity:.55;font-size:.7em;">REF</small></span>
+              <span class="price-cell-tag price-cell-tag--bcb">BCB</span>
             </div>
+            <div class="price-value price-value--bcb" id="hero-bcb-compra"><span class="currency">Bs</span><span id="hero-bcb-compra-val">—</span></div>
+          </div>
+          <div class="price-cell price-cell--bcb" title="BCB Ref. Compra — el menor, alineado con columna Venta">
+            <div class="price-cell-label">
+              <span>Venta <small style="opacity:.55;font-size:.7em;">REF</small></span>
+              <span class="price-cell-tag price-cell-tag--bcb">BCB</span>
+            </div>
+            <div class="price-value price-value--bcb" id="hero-bcb-venta"><span class="currency">Bs</span><span id="hero-bcb-venta-val">—</span></div>
           </div>
 
           <div class="price-spark">
@@ -3464,11 +3464,12 @@ function updateHero(data, latest) {
   document.getElementById('hero-compra').innerHTML = '<span class="currency">Bs</span>' + latest.compra.toFixed(2);
   document.getElementById('hero-venta').innerHTML  = '<span class="currency">Bs</span>' + latest.venta.toFixed(2);
 
-  // BCB Referencial compra y venta — usa los valores del cron diario
+  // BCB Referencial — columna izquierda = mayor (Ref. Venta), columna derecha = menor (Ref. Compra)
+  // Así "Compra" izq > "Venta" der, igual que P2P arriba
   const bcbCompraVal = document.getElementById('hero-bcb-compra-val');
   const bcbVentaVal  = document.getElementById('hero-bcb-venta-val');
-  if (bcbCompraVal) bcbCompraVal.textContent = REFERENCIAL_COMPRA.toFixed(2);
-  if (bcbVentaVal)  bcbVentaVal.textContent  = (window._tickerState?.bcbRef ?? REFERENCIAL_VENTA).toFixed(2);
+  if (bcbCompraVal) bcbCompraVal.textContent = (window._tickerState?.bcbRef ?? REFERENCIAL_VENTA).toFixed(2);
+  if (bcbVentaVal)  bcbVentaVal.textContent  = REFERENCIAL_COMPRA.toFixed(2);
 
   // Store latest mid for calculator
   const mid = (latest.compra + latest.venta) / 2;
