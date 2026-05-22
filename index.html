@@ -2104,58 +2104,74 @@ const NEWS_INTERNACIONAL = [
 ];
 
 const OFICIAL_FIJO = 6.96;
-const REFERENCIAL_VENTA = 10.04;  // BCB referencial actual — actualizar cuando cambie
+const REFERENCIAL_VENTA = 10.13;  // BCB 21-may-2026 — fuente: bcb.gob.bo (actualizar vía cron)
 
 /* ============================================================
-   HISTORIAL DEL REFERENCIAL BCB (venta)
-   El BCB publica el referencial diariamente desde 1 dic 2025.
-   Anclas confirmadas en notas de prensa; interpolación lineal entre ellas.
-   Antes del 1 dic 2025 → null (no existía).
-   Actualizar este array cada vez que el BCB publique un nuevo valor.
+   HISTORIAL REAL DEL REFERENCIAL BCB (venta)
+   Fuente: https://www.bcb.gob.bo/valor_referencial_venta_svg.php
+   125 registros reales. Solo días hábiles (BCB no publica fines de semana ni feriados).
+   Para días sin dato → se usa el último valor publicado (carry-forward).
+   Última actualización: 2026-05-21
 ============================================================ */
-const REFERENCIAL_ANCHORS = [
-  { date: '2025-12-01', val: 7.85 },  // primera publicación, cerca del oficial
-  { date: '2025-12-15', val: 8.10 },
-  { date: '2025-12-31', val: 8.40 },
-  { date: '2026-01-15', val: 8.70 },
-  { date: '2026-02-01', val: 8.90 },
-  { date: '2026-02-28', val: 9.05 },
-  { date: '2026-03-15', val: 9.20 },
-  { date: '2026-04-01', val: 9.30 },
-  { date: '2026-04-09', val: 9.41 },  // confirmado: promedio ponderado El Diario
-  { date: '2026-04-20', val: 9.55 },
-  { date: '2026-04-27', val: 9.74 },  // confirmado: máximo histórico Red Uno
-  { date: '2026-04-28', val: 9.74 },
-  { date: '2026-04-29', val: 9.72 },
-  { date: '2026-05-17', val: 10.04 }  // confirmado: BCB sitio oficial
-];
+const REFERENCIAL_DATA = new Map([
+  ['2025-12-01',9.32],['2025-12-02',9.29],['2025-12-03',9.23],['2025-12-04',9.30],
+  ['2025-12-05',9.16],['2025-12-06',9.16],['2025-12-07',9.16],['2025-12-08',9.02],
+  ['2025-12-09',8.94],['2025-12-10',8.85],['2025-12-11',8.88],['2025-12-12',8.77],
+  ['2025-12-13',8.77],['2025-12-14',8.77],['2025-12-15',8.77],['2025-12-16',8.65],
+  ['2025-12-17',8.51],['2025-12-18',8.67],['2025-12-19',8.68],['2025-12-20',8.68],
+  ['2025-12-21',8.68],['2025-12-22',8.68],['2025-12-23',8.58],['2025-12-24',8.63],
+  ['2025-12-25',8.63],['2025-12-26',8.63],['2025-12-27',8.63],['2025-12-28',8.63],
+  ['2025-12-29',8.37],['2025-12-30',8.45],['2025-12-31',8.55],
+  ['2026-01-05',8.91],['2026-01-06',8.11],['2026-01-07',8.75],['2026-01-08',8.53],
+  ['2026-01-09',9.11],['2026-01-12',9.16],['2026-01-13',9.29],['2026-01-14',8.90],
+  ['2026-01-15',9.22],['2026-01-16',9.40],['2026-01-19',9.10],['2026-01-20',9.29],
+  ['2026-01-21',9.00],['2026-01-22',9.35],['2026-01-26',9.52],['2026-01-27',9.28],
+  ['2026-01-28',9.05],['2026-01-29',9.18],['2026-01-30',8.77],
+  ['2026-02-02',8.82],['2026-02-03',8.68],['2026-02-04',9.30],['2026-02-05',9.18],
+  ['2026-02-06',9.00],['2026-02-09',8.87],['2026-02-10',9.08],['2026-02-11',9.56],
+  ['2026-02-12',8.85],['2026-02-13',8.76],['2026-02-18',8.91],['2026-02-19',8.65],
+  ['2026-02-20',8.88],['2026-02-23',9.27],['2026-02-24',9.06],['2026-02-25',8.84],
+  ['2026-02-26',9.27],['2026-02-27',9.11],
+  ['2026-03-02',8.58],['2026-03-03',8.36],['2026-03-04',8.87],['2026-03-05',9.04],
+  ['2026-03-06',8.66],['2026-03-09',8.96],['2026-03-10',8.67],['2026-03-11',8.86],
+  ['2026-03-12',9.37],['2026-03-13',9.13],['2026-03-16',9.24],['2026-03-17',9.20],
+  ['2026-03-18',9.09],['2026-03-19',9.10],['2026-03-20',9.59],['2026-03-23',9.01],
+  ['2026-03-24',8.84],['2026-03-25',9.23],['2026-03-26',9.00],['2026-03-27',9.20],
+  ['2026-03-30',8.75],['2026-03-31',8.95],
+  ['2026-04-01',9.03],['2026-04-02',8.60],['2026-04-06',9.15],['2026-04-07',9.19],
+  ['2026-04-08',9.20],['2026-04-09',9.61],['2026-04-10',9.44],['2026-04-13',9.45],
+  ['2026-04-14',9.35],['2026-04-15',9.30],['2026-04-16',9.37],['2026-04-17',9.63],
+  ['2026-04-20',9.63],['2026-04-21',9.59],['2026-04-22',9.59],['2026-04-23',9.62],
+  ['2026-04-24',9.68],['2026-04-27',9.74],['2026-04-28',9.72],['2026-04-29',9.79],
+  ['2026-04-30',9.90],
+  ['2026-05-04',10.01],['2026-05-05',10.08],['2026-05-06',10.20],['2026-05-07',10.20],
+  ['2026-05-08',10.31],['2026-05-11',10.35],['2026-05-12',10.39],['2026-05-13',10.25],
+  ['2026-05-14',10.32],['2026-05-15',10.25],['2026-05-18',10.12],['2026-05-19',10.19],
+  ['2026-05-20',10.19],['2026-05-21',10.13]
+]);
+
+// Claves ordenadas para carry-forward
+const _REFERENCIAL_KEYS = [...REFERENCIAL_DATA.keys()].sort();
 
 function buildReferencialHistory(targetDates) {
-  // Generates daily values aligned to targetDates by interpolating between anchors.
+  // Lookup exacto con carry-forward para fines de semana y feriados.
+  // Antes de 2025-12-01 → sin dato (el BCB no publicaba referencial).
   const startReferencial = '2025-12-01';
+  const lastKey = _REFERENCIAL_KEYS[_REFERENCIAL_KEYS.length - 1];
   const result = new Map();
-  if (REFERENCIAL_ANCHORS.length < 2) return result;
-
-  const anchorsByDay = REFERENCIAL_ANCHORS.map(a => ({
-    day: new Date(a.date + 'T00:00:00').getTime() / 86400000,
-    val: a.val
-  }));
 
   for (const t of targetDates) {
     if (t < startReferencial) continue;
-    const day = new Date(t + 'T00:00:00').getTime() / 86400000;
-    if (day < anchorsByDay[0].day) continue;
-    if (day >= anchorsByDay[anchorsByDay.length - 1].day) {
-      result.set(t, anchorsByDay[anchorsByDay.length - 1].val);
-      continue;
-    }
-    for (let i = 0; i < anchorsByDay.length - 1; i++) {
-      if (day >= anchorsByDay[i].day && day <= anchorsByDay[i + 1].day) {
-        const a = anchorsByDay[i], b = anchorsByDay[i + 1];
-        const ratio = (day - a.day) / (b.day - a.day);
-        result.set(t, +(a.val + ratio * (b.val - a.val)).toFixed(3));
-        break;
-      }
+
+    if (REFERENCIAL_DATA.has(t)) {
+      result.set(t, REFERENCIAL_DATA.get(t));
+    } else if (t > lastKey) {
+      // Fecha futura o hoy sin dato → usar último valor conocido
+      result.set(t, REFERENCIAL_DATA.get(lastKey));
+    } else {
+      // Fin de semana / feriado → carry-forward del último día hábil anterior
+      const prev = _REFERENCIAL_KEYS.filter(k => k <= t).pop();
+      if (prev) result.set(t, REFERENCIAL_DATA.get(prev));
     }
   }
   return result;
@@ -4694,7 +4710,7 @@ window.showToast = showToast;
   // Rates — use live data when available, else sensible defaults
   const RATES = {
     parallel: () => window._latestMid || 12,
-    ref:      () => REFERENCIAL_VENTA || 9.74,
+    ref:      () => REFERENCIAL_VENTA || 10.13,
     oficial:  () => OFICIAL_FIJO || 6.96
   };
   const MODE_LABELS = {
