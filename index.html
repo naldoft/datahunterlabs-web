@@ -2491,13 +2491,13 @@ async function fetchUsdtSheet() {
     if (!tsMatch) continue;
     let yyyy = tsMatch[3];
     if (yyyy.length === 2) yyyy = '20' + yyyy;
-    const rawDate = `${yyyy}-${tsMatch[2].padStart(2, '0')}-${tsMatch[1].padStart(2, '0')}`;
+    // El bot registra timestamps en hora Bolivia local → dateStr ya es la fecha Bolivia correcta.
+    const dateStr = `${yyyy}-${tsMatch[2].padStart(2, '0')}-${tsMatch[1].padStart(2, '0')}`;
     const hh = tsMatch[4] || '00', mm = tsMatch[5] || '00', ss = tsMatch[6] || '00';
-    // El bot corre en GitHub Actions (UTC) → timestamp del CSV es UTC.
-    // Convertir a fecha Bolivia (UTC-4) para que 00:30 UTC del día 22 quede como día 21 Bolivia.
-    const utcTs = new Date(`${rawDate}T${hh.padStart(2,'0')}:${mm.padStart(2,'0')}:${ss.padStart(2,'0')}Z`);
-    const fullTs = utcTs.getTime();
-    const dateStr = dateToStrBolivia(utcTs);
+    // Sin sufijo Z → Date() interpreta como hora local (Bolivia en el browser del usuario).
+    const fullTs = new Date(
+      `${dateStr}T${hh.padStart(2, '0')}:${mm.padStart(2, '0')}:${ss.padStart(2, '0')}`
+    ).getTime();
 
     const bcbCompra = parseSpanishNumber(cells[1]);
     const bcbVenta = parseSpanishNumber(cells[2]);
