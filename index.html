@@ -402,36 +402,29 @@
   .change-down { color: var(--positive); }
   .change-flat { color: var(--text-mute); }
 
-  /* BCB Referencial row inside price card */
-  .price-bcb-row {
-    grid-column: 1 / -1;
-    display: grid; grid-template-columns: 1fr 1fr;
-    border-top: 1px solid var(--border-soft);
-    background: rgba(0,0,0,0.15);
-  }
-  .price-bcb-cell {
-    padding: 0.65rem 1.5rem 0.7rem; position: relative;
-  }
-  .price-bcb-cell:first-child { border-right: 1px solid var(--border-soft); }
-  .price-bcb-label {
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em;
-    text-transform: uppercase; color: var(--text-mute);
+  /* BCB Referencial inline — dentro de cada price-cell */
+  .price-bcb-inline {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 0.25rem;
+    margin-top: 0.75rem; padding-top: 0.6rem;
+    border-top: 1px solid var(--border-soft);
   }
-  .price-bcb-tag {
-    font-family: var(--mono); font-size: 0.56rem; padding: 1px 5px;
+  .price-bcb-inline-label {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-mute);
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .price-bcb-inline-tag {
+    font-family: var(--mono); font-size: 0.54rem; padding: 1px 5px;
     border-radius: 3px; background: rgba(212,166,71,0.08); color: var(--accent);
-    border: 1px solid rgba(212,166,71,0.2); letter-spacing: 0.05em;
+    border: 1px solid rgba(212,166,71,0.2); letter-spacing: 0.04em;
   }
-  .price-bcb-value {
-    font-family: var(--serif); font-weight: 300; font-style: italic;
-    font-size: 1.35rem; line-height: 1; color: var(--text-soft);
-    letter-spacing: -0.01em;
+  .price-bcb-inline-val {
+    font-family: var(--serif); font-weight: 400; font-style: italic;
+    font-size: 1.1rem; color: var(--accent); letter-spacing: -0.01em;
   }
-  .price-bcb-value .currency {
-    font-size: 0.72rem; color: var(--accent); font-weight: 500;
-    font-family: var(--mono); margin-right: 0.15rem;
+  .price-bcb-inline-val .currency {
+    font-size: 0.65rem; font-family: var(--mono); margin-right: 0.1rem;
+    color: var(--accent); opacity: 0.7;
   }
 
   /* Sparkline inside price card */
@@ -1384,6 +1377,10 @@
             </div>
             <div class="price-value" id="hero-compra"><span class="currency">Bs</span>—</div>
             <div class="price-change" id="hero-compra-chg">—</div>
+            <div class="price-bcb-inline" title="Valor referencial de compra publicado por el BCB">
+              <span class="price-bcb-inline-label">BCB Ref. <span class="price-bcb-inline-tag">BCB</span></span>
+              <span class="price-bcb-inline-val"><span class="currency">Bs</span><span id="hero-bcb-compra-val">—</span></span>
+            </div>
           </div>
           <div class="price-cell" title="Precio que recibís al vender tus USD · el más bajo (BID)">
             <div class="price-cell-label">
@@ -1392,26 +1389,9 @@
             </div>
             <div class="price-value" id="hero-venta"><span class="currency">Bs</span>—</div>
             <div class="price-change" id="hero-venta-chg">—</div>
-          </div>
-          <!-- BCB Referencial row -->
-          <div class="price-bcb-row">
-            <div class="price-bcb-cell" title="Valor referencial de compra publicado por el BCB">
-              <div class="price-bcb-label">
-                <span>BCB Ref. Compra</span>
-                <span class="price-bcb-tag">BCB</span>
-              </div>
-              <div class="price-bcb-value" id="hero-bcb-compra">
-                <span class="currency">Bs</span><span id="hero-bcb-compra-val">—</span>
-              </div>
-            </div>
-            <div class="price-bcb-cell" title="Valor referencial de venta publicado por el BCB">
-              <div class="price-bcb-label">
-                <span>BCB Ref. Venta</span>
-                <span class="price-bcb-tag">BCB</span>
-              </div>
-              <div class="price-bcb-value" id="hero-bcb-venta">
-                <span class="currency">Bs</span><span id="hero-bcb-venta-val">—</span>
-              </div>
+            <div class="price-bcb-inline" title="Valor referencial de venta publicado por el BCB">
+              <span class="price-bcb-inline-label">BCB Ref. <span class="price-bcb-inline-tag">BCB</span></span>
+              <span class="price-bcb-inline-val"><span class="currency">Bs</span><span id="hero-bcb-venta-val">—</span></span>
             </div>
           </div>
 
