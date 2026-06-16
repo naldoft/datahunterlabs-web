@@ -29,7 +29,9 @@
   /* ─── NAV (idéntico al sitio) ─── */
   .navbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 0;margin-bottom:.5rem;border-bottom:1px solid var(--border-soft);position:relative;}
   .nav-logo{display:flex;align-items:center;gap:.65rem;text-decoration:none;user-select:none;}
-  .nav-logo svg{width:32px;height:32px;flex-shrink:0;}
+  .nav-iso{width:34px;height:34px;border-radius:8px;background:#000;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;transition:border-color .2s var(--ease),transform .2s var(--ease);}
+  .nav-logo:hover .nav-iso{border-color:var(--accent);transform:rotate(-3deg);}
+  .nav-iso img{width:24px;height:24px;display:block;}
   .nav-logo-text{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--text);letter-spacing:.01em;line-height:1.1;}
   .nav-logo-text span{color:var(--accent);}
   .nav-logo-sub{font-family:var(--mono);font-size:.6rem;color:var(--text-mute);letter-spacing:.1em;text-transform:uppercase;display:block;}
@@ -176,15 +178,9 @@
   <!-- NAV -->
   <nav class="navbar">
     <a href="index.html" class="nav-logo">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M50 14 C62 14 68 24 68 36 C68 46 63 54 55 58 L55 66 L38 66 L38 58 C30 57 26 52 26 46 C26 44 27 42 29 41 C28 39 28 36 29 34 C31 26 40 14 50 14Z" stroke="#d4a647" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
-        <rect x="36" y="28" width="20" height="20" rx="2" stroke="#d4a647" stroke-width="2" fill="none"/>
-        <rect x="40" y="32" width="12" height="12" rx="1" stroke="#d4a647" stroke-width="1.5" fill="rgba(212,166,71,0.12)"/>
-        <line x1="40" y1="28" x2="40" y2="24" stroke="#d4a647" stroke-width="1.5"/><line x1="46" y1="28" x2="46" y2="24" stroke="#d4a647" stroke-width="1.5"/><line x1="52" y1="28" x2="52" y2="24" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="40" y1="48" x2="40" y2="52" stroke="#d4a647" stroke-width="1.5"/><line x1="46" y1="48" x2="46" y2="52" stroke="#d4a647" stroke-width="1.5"/><line x1="52" y1="48" x2="52" y2="52" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="36" y1="34" x2="32" y2="34" stroke="#d4a647" stroke-width="1.5"/><line x1="36" y1="40" x2="32" y2="40" stroke="#d4a647" stroke-width="1.5"/>
-        <line x1="56" y1="34" x2="60" y2="34" stroke="#d4a647" stroke-width="1.5"/><line x1="56" y1="40" x2="60" y2="40" stroke="#d4a647" stroke-width="1.5"/>
-      </svg>
+      <div class="nav-iso">
+        <img src="isotype.svg" alt="DataHunter" width="24" height="24" />
+      </div>
       <div>
         <div class="nav-logo-text">Data<span>Hunter</span> Labs</div>
         <span class="nav-logo-sub">Observatorio USDT/BOB</span>
