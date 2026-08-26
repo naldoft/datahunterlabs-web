@@ -1524,7 +1524,7 @@
           Referencial BCB
         </span>
         <span style="display:flex; align-items:center; gap:0.5rem;">
-          <span style="width:20px; height:2px; background:#9aa0a6; display:inline-block; border-radius:1px; opacity:0.6; border-top:1px dashed #9aa0a6;"></span>
+          <span style="width:20px; height:2px; background:#5fb3d6; display:inline-block; border-radius:1px; opacity:0.85; border-top:1px dashed #5fb3d6;"></span>
           Oficial BCB
         </span>
         <span id="data-source-badge" style="margin-left:auto; color:var(--text-mute);">Cargando…</span>
@@ -1624,7 +1624,7 @@
       <p class="block-intro" id="forecast-intro">
         Vista del comportamiento desde <strong>enero del año actual</strong> con proyección a futuro.
         Se entrenan <strong>dos modelos Holt independientes</strong>: uno para el paralelo (mid de Compra/Venta)
-        y otro para el Referencial BCB diario. Cada uno tiene su propia <strong>banda de confianza al 80%</strong>
+        y otro para el Oficial BCB (TCO de mercado). Cada uno tiene su propia <strong>banda de confianza al 80%</strong>
         que se ensancha con el horizonte.
       </p>
 
@@ -1652,7 +1652,7 @@
           <div class="fc-stat-value" id="fc-val-2">—</div>
         </div>
         <div class="fc-stat">
-          <div class="fc-stat-label" id="fc-label-3">Referencial · final</div>
+          <div class="fc-stat-label" id="fc-label-3">Oficial TCO · final</div>
           <div class="fc-stat-value" id="fc-val-3">—</div>
         </div>
         <div class="fc-stat">
@@ -1664,7 +1664,7 @@
         <h6 class="projection-table-title">Proyección mensual · escenario base</h6>
         <table class="projection-table" id="projection-table">
           <thead>
-            <tr><th>Mes</th><th>Paralelo</th><th>Δ vs hoy</th><th>Referencial BCB</th></tr>
+            <tr><th>Mes</th><th>Paralelo</th><th>Δ vs hoy</th><th>Oficial BCB (TCO)</th></tr>
           </thead>
           <tbody id="projection-table-body"></tbody>
         </table>
@@ -2957,7 +2957,7 @@ function linearRegressionForecast(values, horizon = 14) {
 const COLORS = {
   compra: '#7fae8f',
   venta: '#d4a647',
-  oficial: '#6e6a5e',
+  oficial: '#5fb3d6',
   referencial: '#7a8a9a',
   forecastHolt: '#d4a647',
   forecastLR: '#7a8a9a',
@@ -3124,18 +3124,19 @@ function renderForecast(historical, horizonDays = 30) {
   const lrPar = linearRegressionForecast(trainMids, HORIZON);
   if (!holtPar || !lrPar) return;
 
-  // ---- Model 2: Referencial BCB ----
-  // Build referencial training from anchors (more reliable than CSV mostly)
+  // ---- Model 2: Oficial BCB (TCO de mercado) ----
+  // Se entrena SOLO con el período TCO (desde el 26 jun 2026), no con el peg fijo
+  // de 6.96, para que la proyección refleje la tendencia de mercado vigente.
   const trainingDates = training.map(d => d.t);
-  const refMap = buildReferencialHistory(trainingDates);
-  const refTrainPairs = trainingDates
-    .map(t => ({ t, val: refMap.get(t) }))
-    .filter(p => p.val != null);
+  const oficialTrainMap = buildOficialHistory(trainingDates);
+  const ofiTrainPairs = trainingDates
+    .map(t => ({ t, val: oficialTrainMap.get(t) }))
+    .filter(p => p.val != null && p.t >= OFICIAL_TCO_START);
 
-  let holtRef = null;
-  if (refTrainPairs.length >= 5) {
-    const refValues = refTrainPairs.map(p => p.val);
-    holtRef = holtForecast(refValues, HORIZON);
+  let holtOfi = null;
+  if (ofiTrainPairs.length >= 5) {
+    const ofiValues = ofiTrainPairs.map(p => p.val);
+    holtOfi = holtForecast(ofiValues, HORIZON);
   }
 
   // Build forecast date strings
@@ -3145,10 +3146,10 @@ function renderForecast(historical, horizonDays = 30) {
     fcDates.push(dateToStrBolivia(d));
   }
 
-  // Reference data for display window (interpolated from anchors)
+  // Oficial BCB para la ventana de display (fijo 6.96 → TCO)
   const displayDates = displayData.map(d => d.t);
-  const displayRefMap = buildReferencialHistory(displayDates);
-  const displayRef = displayDates.map(d => displayRefMap.get(d) ?? null);
+  const displayOficialMap = buildOficialHistory(displayDates);
+  const displayOficial = displayDates.map(d => displayOficialMap.get(d) ?? null);
 
   const allDates = [...displayDates, ...fcDates];
   const labels = allDates.map(formatDate);
@@ -3171,27 +3172,20 @@ function renderForecast(historical, horizonDays = 30) {
     .concat([bridgePar])
     .concat(holtPar.forecast.map(f => +f.lower.toFixed(3)));
 
-  // Referencial datasets (only if we have enough data)
-  let refHistDataset = null, holtRefDataset = null, upperRefDataset = null, lowerRefDataset = null;
-  if (holtRef) {
-    const lastRefIdx = displayRef.findLastIndex(v => v != null);
-    refHistDataset = displayRef.concat(fillNulls(HORIZON));
-    if (lastRefIdx >= 0) {
-      const bridgeRef = displayRef[lastRefIdx];
-      // Forecast extends from the last known referencial point (which may not be at end of display window)
-      // Pad forecast: nulls until last ref point, then bridge, then forecast
-      // Simpler: bridge from the very last historical point assumed to be close enough
-      const lastRefValue = displayRef[N - 1] ?? bridgeRef;
-      holtRefDataset = fillNulls(N - 1)
-        .concat([lastRefValue])
-        .concat(holtRef.forecast.map(f => +f.point.toFixed(3)));
-      upperRefDataset = fillNulls(N - 1)
-        .concat([lastRefValue])
-        .concat(holtRef.forecast.map(f => +f.upper.toFixed(3)));
-      lowerRefDataset = fillNulls(N - 1)
-        .concat([lastRefValue])
-        .concat(holtRef.forecast.map(f => +f.lower.toFixed(3)));
-    }
+  // Oficial BCB datasets (histórico + proyección del TCO)
+  let ofiHistDataset = null, holtOfiDataset = null, upperOfiDataset = null, lowerOfiDataset = null;
+  if (holtOfi) {
+    ofiHistDataset = displayOficial.concat(fillNulls(HORIZON));
+    const lastOfiValue = displayOficial[N - 1] ?? getOficialHoy();
+    holtOfiDataset = fillNulls(N - 1)
+      .concat([lastOfiValue])
+      .concat(holtOfi.forecast.map(f => +f.point.toFixed(3)));
+    upperOfiDataset = fillNulls(N - 1)
+      .concat([lastOfiValue])
+      .concat(holtOfi.forecast.map(f => +f.upper.toFixed(3)));
+    lowerOfiDataset = fillNulls(N - 1)
+      .concat([lastOfiValue])
+      .concat(holtOfi.forecast.map(f => +f.lower.toFixed(3)));
   }
 
   const datasets = [
@@ -3202,13 +3196,13 @@ function renderForecast(historical, horizonDays = 30) {
       backgroundColor: COLORS.ciFill, fill: false, pointRadius: 0 },
   ];
 
-  // Referencial IC band if available
-  if (holtRef) {
+  // Oficial BCB (TCO) IC band if available
+  if (holtOfi) {
     datasets.push(
-      { label: 'IC ref sup', data: upperRefDataset, borderColor: 'transparent',
-        backgroundColor: 'rgba(224, 138, 74, 0.08)', fill: '+1', pointRadius: 0 },
-      { label: 'IC ref inf', data: lowerRefDataset, borderColor: 'transparent',
-        backgroundColor: 'rgba(224, 138, 74, 0.08)', fill: false, pointRadius: 0 }
+      { label: 'IC oficial sup', data: upperOfiDataset, borderColor: 'transparent',
+        backgroundColor: 'rgba(95, 179, 214, 0.08)', fill: '+1', pointRadius: 0 },
+      { label: 'IC oficial inf', data: lowerOfiDataset, borderColor: 'transparent',
+        backgroundColor: 'rgba(95, 179, 214, 0.08)', fill: false, pointRadius: 0 }
     );
   }
 
@@ -3225,11 +3219,11 @@ function renderForecast(historical, horizonDays = 30) {
       borderDash: [3, 3], fill: false, borderWidth: 1.8, pointRadius: 0 }
   );
 
-  if (holtRef) {
+  if (holtOfi) {
     datasets.push(
-      { label: 'Referencial BCB', data: refHistDataset, borderColor: '#e08a4a',
+      { label: 'Oficial BCB (TCO)', data: ofiHistDataset, borderColor: COLORS.oficial,
         fill: false, pointRadius: 0, borderWidth: 2, spanGaps: false },
-      { label: 'Proy. referencial', data: holtRefDataset, borderColor: '#e08a4a',
+      { label: 'Proy. oficial (TCO)', data: holtOfiDataset, borderColor: COLORS.oficial,
         borderDash: [4, 4], fill: false, pointRadius: 1, borderWidth: 2 }
     );
   }
