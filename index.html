@@ -588,6 +588,35 @@
   .block-intro strong { color: var(--text); font-weight: 500; }
   .chart-wrap { position: relative; height: 380px; width: 100%; }
 
+  /* ===== RESERVAS & FUNDAMENTALES ===== */
+  .fund-cards {
+    display: grid; grid-template-columns: 1fr; gap: 1px;
+    background: var(--border); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+  @media (min-width: 640px) { .fund-cards { grid-template-columns: repeat(3, 1fr); } }
+  .fund-cell { background: var(--bg-soft); padding: 1.1rem 1.2rem; }
+  .fund-cell-label {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-mute); margin-bottom: 0.5rem;
+  }
+  .fund-cell-value { font-family: var(--serif); font-size: 1.7rem; line-height: 1; color: var(--text); }
+  .fund-cell-value small { font-size: 0.85rem; color: var(--text-soft); }
+  .fund-cell-sub { font-family: var(--mono); font-size: 0.66rem; margin-top: 0.45rem; }
+  .bank-rank { margin-top: 1.8rem; border-top: 1px solid var(--border-soft); padding-top: 1.4rem; }
+  .bank-rank-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+  .bank-rank-title { font-family: var(--serif); font-style: italic; font-weight: 350; font-size: 1.15rem; color: var(--text); display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .bank-rank-pill { font-family: var(--mono); font-style: normal; font-size: 0.58rem; letter-spacing: 0.1em; color: var(--accent); border: 1px solid var(--accent-soft); border-radius: 3px; padding: 0.15rem 0.45rem; }
+  .bank-rank-sub { font-family: var(--mono); font-size: 0.66rem; color: var(--text-mute); margin-top: 0.3rem; }
+  .bank-rank-date { font-family: var(--mono); font-size: 0.66rem; color: var(--text-mute); white-space: nowrap; }
+  .bank-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.55rem; }
+  .bank-row-name { font-family: var(--mono); font-size: 0.72rem; color: var(--text-soft); width: 165px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bank-row-bar { flex: 1; height: 9px; background: var(--bg); border-radius: 5px; overflow: hidden; }
+  .bank-row-bar span { display: block; height: 100%; border-radius: 5px; transition: width 0.6s var(--ease); }
+  .bank-row-val { font-family: var(--serif); font-size: 0.95rem; width: 52px; text-align: right; flex-shrink: 0; }
+  .bank-rank-note { font-family: var(--mono); font-size: 0.66rem; color: var(--text-mute); line-height: 1.5; margin-top: 1rem; padding: 0.7rem 0.9rem; background: rgba(255,255,255,0.02); border-left: 2px solid var(--accent-soft); border-radius: 0 4px 4px 0; }
+  @media (max-width: 560px) { .bank-row-name { width: 110px; } }
+
   /* ============= SEGMENTED CONTROL ============= */
   .segmented {
     display: inline-flex; background: var(--bg);
@@ -1549,10 +1578,56 @@
     </div>
   </section>
 
+  <!-- RESERVAS & FUNDAMENTALES BCB -->
+  <section class="block" id="fundamentales">
+    <div class="block-header">
+      <div class="block-title"><span class="block-num">02</span>Reservas &amp; Fundamentales</div>
+      <div class="block-actions">
+        <span id="rin-update-time" style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">—</span>
+        <span class="block-collapse-icon">▼</span>
+      </div>
+    </div>
+    <div class="block-body">
+      <p class="block-intro">
+        Las <strong>Reservas Internacionales Netas (RIN)</strong> del BCB son el motor de fondo del dólar paralelo:
+        cuando caen, la presión sobre el tipo de cambio sube. Bolivia pasó de un pico de
+        <strong>$15.477M (2014)</strong> a un mínimo de <strong>$1.582M (2024)</strong>, y desde entonces se recupera.
+        Serie oficial mensual del BCB.
+      </p>
+
+      <!-- Tarjetas de indicadores RIN -->
+      <div class="fund-cards" id="fund-cards"></div>
+
+      <!-- Gráfico RIN -->
+      <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin:1.4rem 0 1rem; font-family:var(--mono); font-size:0.72rem;">
+        <span style="display:flex; align-items:center; gap:0.5rem;">
+          <span style="width:20px; height:8px; background:rgba(95,179,214,0.35); border-top:2px solid #5fb3d6; display:inline-block;"></span>
+          Reservas Internacionales Netas (millones USD)
+        </span>
+      </div>
+      <div class="chart-wrap" style="height:320px;"><canvas id="chart-rin"></canvas></div>
+
+      <!-- Ranking de bancos -->
+      <div class="bank-rank" id="bank-rank">
+        <div class="bank-rank-head">
+          <div>
+            <div class="bank-rank-title">¿Qué banco te paga más por tus dólares?
+              <span class="bank-rank-pill">COMPRA BCB</span>
+            </div>
+            <div class="bank-rank-sub">Tasa de compra oficial por banco · lo que recibís al vender USD en ventanilla</div>
+          </div>
+          <span class="bank-rank-date" id="bank-rank-date">—</span>
+        </div>
+        <div id="bank-rank-list"></div>
+        <div class="bank-rank-note">ℹ️ Para <strong>comprar</strong> dólares, los bancos casi nunca tienen stock — por eso existe el mercado paralelo (ver bloque 01).</div>
+      </div>
+    </div>
+  </section>
+
   <!-- CRYPTO MARKET -->
   <section class="block">
     <div class="block-header">
-      <div class="block-title"><span class="block-num">02</span>Mercado Cripto Global</div>
+      <div class="block-title"><span class="block-num">03</span>Mercado Cripto Global</div>
       <div class="block-actions">
         <span id="crypto-update-time" style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">Cargando…</span>
         <span class="block-collapse-icon">▼</span>
@@ -1609,7 +1684,7 @@
   <!-- FORECAST -->
   <section class="block" id="proyeccion">
     <div class="block-header" id="proyeccion-header">
-      <div class="block-title"><span class="block-num">03</span>Proyección</div>
+      <div class="block-title"><span class="block-num">04</span>Proyección</div>
       <div class="block-actions">
         <div class="segmented" id="forecast-controls">
           <div class="seg-indicator" id="seg-ind-forecast"></div>
@@ -1683,7 +1758,7 @@
   <!-- ECONOMIC INDICATORS -->
   <section class="block">
     <div class="block-header">
-      <div class="block-title"><span class="block-num">04</span>Contexto Económico</div>
+      <div class="block-title"><span class="block-num">05</span>Contexto Económico</div>
       <div class="block-actions">
         <span style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">Datos oficiales</span>
         <span class="block-collapse-icon">▼</span>
@@ -1708,7 +1783,7 @@
   <!-- NEWS -->
   <section class="block">
     <div class="block-header">
-      <div class="block-title"><span class="block-num">05</span>Pulso Informativo</div>
+      <div class="block-title"><span class="block-num">06</span>Pulso Informativo</div>
       <div class="block-actions">
         <span id="news-update-time" style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">Cargando…</span>
         <span class="block-collapse-icon">▼</span>
@@ -2258,6 +2333,70 @@ function buildOficialHistory(targetDates) {
 function getOficialHoy() {
   return getOficialParaFecha(hoyBolivia());
 }
+
+/* ============================================================
+   RESERVAS INTERNACIONALES NETAS (RIN) del BCB — en millones de USD
+   Fuente: https://www.bcb.gob.bo/webdocs/bcb_semanal/data/reservas.csv
+   Serie mensual (fin de mes). Se actualiza vía cron semanal.
+   Última actualización: 2026-02-20
+============================================================ */
+const RIN_DATA = [
+  ['2006-01-31',1823],['2006-02-28',1876],['2006-03-31',2014],['2006-04-30',2217],['2006-05-31',2401],['2006-06-30',2474],
+  ['2006-07-31',2671],['2006-08-31',2776],['2006-09-30',2885],['2006-10-31',2971],['2006-11-30',3071],['2006-12-31',3178],
+  ['2007-01-31',3240],['2007-02-28',3369],['2007-03-31',3533],['2007-04-30',3734],['2007-05-31',3841],['2007-06-30',3891],
+  ['2007-07-31',4114],['2007-08-31',4384],['2007-09-30',4743],['2007-10-31',4917],['2007-11-30',5079],['2007-12-31',5319],
+  ['2008-01-31',5622],['2008-02-29',5994],['2008-03-31',6232],['2008-04-30',6513],['2008-05-31',6828],['2008-06-30',7121],
+  ['2008-07-31',7439],['2008-08-31',7687],['2008-09-30',7811],['2008-10-31',7537],['2008-11-30',7618],['2008-12-31',7722],
+  ['2009-01-31',7784],['2009-02-28',7679],['2009-03-31',7765],['2009-04-30',7740],['2009-05-31',7895],['2009-06-30',7956],
+  ['2009-07-31',8008],['2009-08-31',8310],['2009-09-30',8453],['2009-10-31',8599],['2009-11-30',8760],['2009-12-31',8580],
+  ['2010-01-31',8558],['2010-02-28',8524],['2010-03-31',8447],['2010-04-30',8440],['2010-05-31',8456],['2010-06-30',8537],
+  ['2010-07-31',8617],['2010-08-31',8737],['2010-09-30',9058],['2010-10-31',9208],['2010-11-30',9274],['2010-12-31',9730],
+  ['2011-01-31',10016],['2011-02-28',10357],['2011-03-31',10486],['2011-04-30',10752],['2011-05-31',10677],['2011-06-30',10751],
+  ['2011-07-31',11037],['2011-08-31',11632],['2011-09-30',11408],['2011-10-31',11903],['2011-11-30',12115],['2011-12-31',12019],
+  ['2012-01-31',12489],['2012-02-29',12739],['2012-03-31',12747],['2012-04-30',12573],['2012-05-31',12422],['2012-06-30',12440],
+  ['2012-07-31',12748],['2012-08-31',13064],['2012-09-30',13419],['2012-10-31',13772],['2012-11-30',13926],['2012-12-31',13927],
+  ['2013-01-31',14049],['2013-02-28',14101],['2013-03-31',14188],['2013-04-30',14206],['2013-05-31',14008],['2013-06-30',13952],
+  ['2013-07-31',14311],['2013-08-31',14401],['2013-09-30',14518],['2013-10-31',14250],['2013-11-30',14228],['2013-12-31',14430],
+  ['2014-01-31',14519],['2014-02-28',14558],['2014-03-31',14491],['2014-04-30',14533],['2014-05-31',14541],['2014-06-30',14809],
+  ['2014-07-31',14873],['2014-08-31',15395],['2014-09-30',15272],['2014-10-31',15387],['2014-11-30',15477],['2014-12-31',15123],
+  ['2015-01-31',15087],['2015-02-28',15144],['2015-03-31',14968],['2015-04-30',14841],['2015-05-31',14648],['2015-06-30',14708],
+  ['2015-07-31',14486],['2015-08-31',14353],['2015-09-30',14227],['2015-10-31',13967],['2015-11-30',13528],['2015-12-31',13056],
+  ['2016-01-31',12818],['2016-02-29',12787],['2016-03-31',12483],['2016-04-30',12233],['2016-05-31',11725],['2016-06-30',11609],
+  ['2016-07-31',11550],['2016-08-31',11259],['2016-09-30',11039],['2016-10-31',10694],['2016-11-30',10353],['2016-12-31',10081],
+  ['2017-01-31',9839],['2017-02-28',9805],['2017-03-31',10261],['2017-04-30',10025],['2017-05-31',10254],['2017-06-30',10306],
+  ['2017-07-31',10358],['2017-08-31',10452],['2017-09-30',10130],['2017-10-31',9934],['2017-11-30',10632],['2017-12-31',10261],
+  ['2018-01-31',10226],['2018-02-28',9965],['2018-03-31',9805],['2018-04-30',9602],['2018-05-31',9759],['2018-06-30',9522],
+  ['2018-07-31',9257],['2018-08-31',9080],['2018-09-30',8729],['2018-10-31',8506],['2018-11-30',8740],['2018-12-31',8946],
+  ['2019-01-31',8724],['2019-02-28',8475],['2019-03-31',7947],['2019-04-30',8409],['2019-05-31',8253],['2019-06-30',8317],
+  ['2019-07-31',8047],['2019-08-31',8027],['2019-09-30',7650],['2019-10-31',6830],['2019-11-30',6460],['2019-12-31',6468],
+  ['2020-01-31',6374],['2020-02-29',6310],['2020-03-31',6091],['2020-04-30',6532],['2020-05-31',6390],['2020-06-30',6272],
+  ['2020-07-31',6608],['2020-08-31',6644],['2020-09-30',6356],['2020-10-31',5578],['2020-11-30',5305],['2020-12-31',5276],
+  ['2021-01-31',4964],['2021-02-28',4770],['2021-03-31',4526],['2021-04-30',4629],['2021-05-31',4887],['2021-06-30',4624],
+  ['2021-07-31',4746],['2021-08-31',5116],['2021-09-30',4831],['2021-10-31',4890],['2021-11-30',4762],['2021-12-31',4752],
+  ['2022-01-31',4483],['2022-02-28',4396],['2022-03-31',4599],['2022-04-30',4602],['2022-05-31',4578],['2022-06-30',4505],
+  ['2022-07-31',4301],['2022-08-31',3807],['2022-09-30',3844],['2022-10-31',3687],['2022-11-30',3808],['2022-12-31',3796],
+  ['2023-01-31',3616],['2023-02-28',3149],['2023-03-31',3112],['2023-04-30',3158],['2023-05-31',2952],['2023-06-30',2612],
+  ['2023-07-31',2513],['2023-08-31',2147],['2023-09-30',1818],['2023-10-31',1654],['2023-11-30',1688],['2023-12-31',1709],
+  ['2024-01-31',1616],['2024-02-29',1582],['2024-03-31',1677],['2024-04-30',1796],['2024-05-31',1938],['2024-06-30',1839],
+  ['2024-07-31',1820],['2024-08-31',1905],['2024-09-30',1966],['2024-10-31',2065],['2024-11-30',1952],['2024-12-31',1977],
+  ['2025-01-31',2103],['2025-02-28',2188],['2025-03-31',2302],['2025-04-30',2618],['2025-05-31',2519],['2025-06-30',2807],
+  ['2025-07-31',2726],['2025-08-31',2881],['2025-09-30',3275],['2025-10-31',3227],['2025-11-30',3261],['2025-12-31',3713],
+  ['2026-01-31',4417],['2026-02-20',4173]
+];
+
+/* ============================================================
+   RANKING DE BANCOS — Tasa de COMPRA de dólares (TCO por entidad)
+   Lo que cada banco te paga al vender USD en ventanilla.
+   Fuente: tco_reporte_ultima_cotizacion.php · se actualiza por día hábil.
+   Última actualización: fecha de corte 2026-08-20
+============================================================ */
+const BANK_RANKING_FECHA = '2026-08-20';
+const BANK_RANKING = [
+  ['Banco Solidario',11.57],['Banco Económico',11.56],['Banco de Crédito',11.53],
+  ['Banco BISA',11.52],['Banco Ganadero',11.52],['Banco Nacional de Bolivia',11.51],
+  ['Banco de la Nación Argentina',11.48],['Banco Fortaleza',11.47],['Banco Mercantil Santa Cruz',11.45],
+  ['Banco Unión',11.45],['Banco FIE',11.32],['Banco Prodem',11.22],['Banco PyME de la Comunidad',11.12]
+];
 
 function buildReferencialHistory(targetDates) {
   // Lookup exacto con carry-forward para fines de semana y feriados.
@@ -3084,6 +3223,121 @@ function renderHistoric(data, range, liveCaptures = [], usdtSheet = null) {
     data: { labels, datasets },
     options: baseChartOpts
   });
+}
+
+/* ============================================================
+   RESERVAS & FUNDAMENTALES — tarjetas RIN, gráfico RIN y ranking bancos
+============================================================ */
+let chartRin = null;
+function renderFundamentales(history) {
+  if (!Array.isArray(RIN_DATA) || !RIN_DATA.length) return;
+
+  // ---- Tarjetas ----
+  const last = RIN_DATA[RIN_DATA.length - 1];
+  const lastVal = last[1];
+  const lastDate = last[0];
+  // 12 meses atrás (aprox: 12 puntos mensuales)
+  const yearAgoIdx = Math.max(0, RIN_DATA.length - 13);
+  const yearAgoVal = RIN_DATA[yearAgoIdx][1];
+  const pctYear = ((lastVal - yearAgoVal) / yearAgoVal * 100);
+  // Pico histórico
+  let peak = RIN_DATA[0];
+  for (const p of RIN_DATA) if (p[1] > peak[1]) peak = p;
+  const pctPeak = ((lastVal - peak[1]) / peak[1] * 100);
+  const peakYear = peak[0].slice(0, 4);
+
+  const fmtM = n => '$' + n.toLocaleString('en-US');
+  const fmtMes = iso => {
+    const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    const [y, m] = iso.split('-');
+    return meses[parseInt(m, 10) - 1] + ' ' + y;
+  };
+
+  const cards = [
+    { label: 'RIN actual', value: fmtM(lastVal) + '<small>M</small>',
+      sub: 'corte ' + fmtMes(lastDate), subColor: 'var(--text-mute)' },
+    { label: 'vs hace 12 meses', value: (pctYear >= 0 ? '+' : '') + pctYear.toFixed(0) + '%',
+      sub: (pctYear >= 0 ? '▲ recuperación' : '▼ caída'),
+      subColor: pctYear >= 0 ? 'var(--positive)' : 'var(--negative)' },
+    { label: 'vs pico histórico', value: pctPeak.toFixed(0) + '%',
+      sub: 'pico ' + fmtM(peak[1]) + 'M (' + peakYear + ')', subColor: 'var(--negative)' }
+  ];
+  const cardsEl = document.getElementById('fund-cards');
+  if (cardsEl) {
+    cardsEl.innerHTML = cards.map(c => `
+      <div class="fund-cell">
+        <div class="fund-cell-label">${c.label}</div>
+        <div class="fund-cell-value">${c.value}</div>
+        <div class="fund-cell-sub" style="color:${c.subColor}">${c.sub}</div>
+      </div>`).join('');
+  }
+  const upd = document.getElementById('rin-update-time');
+  if (upd) upd.textContent = 'RIN a ' + fmtMes(lastDate);
+
+  // ---- Gráfico RIN (área) ----
+  const ctx = document.getElementById('chart-rin');
+  if (ctx) {
+    const labels = RIN_DATA.map(p => {
+      const [y, m] = p[0].split('-');
+      return (m === '01' || m === '12') ? y : '';
+    });
+    const values = RIN_DATA.map(p => p[1]);
+    if (chartRin) chartRin.destroy();
+    chartRin = new Chart(ctx.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'RIN (millones USD)', data: values,
+          borderColor: '#5fb3d6', backgroundColor: 'rgba(95,179,214,0.12)',
+          borderWidth: 2, pointRadius: 0, fill: true, tension: 0.25
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: items => { const i = items[0].dataIndex; return fmtMes(RIN_DATA[i][0]); },
+              label: item => ' RIN: $' + item.parsed.y.toLocaleString('en-US') + ' M'
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: '#a8a394', font: { family: "'IBM Plex Mono', monospace", size: 10 },
+               maxRotation: 0, autoSkip: true, maxTicksLimit: 12 },
+               grid: { display: false } },
+          y: { ticks: { color: '#a8a394', font: { family: "'IBM Plex Mono', monospace", size: 10 },
+               callback: v => '$' + (v / 1000).toFixed(0) + 'k' },
+               grid: { color: 'rgba(255,255,255,0.04)' } }
+        }
+      }
+    });
+  }
+
+  // ---- Ranking de bancos ----
+  const listEl = document.getElementById('bank-rank-list');
+  if (listEl && Array.isArray(BANK_RANKING) && BANK_RANKING.length) {
+    const vals = BANK_RANKING.map(b => b[1]);
+    const min = Math.min(...vals), max = Math.max(...vals);
+    const rango = (max - min) || 1;
+    listEl.innerHTML = BANK_RANKING.map((b, i) => {
+      // Normalizar ancho: 55%..100% para que se note el ranking sin exagerar
+      const pct = 55 + ((b[1] - min) / rango) * 45;
+      const color = i === 0 ? 'var(--positive)' : i < 3 ? '#9ec9a8' : 'var(--accent)';
+      const nameColor = i > 6 ? 'var(--text-mute)' : 'var(--text-soft)';
+      return `
+        <div class="bank-row">
+          <span class="bank-row-name" style="color:${nameColor}" title="${b[0]}">${b[0]}</span>
+          <span class="bank-row-bar"><span style="width:${pct.toFixed(0)}%;background:${color}"></span></span>
+          <span class="bank-row-val" style="color:${i === 0 ? 'var(--positive)' : 'var(--text)'}">${b[1].toFixed(2)}</span>
+        </div>`;
+    }).join('');
+  }
+  const dateEl = document.getElementById('bank-rank-date');
+  if (dateEl) dateEl.textContent = 'corte ' + fmtMes(BANK_RANKING_FECHA);
 }
 
 function renderForecast(historical, horizonDays = 30) {
@@ -4158,6 +4412,7 @@ async function main() {
   safe('hero', () => updateHero(history, latest));
   safe('métricas', () => updateMetrics(history, latest));
   safe('histórico', () => renderHistoric(history, '90', liveCaptures, usdtSheet));
+  safe('fundamentales', () => renderFundamentales(history));
   safe('proyección', () => renderForecast(history));
   safe('inflación', () => renderInflation());
   safe('indicadores', () => renderIndicators());
