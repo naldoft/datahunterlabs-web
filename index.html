@@ -1767,9 +1767,10 @@
     <div class="block-body">
       <p class="block-intro">
         Indicadores macroeconómicos que <strong>explican y acompañan</strong> el comportamiento del paralelo.
-        La inflación mensual del INE muestra la presión de precios sobre el boliviano; la brecha cambiaria
-        contra el oficial fijo y el referencial del BCB indica el grado de distorsión del mercado de divisas;
+        La inflación mensual del INE muestra la presión de precios sobre el boliviano; el
+        <strong>Oficial BCB (TCO)</strong> y las reservas internacionales indican el estado del mercado de divisas;
         y el salario mínimo permite dimensionar el poder adquisitivo real frente al dólar paralelo.
+        Los datos del BCB se actualizan solos; los del INE son de carga manual.
       </p>
       <div class="econ-grid">
         <div class="chart-wrap" style="height:300px"><canvas id="chart-inflation"></canvas></div>
@@ -2149,14 +2150,29 @@ const INFLATION_DATA = [
   { m: '2026-03', val: -0.34, label: 'Mar 26' }
 ];
 
-const INDICATORS = [
-  { name: 'Inflación 12 meses', val: '19.64%', delta: 'persistente', deltaType: 'down', src: 'INE · Ene 2026' },
-  { name: 'Inflación acumulada YTD', val: '0.34%', delta: 'feb-mar negativos', deltaType: 'flat', src: 'INE · Mar 2026' },
-  { name: 'Tipo oficial BCB', val: 'Bs 6.96', delta: 'fijo desde 2011', deltaType: 'flat', src: 'BCB' },
-  { name: 'Tipo referencial BCB', val: 'Bs 9.74', delta: 'máx. histórico', deltaType: 'up', src: 'BCB · 27-abr' },
-  { name: 'Salario mínimo nacional', val: 'Bs 3.300', delta: '+20% vs 2025', deltaType: 'up', src: 'D.S. 5516 · Ene 2026' },
-  { name: 'Proy. PIB 2026', val: '-1.1%', delta: 'recesión esperada', deltaType: 'down', src: 'Banco Mundial' }
-];
+// Indicadores del Contexto Económico. Los del BCB (oficial TCO + reservas) se
+// leen EN VIVO de la data del dashboard (se actualizan solos vía el bot); los
+// macro (inflación, salario, PIB) son datos manuales del INE / decretos.
+function getIndicators() {
+  // Oficial TCO en vivo
+  const ofi = (typeof getOficialHoy === 'function') ? getOficialHoy() : (typeof TCO_OFICIAL !== 'undefined' ? TCO_OFICIAL : 0);
+  const ofiFecha = (typeof TCO_FECHA !== 'undefined') ? TCO_FECHA : '';
+  // Reservas RIN en vivo (último dato del array RIN_DATA)
+  let rinVal = '—', rinFecha = '';
+  if (typeof RIN_DATA !== 'undefined' && RIN_DATA.length) {
+    const last = RIN_DATA[RIN_DATA.length - 1];
+    rinVal = '$' + last[1].toLocaleString('en-US') + 'M';
+    rinFecha = last[0];
+  }
+  return [
+    { name: 'Oficial BCB (TCO)', val: 'Bs ' + ofi.toFixed(2), delta: 'de mercado', deltaType: 'up', src: 'BCB · corte ' + ofiFecha },
+    { name: 'Reservas Internacionales (RIN)', val: rinVal, delta: 'en recuperación', deltaType: 'up', src: 'BCB · ' + rinFecha },
+    { name: 'Oficial fijo anterior', val: 'Bs 6.96', delta: 'peg 2011–jun 2026', deltaType: 'flat', src: 'BCB (histórico)' },
+    { name: 'Inflación 12 meses', val: '19.64%', delta: 'dato manual', deltaType: 'down', src: 'INE · Ene 2026' },
+    { name: 'Salario mínimo nacional', val: 'Bs 3.300', delta: '+20% vs 2025', deltaType: 'up', src: 'D.S. 5516 · Ene 2026' },
+    { name: 'Proy. PIB 2026', val: '-1.1%', delta: 'recesión esperada', deltaType: 'down', src: 'Banco Mundial' }
+  ];
+}
 
 const NEWS_NACIONAL = [
   {
@@ -3707,7 +3723,7 @@ function renderInflation() {
 
 function renderIndicators() {
   const list = document.getElementById('indicator-list');
-  list.innerHTML = INDICATORS.map(i => `
+  list.innerHTML = getIndicators().map(i => `
     <div class="indicator-row">
       <div>
         <div class="ind-name">${i.name}</div>
