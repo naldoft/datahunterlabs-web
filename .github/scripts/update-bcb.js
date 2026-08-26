@@ -1,7 +1,13 @@
 /**
  * update-bcb.js
- * Descarga los SVGs del BCB (venta y compra), extrae los valores del día
- * y actualiza index.html con ambos datos.
+ * Descarga el CSV histórico del Tipo de Cambio Oficial (TCO) del BCB, calcula
+ * el promedio ponderado diario por fecha de corte y actualiza index.html:
+ *   - Reconstruye el Map TCO_DATA con toda la serie (auto-reparable).
+ *   - Actualiza las constantes TCO_OFICIAL y TCO_FECHA con el último dato.
+ *
+ * Contexto: desde el 26 jun 2026 el BCB reemplazó el peg fijo (Bs 6.96) y el
+ * "valor referencial" por el TCO — promedio ponderado de las operaciones de
+ * COMPRA de dólares de los bancos con sus clientes (flexibilización cambiaria).
  *
  * Uso: node .github/scripts/update-bcb.js
  * Salida:
@@ -15,19 +21,16 @@ const https = require('https');
 const fs    = require('fs');
 const path  = require('path');
 
-const SVG_VENTA_URL  = 'https://www.bcb.gob.bo/valor_referencial_venta_svg.php';
-const SVG_COMPRA_URL = 'https://www.bcb.gob.bo/valor_referencial_compra_svg.php';
-const INDEX_PATH     = path.join(__dirname, '..', '..', 'index.html');
-
-const MESES = {
-  enero:1, febrero:2, marzo:3, abril:4, mayo:5, junio:6,
-  julio:7, agosto:8, septiembre:9, octubre:10, noviembre:11, diciembre:12
-};
+const TCO_CSV_URL = 'https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php';
+const INDEX_PATH  = path.join(__dirname, '..', '..', 'index.html');
 
 // ── Fetch con timeout ───────────────────────────────────────────────────────
 function fetchUrl(url) {
   return new Promise((resolve, reject) => {
-    const req = https.get(url, { timeout: 15000 }, res => {
+    const req = https.get(url, {
+      timeout: 20000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; DataHunterLabs-bot/1.0)' }
+    }, res => {
       if (res.statusCode !== 200)
         return reject(new Error(`HTTP ${res.statusCode} from ${url}`));
       let data = '';
@@ -40,113 +43,101 @@ function fetchUrl(url) {
   });
 }
 
-// ── Parser venta SVG → { fecha, valor } ────────────────────────────────────
-function parseVentaEntry(svg) {
-  const dateMatch  = svg.match(/class="cell-text--highlight">([^<]+)</);
-  const valueMatch = svg.match(/class="cell-value--highlight">([^<]+)</);
-  if (!dateMatch || !valueMatch)
-    throw new Error('No se encontró la fila destacada en el SVG de venta');
-
-  const parts = dateMatch[1].trim().split(' ');
-  const day   = parts[0].padStart(2, '0');
-  const mes   = MESES[parts[2].toLowerCase()];
-  if (!mes) throw new Error(`Mes desconocido: ${parts[2]}`);
-  const fecha = `${parts[4]}-${String(mes).padStart(2,'0')}-${day}`;
-  const valor = parseFloat(valueMatch[1].replace(',', '.'));
-  if (isNaN(valor)) throw new Error(`Valor inválido en venta: ${valueMatch[1]}`);
-  return { fecha, valor };
+// ── Parse número BCB: "10.107" (miles) o "9,73" (decimal) ───────────────────
+function num(s) {
+  if (s == null) return null;
+  s = String(s).trim();
+  if (!s || s === '-') return null;
+  // Formato del CSV: TC usa coma decimal (9,73); montos usan punto de miles (10.107)
+  s = s.replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(s);
+  return isFinite(n) ? n : null;
 }
 
-// ── Parser compra SVG → valor del last-quote ────────────────────────────────
-// El SVG de compra muestra bancos individuales; el resumen es el "last-quote"
-function parseCompraEntry(svg) {
-  const match = svg.match(/class="last-quote">Bs ([\d,]+)\//);
-  if (!match) throw new Error('No se encontró last-quote en el SVG de compra');
-  const valor = parseFloat(match[1].replace(',', '.'));
-  if (isNaN(valor)) throw new Error(`Valor inválido en compra: ${match[1]}`);
-  return valor;
+// ── Calcular promedio ponderado diario del TCO desde el CSV ─────────────────
+// Cada fila de datos: Fecha;Vigencia;TC;...(bancos: N°;Monto)...;TOTAL N°;TOTAL Monto
+// TCO_dia = Σ(TC × MontoTotal) / Σ(MontoTotal)
+function parseTcoCsv(csv) {
+  const lines = csv.split(/\r?\n/);
+  const agg = {}; // fecha -> { w: Σ(TC×monto), m: Σ(monto) }
+  for (const ln of lines) {
+    if (!/^\d{4}-\d{2}-\d{2};/.test(ln)) continue; // solo filas de datos
+    const c = ln.split(';');
+    const fecha = c[0];
+    const tc = num(c[2]);
+    const montoTotal = num(c[c.length - 1]); // última columna = TOTAL BANCOS Monto
+    if (tc == null || montoTotal == null || montoTotal <= 0) continue;
+    if (!agg[fecha]) agg[fecha] = { w: 0, m: 0 };
+    agg[fecha].w += tc * montoTotal;
+    agg[fecha].m += montoTotal;
+  }
+  const fechas = Object.keys(agg).sort();
+  const serie = fechas.map(f => [f, +(agg[f].w / agg[f].m).toFixed(2)]);
+  return serie; // [ ['2026-06-26', 9.73], ... ]
+}
+
+// ── Generar el bloque de código del Map TCO_DATA (4 pares por línea) ────────
+function buildTcoMapCode(serie) {
+  let body = '';
+  for (let i = 0; i < serie.length; i += 4) {
+    const chunk = serie.slice(i, i + 4)
+      .map(([f, v]) => `['${f}',${v}]`).join(',');
+    body += '  ' + chunk + (i + 4 < serie.length ? ',' : '') + '\n';
+  }
+  return 'const TCO_DATA = new Map([\n' + body + ']);';
 }
 
 // ── Actualizar index.html ───────────────────────────────────────────────────
-function updateIndex(html, fecha, valorVenta, valorCompra) {
-  // 1. Verificar si ya está al día (fecha ya en REFERENCIAL_DATA)
-  if (html.includes(`['${fecha}',`)) {
-    console.log(`ℹ️  ${fecha} ya está en REFERENCIAL_DATA.`);
+function updateIndex(html, serie) {
+  const [ultFecha, ultValor] = serie[serie.length - 1];
 
-    // Aún así actualizamos REFERENCIAL_COMPRA si cambió
-    const currentCompraMatch = html.match(/const REFERENCIAL_COMPRA\s*=\s*([\d.]+);/);
-    const currentCompra = currentCompraMatch ? parseFloat(currentCompraMatch[1]) : null;
-    if (currentCompra === valorCompra) {
-      console.log('ℹ️  REFERENCIAL_COMPRA también al día. Sin cambios.');
-      return null;
-    }
-    console.log(`🔄 REFERENCIAL_COMPRA cambió: ${currentCompra} → ${valorCompra}`);
-    return html.replace(
-      /const REFERENCIAL_COMPRA\s*=\s*[\d.]+;.*$/m,
-      `const REFERENCIAL_COMPRA =  ${valorCompra};  // BCB ref. compra ${fecha} — actualizar vía cron`
-    );
-  }
+  // 1. Reemplazar el Map TCO_DATA completo
+  const mapRe = /const TCO_DATA = new Map\(\[[\s\S]*?\]\);/;
+  if (!mapRe.test(html))
+    throw new Error('No se encontró el Map TCO_DATA en index.html');
+  const newMap = buildTcoMapCode(serie);
 
-  // 2. Agregar nueva entrada de venta al Map (último elemento sin coma → \n]);)
-  const mapCloseRegex = /(\['20\d{2}-\d{2}-\d{2}',[\d.]+\])\n\]\);/;
-  if (!mapCloseRegex.test(html))
-    throw new Error('No se encontró el cierre del REFERENCIAL_DATA Map en index.html');
-  html = html.replace(mapCloseRegex, `$1,['${fecha}',${valorVenta}]\n]);`);
+  // 2. Reemplazar TCO_OFICIAL y TCO_FECHA
+  const oficialRe = /const TCO_OFICIAL = [\d.]+;.*$/m;
+  const fechaRe   = /const TCO_FECHA\s*= '[^']*';.*$/m;
+  if (!oficialRe.test(html) || !fechaRe.test(html))
+    throw new Error('No se encontraron las constantes TCO_OFICIAL / TCO_FECHA');
 
-  // 3. Actualizar REFERENCIAL_VENTA
-  html = html.replace(
-    /const REFERENCIAL_VENTA\s*=\s*[\d.]+;.*$/m,
-    `const REFERENCIAL_VENTA  = ${valorVenta};  // BCB ref. venta  ${fecha} — actualizar vía cron`
-  );
+  let updated = html
+    .replace(mapRe, newMap)
+    .replace(oficialRe, `const TCO_OFICIAL = ${ultValor};              // último TCO publicado (${ultFecha}) — actualizar vía cron`)
+    .replace(fechaRe,   `const TCO_FECHA   = '${ultFecha}';       // fecha de corte del último TCO — actualizar vía cron`);
 
-  // 4. Actualizar REFERENCIAL_COMPRA
-  html = html.replace(
-    /const REFERENCIAL_COMPRA\s*=\s*[\d.]+;.*$/m,
-    `const REFERENCIAL_COMPRA =  ${valorCompra};  // BCB ref. compra ${fecha} — actualizar vía cron`
-  );
-
-  // 5. Actualizar comentario de última actualización
-  html = html.replace(
-    /\/\/ Última actualización: \d{4}-\d{2}-\d{2}/,
-    `// Última actualización: ${fecha}`
-  );
-
-  return html;
+  return { updated, ultFecha, ultValor };
 }
 
 // ── Main ────────────────────────────────────────────────────────────────────
 (async () => {
   try {
-    // Descargar ambos SVGs en paralelo
-    console.log('📡 Descargando SVGs del BCB (venta + compra)...');
-    const [svgVenta, svgCompra] = await Promise.all([
-      fetchUrl(SVG_VENTA_URL),
-      fetchUrl(SVG_COMPRA_URL)
-    ]);
+    console.log('📡 Descargando CSV del TCO (BCB)...');
+    const csv = await fetchUrl(TCO_CSV_URL);
+    const serie = parseTcoCsv(csv);
 
-    const { fecha, valor: valorVenta } = parseVentaEntry(svgVenta);
-    const valorCompra = parseCompraEntry(svgCompra);
-    console.log(`✅ BCB Ref Venta:  ${fecha} → Bs ${valorVenta}`);
-    console.log(`✅ BCB Ref Compra: ${fecha} → Bs ${valorCompra}`);
+    if (!serie.length) throw new Error('CSV sin filas de datos TCO válidas');
+    const [ultFecha, ultValor] = serie[serie.length - 1];
+    console.log(`✅ TCO: ${serie.length} días · último ${ultFecha} = Bs ${ultValor}`);
 
-    const html    = fs.readFileSync(INDEX_PATH, 'utf8').replace(/\r\n/g, '\n');
-    const updated = updateIndex(html, fecha, valorVenta, valorCompra);
+    const html = fs.readFileSync(INDEX_PATH, 'utf8').replace(/\r\n/g, '\n');
+    const { updated } = updateIndex(html, serie);
 
-    if (updated === null) {
-      console.log('✅ index.html ya está al día.');
+    if (updated === html) {
+      console.log('✅ index.html ya está al día (TCO sin cambios).');
       process.exit(2);
     }
 
     fs.writeFileSync(INDEX_PATH, updated, 'utf8');
-    console.log(`🚀 index.html actualizado — venta: ${valorVenta} | compra: ${valorCompra}`);
+    console.log(`🚀 index.html actualizado — TCO ${ultFecha}: Bs ${ultValor}`);
 
     const envFile = process.env.GITHUB_OUTPUT;
     if (envFile) {
-      fs.appendFileSync(envFile, `fecha=${fecha}\n`);
-      fs.appendFileSync(envFile, `valor_venta=${valorVenta}\n`);
-      fs.appendFileSync(envFile, `valor_compra=${valorCompra}\n`);
+      fs.appendFileSync(envFile, `fecha=${ultFecha}\n`);
+      fs.appendFileSync(envFile, `valor=${ultValor}\n`);
     }
-
     process.exit(0);
 
   } catch (err) {

@@ -1381,18 +1381,17 @@
             <div class="price-change" id="hero-venta-chg">—</div>
           </div>
 
-          <!-- BCB Referencial — misma estructura que P2P, alineado por columna -->
-          <!-- Izq = mayor (Ref. Venta BCB 10.13) etiquetado "Compra" · Der = menor (Ref. Compra BCB 9.92) etiquetado "Venta" -->
-          <div class="price-cell price-cell--bcb" title="BCB Ref. Venta — el mayor, alineado con columna Compra">
+          <!-- BCB Oficial — nuevo régimen: TCO de mercado (actual) + peg fijo histórico -->
+          <div class="price-cell price-cell--bcb" title="Tipo de Cambio Oficial (TCO) — promedio ponderado diario de compras de los bancos, vigente desde jun 2026">
             <div class="price-cell-label">
-              <span>Compra <small style="opacity:.55;font-size:.7em;">REF</small></span>
+              <span>Oficial <small style="opacity:.55;font-size:.7em;">TCO</small></span>
               <span class="price-cell-tag price-cell-tag--bcb">BCB</span>
             </div>
             <div class="price-value price-value--bcb" id="hero-bcb-compra"><span class="currency">Bs</span><span id="hero-bcb-compra-val">—</span></div>
           </div>
-          <div class="price-cell price-cell--bcb" title="BCB Ref. Compra — el menor, alineado con columna Venta">
+          <div class="price-cell price-cell--bcb" title="Peg oficial fijo histórico (Bs 6.96), vigente 2011 – jun 2026, abandonado tras la flexibilización cambiaria">
             <div class="price-cell-label">
-              <span>Venta <small style="opacity:.55;font-size:.7em;">REF</small></span>
+              <span>Fijo ant. <small style="opacity:.55;font-size:.7em;">HIST</small></span>
               <span class="price-cell-tag price-cell-tag--bcb">BCB</span>
             </div>
             <div class="price-value price-value--bcb" id="hero-bcb-venta"><span class="currency">Bs</span><span id="hero-bcb-venta-val">—</span></div>
@@ -1463,18 +1462,18 @@
       <div class="metric-cell featured">
         <div class="m-label">
           Brecha cambiaria
-          <span class="m-info" title="Diferencia entre el paralelo P2P y el oficial fijo del BCB (Bs 6.96)">i</span>
+          <span class="m-info" title="Diferencia entre el paralelo P2P y el Tipo de Cambio Oficial (TCO) de mercado del BCB">i</span>
         </div>
         <div class="m-value" id="m-brecha-of">—</div>
-        <div class="m-sub">paralelo vs oficial BCB · Bs 6.96 fijo desde 2011</div>
+        <div class="m-sub">paralelo vs Oficial BCB (TCO de mercado)</div>
       </div>
       <div class="metric-cell">
         <div class="m-label">
-          vs Referencial
-          <span class="m-info" title="Diferencia entre el paralelo y el referencial diario del BCB">i</span>
+          vs Peg fijo
+          <span class="m-info" title="Diferencia entre el paralelo y el antiguo tipo oficial fijo (Bs 6.96), vigente 2011–jun 2026">i</span>
         </div>
         <div class="m-value" id="m-brecha-ref">—</div>
-        <div class="m-sub">BCB diario</div>
+        <div class="m-sub">peg histórico Bs 6.96</div>
       </div>
       <div class="metric-cell">
         <div class="m-label">Volatilidad 7d</div>
@@ -1889,8 +1888,8 @@
   <div class="calc-body">
     <div class="calc-mode">
       <button data-mode="parallel" class="active">Paralelo</button>
-      <button data-mode="ref">Referencial</button>
-      <button data-mode="oficial">Oficial BCB</button>
+      <button data-mode="oficial">Oficial TCO</button>
+      <button data-mode="ref">Fijo ant.</button>
     </div>
     <div class="calc-row">
       <div class="calc-row-label"><span>Tengo</span><span>USD</span></div>
@@ -2140,9 +2139,17 @@ const NEWS_INTERNACIONAL = [
   }
 ];
 
-const OFICIAL_FIJO = 6.96;
-const REFERENCIAL_VENTA  = 9.96;  // BCB ref. venta  2026-06-26 — actualizar vía cron
-const REFERENCIAL_COMPRA =  9.76;  // BCB ref. compra 2026-06-26 — actualizar vía cron
+const OFICIAL_FIJO = 6.96;         // Peg oficial histórico 2011 – 26 jun 2026 (abandonado tras flexibilización cambiaria)
+const REFERENCIAL_VENTA  = 9.96;  // BCB ref. venta  2026-06-26 (serie descontinuada — solo histórico)
+const REFERENCIAL_COMPRA =  9.76;  // BCB ref. compra 2026-06-26 (serie descontinuada — solo histórico)
+
+// ─── TIPO DE CAMBIO OFICIAL (TCO) — nuevo régimen de mercado desde el 26 jun 2026 ───
+// El BCB reemplazó el peg fijo de 6.96 por el TCO: promedio ponderado diario de las
+// operaciones de COMPRA de dólares de los bancos con sus clientes.
+// Fuente: https://www.bcb.gob.bo/tco_reporte_ultima_cotizacion.php
+const OFICIAL_TCO_START = '2026-06-26'; // fecha en que el oficial pasó de fijo (6.96) a TCO de mercado
+const TCO_OFICIAL = 11.57;              // último TCO publicado (2026-08-25) — actualizar vía cron
+const TCO_FECHA   = '2026-08-25';       // fecha de corte del último TCO — actualizar vía cron
 
 /* ─── Fecha local Bolivia (UTC-4, sin DST) ───────────────────────────────────
    NUNCA usar new Date().toISOString().slice(0,10) para "hoy":
@@ -2205,6 +2212,52 @@ const REFERENCIAL_DATA = new Map([
 
 // Claves ordenadas para carry-forward
 const _REFERENCIAL_KEYS = [...REFERENCIAL_DATA.keys()].sort();
+
+/* ============================================================
+   HISTORIAL REAL DEL TCO — Tipo de Cambio Oficial de mercado
+   Fuente: https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php
+   Promedio ponderado diario de compras de dólares de los bancos.
+   Solo días hábiles con fecha de corte. Última actualización: 2026-08-25
+============================================================ */
+const TCO_DATA = new Map([
+  ['2026-06-26',9.73],['2026-06-29',9.76],['2026-06-30',9.76],['2026-07-01',9.78],
+  ['2026-07-02',9.8],['2026-07-03',9.83],['2026-07-06',9.89],['2026-07-07',9.96],
+  ['2026-07-08',10.1],['2026-07-09',10.24],['2026-07-10',10.4],['2026-07-13',10.5],
+  ['2026-07-14',10.7],['2026-07-15',10.75],['2026-07-17',10.85],['2026-07-20',10.9],
+  ['2026-07-21',11],['2026-07-22',11.13],['2026-07-23',11.21],['2026-07-24',11.37],
+  ['2026-07-27',11.54],['2026-07-28',11.8],['2026-07-29',11.89],['2026-07-30',12.15],
+  ['2026-07-31',12.13],['2026-08-03',12.08],['2026-08-04',12.02],['2026-08-05',11.86],
+  ['2026-08-10',11.77],['2026-08-11',11.71],['2026-08-12',11.66],['2026-08-13',11.62],
+  ['2026-08-14',11.58],['2026-08-17',11.55],['2026-08-18',11.52],['2026-08-19',11.52],
+  ['2026-08-20',11.52],['2026-08-21',11.5],['2026-08-24',11.54],['2026-08-25',11.57]
+]);
+const _TCO_KEYS = [...TCO_DATA.keys()].sort();
+
+/* Valor del OFICIAL para una fecha dada, siguiendo el régimen real:
+   - Antes del 26 jun 2026 → peg fijo 6.96
+   - Desde el 26 jun 2026  → TCO de mercado (carry-forward del último dato) */
+function getOficialParaFecha(dateStr) {
+  if (!dateStr || dateStr < OFICIAL_TCO_START) return OFICIAL_FIJO;
+  if (TCO_DATA.has(dateStr)) return TCO_DATA.get(dateStr);
+  // carry-forward: último TCO publicado <= dateStr
+  let val = null;
+  for (const k of _TCO_KEYS) {
+    if (k <= dateStr) val = TCO_DATA.get(k); else break;
+  }
+  return val ?? TCO_OFICIAL;
+}
+
+/* Construye la serie OFICIAL (fijo→TCO) para un array de fechas. */
+function buildOficialHistory(targetDates) {
+  const result = new Map();
+  for (const t of targetDates) result.set(t, getOficialParaFecha(t));
+  return result;
+}
+
+/* Oficial vigente HOY (último TCO). */
+function getOficialHoy() {
+  return getOficialParaFecha(hoyBolivia());
+}
 
 function buildReferencialHistory(targetDates) {
   // Lookup exacto con carry-forward para fines de semana y feriados.
@@ -2962,7 +3015,9 @@ function renderHistoric(data, range, liveCaptures = [], usdtSheet = null) {
   const labels = filtered.map(d => formatDate(d.t));
   const compraData = filtered.map(d => d.compra);
   const ventaData = filtered.map(d => d.venta);
-  const oficialData = filtered.map(() => OFICIAL_FIJO);
+  // Oficial BCB: peg fijo 6.96 hasta el 26 jun 2026, luego TCO de mercado (sube ~9.7 → ~11.6)
+  const oficialMap = buildOficialHistory(filtered.map(d => d.t));
+  const oficialData = filtered.map(d => oficialMap.get(d.t) ?? getOficialParaFecha(d.t));
 
   // USDT/BOB Google Sheet — only show as separate line if NOT already promoted to main source
   const isUsdtPrimary = filtered.some(d => d.source === 'usdt-sheet');
@@ -2974,9 +3029,11 @@ function renderHistoric(data, range, liveCaptures = [], usdtSheet = null) {
     hasUsdtSheet = usdtSheetData.some(v => v != null);
   }
 
-  // Referencial BCB (interpolated from anchors)
+  // Referencial BCB (serie histórica dic 2025 – 26 jun 2026, descontinuada).
+  // Se corta en OFICIAL_TCO_START: después de esa fecha NO se dibuja (evita línea
+  // plana engañosa por carry-forward — el referencial dejó de publicarse).
   const refMap = buildReferencialHistory(filtered.map(d => d.t));
-  const refData = filtered.map(d => refMap.get(d.t) ?? null);
+  const refData = filtered.map(d => (d.t <= OFICIAL_TCO_START ? (refMap.get(d.t) ?? null) : null));
   const hasRefData = refData.some(v => v != null);
 
   const datasets = [
@@ -2984,7 +3041,7 @@ function renderHistoric(data, range, liveCaptures = [], usdtSheet = null) {
       backgroundColor: COLORS.compra + '15', fill: false },
     { label: 'Precio venta (BID)', data: ventaData, borderColor: COLORS.venta,
       backgroundColor: COLORS.venta + '15', fill: false },
-    { label: 'Oficial BCB (fijo)', data: oficialData, borderColor: COLORS.oficial,
+    { label: 'Oficial BCB (fijo→TCO)', data: oficialData, borderColor: COLORS.oficial,
       borderDash: [4, 4], pointRadius: 0, fill: false }
   ];
 
@@ -3478,13 +3535,17 @@ function updateMetrics(data, latest) {
   }
 
   const mid = (latest.compra + latest.venta) / 2;
-  const brOf = ((mid - OFICIAL_FIJO) / OFICIAL_FIJO * 100);
-  const brRef = ((mid - REFERENCIAL_VENTA) / REFERENCIAL_VENTA * 100);
-  // Hero brecha — show as plain large number
-  document.getElementById('m-brecha-of').textContent = '+' + brOf.toFixed(1) + '%';
-  document.getElementById('m-brecha-ref').innerHTML =
-    (brRef >= 0 ? '<span style="color:var(--negative)">+' : '<span style="color:var(--positive)">') +
-    brRef.toFixed(1) + '%</span>';
+  // Brecha principal: paralelo vs Oficial BCB VIGENTE (TCO de mercado desde jun 2026)
+  const oficialHoy = getOficialHoy();
+  const brOf = ((mid - oficialHoy) / oficialHoy * 100);
+  // Brecha secundaria: paralelo vs peg fijo histórico (Bs 6.96, abandonado)
+  const brFijo = ((mid - OFICIAL_FIJO) / OFICIAL_FIJO * 100);
+  // Hero brecha — signo con color (verde si paralelo por debajo del oficial, rojo si por encima)
+  document.getElementById('m-brecha-of').innerHTML =
+    (brOf >= 0 ? '<span style="color:var(--negative)">+' : '<span style="color:var(--positive)">') +
+    brOf.toFixed(1) + '%</span>';
+  document.getElementById('m-brecha-ref').textContent =
+    (brFijo >= 0 ? '+' : '') + brFijo.toFixed(1) + '%';
 }
 
 function updateHero(data, latest) {
@@ -3493,12 +3554,11 @@ function updateHero(data, latest) {
   document.getElementById('hero-compra').innerHTML = '<span class="currency">Bs</span>' + latest.compra.toFixed(2);
   document.getElementById('hero-venta').innerHTML  = '<span class="currency">Bs</span>' + latest.venta.toFixed(2);
 
-  // BCB Referencial — columna izquierda = mayor (Ref. Venta), columna derecha = menor (Ref. Compra)
-  // Así "Compra" izq > "Venta" der, igual que P2P arriba
+  // BCB Oficial — izquierda = TCO de mercado vigente (hoy), derecha = peg fijo histórico 6.96
   const bcbCompraVal = document.getElementById('hero-bcb-compra-val');
   const bcbVentaVal  = document.getElementById('hero-bcb-venta-val');
-  if (bcbCompraVal) bcbCompraVal.textContent = (window._tickerState?.bcbRef ?? REFERENCIAL_VENTA).toFixed(2);
-  if (bcbVentaVal)  bcbVentaVal.textContent  = REFERENCIAL_COMPRA.toFixed(2);
+  if (bcbCompraVal) bcbCompraVal.textContent = getOficialHoy().toFixed(2);
+  if (bcbVentaVal)  bcbVentaVal.textContent  = OFICIAL_FIJO.toFixed(2);
 
   // Store latest mid for calculator
   const mid = (latest.compra + latest.venta) / 2;
@@ -3751,7 +3811,7 @@ function aggregateData(history, granularity) {
         'Precio venta Bs (BID)':  +d.venta.toFixed(2),
         'Promedio (mid)': +mid.toFixed(2),
         'Variación diaria %': +chg.toFixed(3),
-        'Brecha vs Oficial %': +((mid / OFICIAL_FIJO - 1) * 100).toFixed(2),
+        'Brecha vs Oficial %': +((mid / getOficialParaFecha(d.t) - 1) * 100).toFixed(2),
         Origen: d.seed ? 'Estimado' : 'Live'
       };
     });
@@ -3851,7 +3911,8 @@ function downloadXLSX(history, primaryGranularity) {
     { Campo: 'Fecha de generación', Valor: new Date().toISOString().slice(0, 19).replace('T', ' ') },
     { Campo: 'Período cubierto', Valor: history[0].t + ' al ' + history[history.length - 1].t },
     { Campo: 'Total registros', Valor: history.length },
-    { Campo: 'Tipo oficial BCB', Valor: 'Bs ' + OFICIAL_FIJO + ' (fijo desde 2011)' },
+    { Campo: 'Tipo oficial BCB (TCO)', Valor: 'Bs ' + getOficialHoy().toFixed(2) + ' (TCO de mercado, corte ' + TCO_FECHA + ')' },
+    { Campo: 'Oficial fijo anterior', Valor: 'Bs ' + OFICIAL_FIJO + ' (peg 2011 – jun 2026)' },
     { Campo: 'Fuente paralelo', Valor: 'CriptoYa USDT/BOB agregado P2P' },
     { Campo: 'Fuente histórica', Valor: 'Datos estimados a partir de medios bolivianos + cotizaciones en vivo acumuladas' },
     { Campo: 'Aviso', Valor: 'Datos referenciales. No constituyen asesoría financiera.' }
@@ -4508,8 +4569,8 @@ function buildTicker() {
   const items = [
     { sym: 'USDT/BOB COMPRA',  price: s.compra ? 'Bs ' + s.compra.toFixed(2) : '—', chg: '', dir: 'flat' },
     { sym: 'USDT/BOB VENTA',   price: s.venta  ? 'Bs ' + s.venta.toFixed(2)  : '—', chg: '', dir: 'flat' },
-    { sym: 'BCB OFICIAL',      price: 'Bs ' + OFICIAL_FIJO.toFixed(2), chg: 'FIJO', dir: 'flat' },
-    { sym: 'BCB REF',          price: 'Bs ' + (s.bcbRef ?? getReferencialHoy()).toFixed(2), chg: '', dir: 'flat' },
+    { sym: 'BCB OFICIAL',      price: 'Bs ' + getOficialHoy().toFixed(2), chg: 'TCO', dir: 'flat' },
+    { sym: 'BCB FIJO ANT.',    price: 'Bs ' + OFICIAL_FIJO.toFixed(2), chg: 'HIST', dir: 'flat' },
     { sym: 'BTC',  price: fmtUsd(s.btcPrice),  chg: fmtChg(s.btcChg),  dir: chgDir(s.btcChg) },
     { sym: 'ETH',  price: fmtUsd(s.ethPrice),  chg: fmtChg(s.ethChg),  dir: chgDir(s.ethChg) },
     { sym: 'USDT', price: fmtUsd(s.usdtPrice), chg: 'STABLE', dir: 'flat' },
@@ -4782,13 +4843,13 @@ window.showToast = showToast;
   // Rates — use live data when available, else sensible defaults
   const RATES = {
     parallel: () => window._latestMid || 12,
-    ref:      () => REFERENCIAL_VENTA || 10.13,
-    oficial:  () => OFICIAL_FIJO || 6.96
+    ref:      () => OFICIAL_FIJO || 6.96,      // peg fijo histórico
+    oficial:  () => getOficialHoy() || TCO_OFICIAL  // TCO de mercado vigente
   };
   const MODE_LABELS = {
     parallel: 'paralelo mid',
-    ref: 'referencial BCB',
-    oficial: 'oficial BCB'
+    ref: 'fijo anterior (Bs 6.96)',
+    oficial: 'oficial BCB (TCO)'
   };
 
   let currentMode = 'parallel';
