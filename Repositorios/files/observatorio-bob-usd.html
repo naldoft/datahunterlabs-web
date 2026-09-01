@@ -1,65 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3531286980716124"
-     crossorigin="anonymous"></script>
 <head>
-<!-- ============================================================
-     GOOGLE ANALYTICS 4  ·  PENDIENTE DE ACTIVAR
-     ------------------------------------------------------------
-     1. Entra a https://analytics.google.com con la cuenta de marca
-     2. Crea la propiedad para datahunterlabs.com
-     3. Copia el ID de medicion (formato G-XXXXXXXXXX)
-     4. Reemplaza G-XXXXXXXXXX en las 2 lineas de abajo (en TODAS las paginas)
-     Mientras el ID sea el placeholder, el script no se carga (no rompe nada).
-============================================================ -->
-<script>
-  window.GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
-  if (window.GA_MEASUREMENT_ID && window.GA_MEASUREMENT_ID.indexOf('XXXX') === -1) {
-    var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', window.GA_MEASUREMENT_ID, { anonymize_ip: true });
-  }
-</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DataHunter Labs — Dólar Paralelo Bolivia · USDT/BOB en vivo</title>
-<meta name="description" content="Observatorio independiente del dólar paralelo en Bolivia. Cotización USDT/BOB en vivo, histórico, proyecciones y noticias del mercado cambiario." />
-<meta name="keywords" content="dólar paralelo Bolivia, USDT BOB, tipo de cambio Bolivia, dólar blue Bolivia, BCB referencial" />
-<meta name="author" content="DataHunter Labs" />
-
-<!-- Open Graph (WhatsApp, LinkedIn, Facebook) -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://datahunterlabs.com" />
-<meta property="og:title" content="DataHunter Labs — Dólar Paralelo Bolivia" />
-<meta property="og:description" content="Cotización USDT/BOB en vivo · BCB Referencial · Histórico · Proyecciones. El observatorio más completo del mercado paralelo boliviano." />
-<meta name="image" property="og:image" content="https://dh-og-image.reynaldoft.workers.dev/og-image.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:type" content="image/png" />
-<meta property="og:locale" content="es_BO" />
-<meta property="og:site_name" content="DataHunter Labs" />
-
-<!-- Twitter / X Card -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="DataHunter Labs — Dólar Paralelo Bolivia" />
-<meta name="twitter:description" content="Cotización USDT/BOB en vivo · BCB Referencial · Histórico · Proyecciones." />
-<meta name="twitter:image" content="https://dh-og-image.reynaldoft.workers.dev/og-image.png" />
-
-<!-- PWA / mobile -->
-<meta name="theme-color" content="#d4a647" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="DataHunter" />
-<link rel="manifest" href="/manifest.json" />
-<link rel="canonical" href="https://datahunterlabs.com/" />
-
+<title>Observatorio BOB/USD — Paralelo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -70,15 +14,12 @@
     --bg: #0b0d10;
     --bg-elevated: #131619;
     --bg-soft: #181b1f;
-    --bg-glass: rgba(19, 22, 25, 0.72);
     --border: #25292e;
     --border-soft: #1d2025;
-    --border-glow: rgba(212, 166, 71, 0.2);
     --text: #ece6d6;
     --text-soft: #a8a394;
     --text-mute: #6e6a5e;
     --accent: #d4a647;
-    --accent-bright: #efc164;
     --accent-soft: #b88a2c;
     --positive: #7fae8f;
     --negative: #c97070;
@@ -87,167 +28,20 @@
     --serif: 'Fraunces', Georgia, serif;
     --sans: 'IBM Plex Sans', system-ui, sans-serif;
     --mono: 'IBM Plex Mono', 'Courier New', monospace;
-    --ease: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
-  ::selection { background: var(--accent); color: var(--bg); }
   body {
     background-image:
-      radial-gradient(ellipse 800px 400px at 15% -100px, var(--gold-glow) 0%, transparent 60%),
-      radial-gradient(ellipse 600px 400px at 85% 110%, rgba(127, 174, 143, 0.04) 0%, transparent 60%);
+      radial-gradient(ellipse at 15% 0%, var(--gold-glow) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 100%, rgba(127, 174, 143, 0.04) 0%, transparent 50%);
     background-attachment: fixed;
     min-height: 100vh;
+    padding: 2rem 1rem 4rem;
   }
 
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 2rem 1rem 4rem; }
-
-  /* ============= LIVE TICKER ============= */
-  .ticker {
-    background: #06070a;
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-    position: relative;
-    height: 32px;
-    display: flex;
-    align-items: center;
-  }
-  .ticker::before, .ticker::after {
-    content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2;
-    pointer-events: none;
-  }
-  .ticker::before { left: 0; background: linear-gradient(to right, #06070a, transparent); }
-  .ticker::after { right: 0; background: linear-gradient(to left, #06070a, transparent); }
-  .ticker-track {
-    display: flex; gap: 2.5rem; white-space: nowrap;
-    animation: ticker-scroll 50s linear infinite;
-    padding-left: 2rem;
-  }
-  .ticker:hover .ticker-track { animation-play-state: paused; }
-  @keyframes ticker-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-  .ticker-item {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em;
-  }
-  .ticker-symbol { color: var(--text-mute); }
-  .ticker-price { color: var(--text); font-weight: 500; }
-  .ticker-chg.up { color: var(--positive); }
-  .ticker-chg.down { color: var(--negative); }
-  .ticker-chg.flat { color: var(--text-mute); }
-  .ticker-divider { color: var(--border); margin: 0 0.25rem; }
-
-  /* ============= NAVBAR ============= */
-  .nav-wrap {
-    position: sticky; top: 0; z-index: 50;
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    background: var(--bg-glass);
-    border-bottom: 1px solid var(--border-soft);
-  }
-  .navbar {
-    max-width: 1180px; margin: 0 auto;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.85rem 1rem; gap: 1rem;
-    position: relative;
-  }
-  .nav-logo {
-    display: flex; align-items: center; gap: 0.6rem;
-    text-decoration: none; user-select: none;
-  }
-  .nav-iso {
-    width: 34px; height: 34px; border-radius: 8px;
-    background: #000; border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden; flex-shrink: 0;
-    transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
-  }
-  .nav-logo:hover .nav-iso { border-color: var(--accent); transform: rotate(-3deg); }
-  .nav-iso svg { width: 24px; height: 24px; display: block; }
-  .nav-logo-text {
-    font-family: var(--sans); font-weight: 500; font-size: 0.92rem;
-    color: var(--text); letter-spacing: 0.01em; line-height: 1.1;
-  }
-  .nav-logo-text span { color: var(--accent); }
-  .nav-logo-sub {
-    font-family: var(--mono); font-size: 0.58rem; color: var(--text-mute);
-    letter-spacing: 0.14em; text-transform: uppercase; display: block;
-    margin-top: 2px;
-  }
-  .nav-links {
-    display: flex; align-items: center; gap: 0.15rem; list-style: none;
-  }
-  .nav-links a, .nav-dropdown-toggle {
-    font-family: var(--sans); font-size: 0.82rem; letter-spacing: 0.01em;
-    color: var(--text-soft);
-    text-decoration: none; padding: 0.5rem 0.85rem; border-radius: 6px;
-    transition: all 0.15s var(--ease); background: transparent;
-    border: none; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;
-    font-weight: 400;
-  }
-  .nav-links a:hover, .nav-dropdown-toggle:hover {
-    color: var(--text); background: rgba(255,255,255,0.04);
-  }
-  .nav-links a.active { color: var(--accent); }
-  .nav-dropdown { position: relative; }
-  .nav-dropdown-toggle .arrow {
-    font-size: 0.55rem; transition: transform 0.2s; display: inline-block;
-  }
-  .nav-dropdown:hover .arrow { transform: rotate(180deg); }
-  .nav-dropdown-menu {
-    display: none; position: absolute; top: calc(100% + 4px); left: 0;
-    background: var(--bg-elevated); border: 1px solid var(--border);
-    border-radius: 8px; min-width: 180px; z-index: 100;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    overflow: hidden;
-  }
-  .nav-dropdown:hover .nav-dropdown-menu { display: block; }
-  .nav-dropdown-menu a {
-    display: block; padding: 0.65rem 1rem; font-size: 0.8rem;
-    border-bottom: 1px solid var(--border-soft); border-radius: 0;
-    color: var(--text-soft); font-family: var(--sans);
-    transition: all 0.15s var(--ease);
-  }
-  .nav-dropdown-menu a:last-child { border-bottom: none; }
-  .nav-dropdown-menu a:hover { background: var(--bg-soft); color: var(--accent); }
-  .nav-cta {
-    background: var(--accent) !important; color: var(--bg) !important;
-    font-weight: 500 !important; font-size: 0.82rem !important;
-    padding: 0.5rem 1rem !important; border-radius: 6px !important;
-    transition: all 0.15s var(--ease) !important;
-    letter-spacing: 0 !important; text-transform: none !important;
-    box-shadow: 0 2px 8px rgba(212, 166, 71, 0.25);
-  }
-  .nav-cta:hover {
-    background: var(--accent-bright) !important;
-    box-shadow: 0 4px 14px rgba(212, 166, 71, 0.4) !important;
-    transform: translateY(-1px);
-  }
-  .nav-hamburger {
-    display: none; flex-direction: column; gap: 4px; cursor: pointer;
-    padding: 6px; background: none; border: none;
-  }
-  .nav-hamburger span {
-    display: block; width: 20px; height: 1.5px; background: var(--text-mute);
-    transition: all 0.2s var(--ease);
-  }
-  @media (max-width: 768px) {
-    .nav-hamburger { display: flex; }
-    .nav-links { display: none; flex-direction: column; align-items: flex-start;
-      position: absolute; top: 100%; left: 0; right: 0; z-index: 200;
-      background: var(--bg-elevated); border: 1px solid var(--border);
-      border-radius: 0 0 8px 8px;
-      padding: 0.5rem; gap: 0;
-    }
-    .nav-links.open { display: flex; }
-    .nav-dropdown-menu { position: static; box-shadow: none; border: none;
-      background: var(--bg-soft); padding-left: 0.5rem; border-radius: 6px; }
-    .nav-dropdown:hover .nav-dropdown-menu { display: none; }
-    .nav-dropdown.open .nav-dropdown-menu { display: block; }
-  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
 
   /* ============= HEADER ============= */
   header.topbar {
@@ -337,275 +131,169 @@
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
   /* ============= HERO ============= */
-  .hero { padding: 3rem 0 2rem; position: relative; }
+  .hero {
+    display: grid; grid-template-columns: 1fr; gap: 2.5rem;
+    margin-bottom: 3rem; padding: 1rem 0 2rem;
+  }
+  @media (min-width: 768px) { .hero { grid-template-columns: 1.1fr 1fr; align-items: end; } }
 
-  .hero-eyebrow {
-    display: inline-flex; align-items: center; gap: 0.5rem;
+  .hero-left .eyebrow {
     font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem;
-    padding: 0.35rem 0.8rem;
-    background: var(--gold-glow);
-    border: 1px solid rgba(212, 166, 71, 0.2);
-    border-radius: 30px;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem;
   }
-  .hero-eyebrow .live-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--positive);
-    animation: pulse-dot 2s infinite;
+  .hero-left h1 {
+    font-family: var(--serif); font-weight: 300; font-style: italic;
+    font-size: clamp(2.4rem, 5vw, 3.6rem); line-height: 1; color: var(--text);
+    letter-spacing: -0.01em; font-variation-settings: 'opsz' 60;
   }
-  @keyframes pulse-dot {
-    0% { box-shadow: 0 0 0 0 rgba(127,174,143,0.5); }
-    70% { box-shadow: 0 0 0 8px rgba(127,174,143,0); }
-    100% { box-shadow: 0 0 0 0 rgba(127,174,143,0); }
+  .hero-left h1 .em {
+    font-style: normal; font-weight: 400; color: var(--accent);
+  }
+  .hero-left p.lead {
+    margin-top: 1rem; max-width: 38ch; color: var(--text-soft);
+    font-size: 0.95rem; line-height: 1.55;
   }
 
-  .wordmark {
-    font-family: var(--serif); font-weight: 200;
-    font-size: clamp(3rem, 10vw, 7rem);
-    line-height: 0.95; letter-spacing: -0.04em; color: var(--text);
-    font-variation-settings: 'opsz' 144;
-    margin-bottom: 0.4rem;
-    display: flex; align-items: center; gap: 0.15em; flex-wrap: wrap;
+  .hero-prices {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border: 1px solid var(--border); border-radius: 2px;
+    background: var(--bg-elevated);
+    overflow: hidden;
   }
-  .wordmark .iso {
-    width: 0.9em; height: 0.9em; flex-shrink: 0;
-    display: inline-flex; align-items: center; justify-content: center;
-    transform: translateY(-0.04em);
+  .hero-sparkline {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--border);
+    padding: 0.7rem 1.4rem 0.5rem;
+    background: var(--bg-soft);
+    position: relative; height: 70px;
   }
-  .wordmark .iso img { width: 100%; height: 100%; display: block; }
-  .wordmark .hunter { color: var(--accent); font-style: italic; font-weight: 300; }
-
-  .hero-tag {
-    font-family: var(--mono); font-size: 0.75rem;
-    color: var(--text-mute); letter-spacing: 0.16em;
-    text-transform: uppercase; margin-bottom: 2.5rem;
+  .hero-spark-label {
+    font-family: var(--mono); font-size: 0.62rem;
+    color: var(--text-mute); letter-spacing: 0.18em;
+    text-transform: uppercase; margin-bottom: 0.2rem;
   }
-  .hero-tag .pipe { margin: 0 0.7rem; opacity: 0.35; }
-
-  .hero-grid {
-    display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1rem;
+  .hero-sparkline canvas {
+    position: absolute; left: 1.4rem; right: 1.4rem;
+    top: 1.7rem; bottom: 0.5rem;
+    width: calc(100% - 2.8rem) !important; height: calc(100% - 2.2rem) !important;
   }
-  @media (min-width: 900px) {
-    .hero-grid { grid-template-columns: 1.15fr 1fr; gap: 2rem; }
-  }
-
-  /* Price card */
-  .price-card {
-    background: var(--bg-elevated); border: 1px solid var(--border);
-    border-radius: 12px; overflow: hidden; position: relative;
-  }
-  .price-card-grid { display: grid; grid-template-columns: 1fr 1fr; }
   .price-cell {
-    padding: 1.4rem 1.5rem 1.5rem; position: relative;
-    transition: background 0.2s var(--ease);
+    padding: 1.6rem 1.4rem; position: relative;
   }
   .price-cell:first-child { border-right: 1px solid var(--border); }
-  .price-cell:hover { background: var(--bg-soft); }
-  .price-cell-label {
-    font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--text-mute); margin-bottom: 0.6rem;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .price-cell-tag {
-    font-family: var(--mono); font-size: 0.58rem; padding: 2px 6px;
-    border-radius: 3px; background: rgba(127,174,143,0.1); color: var(--positive);
-    border: 1px solid rgba(127,174,143,0.2);
+  .price-label {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-mute); margin-bottom: 0.5rem;
   }
   .price-value {
-    font-family: var(--serif); font-weight: 300;
-    font-size: 3rem; line-height: 1; color: var(--text);
-    font-variation-settings: 'opsz' 144; letter-spacing: -0.02em;
+    font-family: var(--serif); font-weight: 400;
+    font-size: 2.4rem; line-height: 1; color: var(--text);
+    font-variation-settings: 'opsz' 90;
   }
   .price-value .currency {
-    font-size: 1rem; color: var(--accent); font-weight: 500;
-    font-family: var(--mono); letter-spacing: 0.05em; margin-right: 0.2rem;
+    font-size: 1rem; color: var(--accent); margin-right: 0.3rem;
+    font-weight: 500;
   }
   .price-change {
-    margin-top: 0.7rem; font-family: var(--mono); font-size: 0.76rem;
-    display: flex; align-items: center; gap: 0.5rem;
+    margin-top: 0.7rem; font-family: var(--mono); font-size: 0.78rem;
+    display: flex; align-items: center; gap: 0.4rem;
   }
   .change-up { color: var(--negative); }
   .change-down { color: var(--positive); }
   .change-flat { color: var(--text-mute); }
 
-  /* BCB row — misma estructura que P2P, variante más discreta */
-  .price-cell--bcb {
-    background: rgba(212,166,71,0.03);
-    border-top: 1px solid var(--border-soft);
-  }
-  .price-cell--bcb:hover { background: rgba(212,166,71,0.06); }
-  .price-cell-tag--bcb {
-    background: rgba(212,166,71,0.1); color: var(--accent);
-    border: 1px solid rgba(212,166,71,0.25);
-  }
-  .price-value--bcb {
-    font-size: 2.1rem;   /* mismo estilo que .price-value pero algo más chico */
-    color: var(--text-soft);
-  }
-  .price-value--bcb .currency { color: var(--accent); }
-
-  /* Sparkline inside price card */
-  .price-spark {
-    grid-column: 1 / -1; border-top: 1px solid var(--border);
-    padding: 0.7rem 1.5rem 1rem; background: rgba(0,0,0,0.2);
-    position: relative; height: 80px;
-  }
-  .price-spark-label {
-    font-family: var(--mono); font-size: 0.6rem; color: var(--text-mute);
-    letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.3rem;
-  }
-  .price-spark canvas {
-    position: absolute; left: 1.5rem; right: 1.5rem;
-    top: 1.8rem; bottom: 0.5rem;
-    width: calc(100% - 3rem) !important; height: calc(100% - 2.3rem) !important;
-  }
-
-  /* AI narrative card */
-  .ai-card {
-    background: linear-gradient(155deg, var(--bg-elevated), #0e1114);
-    border: 1px solid var(--border); border-radius: 12px;
-    padding: 1.5rem; position: relative; overflow: hidden;
-    display: flex; flex-direction: column;
-  }
-  .ai-card::before {
-    content: ''; position: absolute; inset: -1px;
-    background: linear-gradient(135deg, transparent, var(--gold-glow), transparent);
-    border-radius: 12px; pointer-events: none; opacity: 0.5;
-  }
-  .ai-card-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 1rem; position: relative;
-  }
-  .ai-card-title {
-    font-family: var(--mono); font-size: 0.7rem; color: var(--accent);
-    letter-spacing: 0.16em; text-transform: uppercase;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .ai-card-title::before {
-    content: '✦'; font-size: 1rem;
-    animation: spin-slow 6s linear infinite; display: inline-block;
-  }
-  @keyframes spin-slow { to { transform: rotate(360deg); } }
-  .ai-card-body {
-    font-family: var(--serif); font-weight: 350;
-    font-size: 1rem; line-height: 1.6; color: var(--text-soft);
-    position: relative; flex: 1;
-  }
-  .ai-card-body strong { color: var(--text); font-weight: 500; }
-  .ai-card-body em { color: var(--accent); font-style: italic; }
-  .ai-card-foot {
-    margin-top: 1rem; padding-top: 0.8rem;
-    border-top: 1px dashed var(--border);
-    font-family: var(--mono); font-size: 0.65rem; color: var(--text-mute);
-    letter-spacing: 0.06em;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-
-  /* Quick actions */
-  .quick-actions { margin-top: 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .qa-btn {
-    background: var(--bg-elevated); border: 1px solid var(--border);
-    color: var(--text-soft); font-family: var(--sans);
-    font-size: 0.82rem; padding: 0.55rem 0.95rem; border-radius: 8px;
-    cursor: pointer; transition: all 0.15s var(--ease);
-    display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 400;
-  }
-  .qa-btn:hover { border-color: var(--accent); color: var(--text); }
-  .qa-btn svg { width: 14px; height: 14px; }
-
-  /* ============= METRICS GRID ============= */
-  .metrics-section { margin: 0 0 3rem; }
-  .metrics-grid {
+  /* ============= METRICS STRIP ============= */
+  .metrics-layout {
     display: grid; grid-template-columns: 1fr; gap: 1px;
     background: var(--border); border: 1px solid var(--border);
-    border-radius: 12px; overflow: hidden;
+    margin-bottom: 3rem; border-radius: 2px; overflow: hidden;
   }
-  @media (min-width: 600px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 980px) { .metrics-grid { grid-template-columns: 1.4fr repeat(4, 1fr); } }
-  .metric-cell {
-    background: var(--bg-elevated); padding: 1.3rem;
-    position: relative; transition: background 0.2s var(--ease); cursor: default;
+  @media (min-width: 900px) {
+    .metrics-layout { grid-template-columns: 1fr 2fr; }
   }
-  .metric-cell:hover { background: var(--bg-soft); }
-  .metric-cell.featured {
-    background: linear-gradient(135deg, #161922, #0f1115);
+  .brecha-hero {
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-soft));
+    padding: 1.5rem 1.4rem;
+    display: flex; flex-direction: column; justify-content: center;
+    border-right: 1px solid var(--border);
+    position: relative; overflow: hidden;
   }
-  .metric-cell.featured::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px; background: linear-gradient(to bottom, var(--accent), transparent);
+  .brecha-hero::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%; background: var(--accent);
   }
-  .m-label {
-    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--text-mute); margin-bottom: 0.5rem;
-    display: flex; align-items: center; gap: 0.4rem;
+  .brecha-label {
+    font-family: var(--mono); font-size: 0.68rem;
+    color: var(--text-mute); letter-spacing: 0.18em;
+    text-transform: uppercase; margin-bottom: 0.6rem;
   }
-  .m-info {
-    width: 13px; height: 13px; border-radius: 50%;
-    border: 1px solid var(--text-mute); color: var(--text-mute);
-    font-size: 8px; display: inline-flex; align-items: center; justify-content: center;
-    cursor: help; transition: all 0.15s; flex-shrink: 0;
+  .brecha-value {
+    font-family: var(--serif); font-weight: 400;
+    font-size: 2.6rem; line-height: 1; color: var(--accent);
+    font-variation-settings: 'opsz' 90;
+    letter-spacing: -0.01em;
   }
-  .m-info:hover { border-color: var(--accent); color: var(--accent); }
-  .m-value {
-    font-family: var(--serif); font-weight: 350;
-    font-size: 1.8rem; line-height: 1; color: var(--text); letter-spacing: -0.01em;
+  .brecha-sub {
+    font-size: 0.78rem; color: var(--text-soft);
+    margin-top: 0.6rem; line-height: 1.4;
   }
-  .metric-cell.featured .m-value { font-size: 2.4rem; color: var(--accent); }
-  .m-sub {
-    font-family: var(--mono); font-size: 0.68rem; color: var(--text-soft);
-    margin-top: 0.5rem; letter-spacing: 0.02em;
+  .strip {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--border);
   }
-  .m-sub .delta { color: var(--positive); }
-  .m-sub .delta.neg { color: var(--negative); }
+  @media (min-width: 600px) { .strip { grid-template-columns: repeat(4, 1fr); } }
+  .strip-cell {
+    background: var(--bg-elevated); padding: 1.2rem 1.1rem;
+  }
+  .strip-label {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--text-mute);
+    margin-bottom: 0.55rem;
+  }
+  .strip-value {
+    font-family: var(--mono); font-size: 1.3rem; font-weight: 500;
+    color: var(--text); letter-spacing: -0.01em;
+  }
+  .strip-sub {
+    font-size: 0.72rem; color: var(--text-soft);
+    margin-top: 0.3rem; font-family: var(--sans);
+  }
 
   /* ============= SECTIONS ============= */
   section.block {
-    margin-bottom: 2.5rem;
-    border: 1px solid var(--border);
+    margin-bottom: 3.5rem;
+    border: 1px solid var(--border-soft);
     background: var(--bg-elevated);
-    border-radius: 12px;
+    border-radius: 3px;
     overflow: hidden;
   }
   .block-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1.3rem 1.6rem 1.1rem;
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 1.4rem 1.6rem 1.1rem;
     border-bottom: 1px solid var(--border-soft);
-    cursor: pointer; user-select: none;
-    transition: background 0.15s var(--ease);
-    gap: 1rem; flex-wrap: wrap;
   }
-  .block-header:hover { background: rgba(255,255,255,0.02); }
-  .block-header.no-collapse { cursor: default; }
-  .block-header.no-collapse:hover { background: transparent; }
   .block-title {
-    font-family: var(--serif); font-style: italic; font-weight: 350;
-    font-size: 1.5rem; letter-spacing: -0.005em;
-    display: flex; align-items: baseline; gap: 0.7rem;
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: 1.45rem; letter-spacing: -0.005em;
   }
-  .block-title .num, .block-num {
-    font-family: var(--mono); font-style: normal; font-size: 0.68rem;
-    color: var(--accent); letter-spacing: 0.1em;
-    padding: 2px 7px; border: 1px solid var(--border); border-radius: 3px;
+  .block-title .num {
+    font-family: var(--mono); font-style: normal; font-size: 0.7rem;
+    color: var(--accent); margin-right: 0.7rem; letter-spacing: 0.1em;
+    vertical-align: 0.3em;
   }
   .block-actions {
-    display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center;
+    display: flex; gap: 0.3rem; flex-wrap: wrap;
   }
-  .block-collapse-icon {
-    width: 22px; height: 22px; display: inline-flex;
-    align-items: center; justify-content: center;
-    color: var(--text-mute); transition: transform 0.25s var(--ease);
-    margin-left: 0.4rem; font-size: 0.75rem;
-  }
-  .block.collapsed .block-collapse-icon { transform: rotate(-90deg); }
-  .block.collapsed .block-body { display: none; }
   .pill {
     background: transparent; border: 1px solid var(--border);
     color: var(--text-soft); font-family: var(--mono);
-    font-size: 0.7rem; padding: 0.35rem 0.75rem; border-radius: 6px;
-    cursor: pointer; letter-spacing: 0.05em; transition: all 0.15s var(--ease);
+    font-size: 0.7rem; padding: 0.35rem 0.75rem; border-radius: 2px;
+    cursor: pointer; letter-spacing: 0.05em;
+    transition: all 0.15s ease;
   }
   .pill:hover { border-color: var(--accent); color: var(--text); }
   .pill.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
   .block-body { padding: 1.4rem 1.6rem 1.8rem; }
   .block-intro {
     font-size: 0.88rem; color: var(--text-soft); line-height: 1.6;
@@ -613,86 +301,6 @@
   }
   .block-intro strong { color: var(--text); font-weight: 500; }
   .chart-wrap { position: relative; height: 380px; width: 100%; }
-
-  /* ===== RESERVAS & FUNDAMENTALES ===== */
-  .fund-cards {
-    display: grid; grid-template-columns: 1fr; gap: 1px;
-    background: var(--border); border: 1px solid var(--border);
-    border-radius: 8px; overflow: hidden;
-  }
-  @media (min-width: 640px) { .fund-cards { grid-template-columns: repeat(3, 1fr); } }
-  .fund-cell { background: var(--bg-soft); padding: 1.1rem 1.2rem; }
-  .fund-cell-label {
-    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--text-mute); margin-bottom: 0.5rem;
-  }
-  .fund-cell-value { font-family: var(--serif); font-size: 1.7rem; line-height: 1; color: var(--text); }
-  .fund-cell-value small { font-size: 0.85rem; color: var(--text-soft); }
-  .fund-cell-sub { font-family: var(--mono); font-size: 0.66rem; margin-top: 0.45rem; }
-  .bank-rank { margin-top: 1.8rem; border-top: 1px solid var(--border-soft); padding-top: 1.4rem; }
-  .bank-rank-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
-  .bank-rank-title { font-family: var(--serif); font-style: italic; font-weight: 350; font-size: 1.15rem; color: var(--text); display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
-  .bank-rank-pill { font-family: var(--mono); font-style: normal; font-size: 0.58rem; letter-spacing: 0.1em; color: var(--accent); border: 1px solid var(--accent-soft); border-radius: 3px; padding: 0.15rem 0.45rem; }
-  .bank-rank-sub { font-family: var(--mono); font-size: 0.66rem; color: var(--text-mute); margin-top: 0.3rem; }
-  .bank-rank-date { font-family: var(--mono); font-size: 0.66rem; color: var(--text-mute); white-space: nowrap; }
-  .bank-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.55rem; }
-  .bank-row-name { font-family: var(--mono); font-size: 0.72rem; color: var(--text-soft); width: 165px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .bank-row-bar { flex: 1; height: 9px; background: var(--bg); border-radius: 5px; overflow: hidden; }
-  .bank-row-bar span { display: block; height: 100%; border-radius: 5px; transition: width 0.6s var(--ease); }
-  .bank-row-val { font-family: var(--serif); font-size: 0.95rem; width: 52px; text-align: right; flex-shrink: 0; }
-  .bank-rank-note { font-family: var(--mono); font-size: 0.66rem; color: var(--text-mute); line-height: 1.5; margin-top: 1rem; padding: 0.7rem 0.9rem; background: rgba(255,255,255,0.02); border-left: 2px solid var(--accent-soft); border-radius: 0 4px 4px 0; }
-  @media (max-width: 560px) { .bank-row-name { width: 110px; } }
-
-  /* ============= SEGMENTED CONTROL ============= */
-  .segmented {
-    display: inline-flex; background: var(--bg);
-    border: 1px solid var(--border); border-radius: 8px;
-    padding: 3px; position: relative;
-  }
-  .seg-btn {
-    background: transparent; border: none;
-    color: var(--text-mute); font-family: var(--mono);
-    font-size: 0.68rem; padding: 0.32rem 0.65rem; border-radius: 5px;
-    cursor: pointer; letter-spacing: 0.05em;
-    transition: color 0.2s var(--ease); position: relative; z-index: 2;
-  }
-  .seg-btn.active { color: var(--bg); }
-  .seg-btn:hover:not(.active) { color: var(--text); }
-  .seg-indicator {
-    position: absolute; top: 3px; bottom: 3px;
-    background: var(--accent); border-radius: 5px;
-    transition: left 0.22s var(--ease), width 0.22s var(--ease);
-    z-index: 1; pointer-events: none;
-  }
-
-  /* ============= CHART EVENT PINS ============= */
-  .chart-container { position: relative; }
-  .chart-event-pin {
-    position: absolute; width: 20px; height: 20px; border-radius: 50%;
-    background: var(--accent); color: var(--bg);
-    font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; z-index: 10;
-    box-shadow: 0 2px 8px rgba(212,166,71,0.4);
-    transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
-    transform: translate(-50%, -50%);
-  }
-  .chart-event-pin:hover {
-    transform: translate(-50%, -50%) scale(1.2);
-    box-shadow: 0 4px 16px rgba(212,166,71,0.6);
-  }
-  .chart-event-tooltip {
-    display: none; position: absolute; z-index: 20;
-    background: var(--bg-elevated); border: 1px solid var(--border-glow);
-    border-radius: 8px; padding: 0.7rem 1rem; min-width: 200px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    pointer-events: none;
-  }
-  .chart-event-tooltip.visible { display: block; }
-  .ev-date {
-    font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
-    letter-spacing: 0.08em; margin-bottom: 0.3rem;
-  }
 
   /* ============= CHART MINI LEGEND ============= */
   .chart-legend-mini {
@@ -906,38 +514,24 @@
   .news-col-flag { font-size: 1rem; }
   .news-list { display: grid; gap: 0.6rem; }
   .news-card {
-    padding: 0.95rem 1.1rem;
+    padding: 1rem 1.1rem;
     border-left: 2px solid var(--border);
     background: var(--bg-soft);
-    border-radius: 0 6px 6px 0;
-    transition: all 0.18s var(--ease);
-    cursor: pointer;
+    transition: border-color 0.2s;
   }
-  .news-card:hover {
-    border-left-color: var(--accent);
-    background: var(--bg-elevated);
-    transform: translateX(2px);
-  }
+  .news-card:hover { border-left-color: var(--accent); }
   .news-meta {
-    font-family: var(--mono); font-size: 0.62rem; color: var(--text-mute);
-    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.35rem;
-    display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.4rem;
   }
-  .impact {
-    padding: 1px 6px; border-radius: 3px; font-size: 0.6rem;
-    background: rgba(212,166,71,0.15); color: var(--accent);
-    border: 1px solid rgba(212,166,71,0.25); letter-spacing: 0.05em;
-  }
-  .impact.high { color: var(--negative); background: rgba(201,112,112,0.1); border-color: rgba(201,112,112,0.25); }
-  .impact.low { color: var(--neutral); background: rgba(122,138,154,0.1); border-color: rgba(122,138,154,0.2); }
-  .news-title { font-size: 0.93rem; line-height: 1.45; color: var(--text); font-weight: 400; }
-  .news-source { font-size: 0.7rem; color: var(--text-mute); margin-top: 0.4rem; font-family: var(--mono); }
+  .news-title { font-size: 0.95rem; line-height: 1.45; color: var(--text); }
+  .news-source { font-size: 0.72rem; color: var(--text-mute); margin-top: 0.4rem; }
 
   /* ============= CRYPTO MARKET ============= */
   .crypto-grid {
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
     background: var(--border); border: 1px solid var(--border);
-    border-radius: 12px; overflow: hidden;
+    border-radius: 2px; overflow: hidden;
   }
   @media (min-width: 900px) { .crypto-grid { grid-template-columns: repeat(4, 1fr); } }
   .crypto-card {
@@ -986,38 +580,23 @@
   .crypto-card.peg-warning .crypto-symbol { color: var(--negative); }
 
   /* ============= LEGAL DISCLAIMER ============= */
-  /* ============= LEGAL DISCLAIMER (colapsable) ============= */
-  .legal {
+  .legal-disclaimer {
     background: var(--bg-elevated);
     border: 1px solid var(--border-soft);
-    border-radius: 8px;
-    margin: 2rem 0 1.5rem;
-    overflow: hidden;
+    border-left: 3px solid var(--accent);
+    border-radius: 2px; padding: 1.4rem 1.6rem;
+    margin-bottom: 2rem;
   }
-  .legal-head {
-    padding: 0.85rem 1.1rem;
-    display: flex; justify-content: space-between; align-items: center;
-    cursor: pointer; user-select: none;
-    font-family: var(--mono); font-size: 0.72rem;
-    color: var(--text-mute); letter-spacing: 0.12em;
-    text-transform: uppercase;
-    transition: color 0.15s;
+  .legal-title {
+    font-family: var(--mono); font-size: 0.78rem;
+    color: var(--accent); letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 500;
+    margin-bottom: 1rem;
   }
-  .legal-head:hover { color: var(--text-soft); }
-  .legal-head-left { display: flex; align-items: center; gap: 0.5rem; }
-  .legal-head-left::before { content: '⚠'; color: var(--accent); }
-  .legal-arrow {
-    font-size: 0.6rem; transition: transform 0.3s var(--ease);
-    color: var(--text-mute);
+  .legal-body p {
+    font-size: 0.82rem; line-height: 1.7;
+    color: var(--text-soft); margin-bottom: 0.9rem;
   }
-  .legal.open .legal-arrow { transform: rotate(180deg); }
-  .legal-body {
-    max-height: 0; overflow: hidden; padding: 0 1.1rem;
-    transition: max-height 0.4s var(--ease), padding 0.4s var(--ease);
-    font-size: 0.82rem; line-height: 1.7; color: var(--text-soft);
-  }
-  .legal.open .legal-body { max-height: 1500px; padding: 0 1.1rem 1.1rem; }
-  .legal-body p { margin-bottom: 0.9rem; }
   .legal-body p:last-child { margin-bottom: 0; }
   .legal-body strong { color: var(--text); font-weight: 500; }
   .legal-body a {
@@ -1028,204 +607,21 @@
 
   /* ============= FOOTER ============= */
   footer.foot {
-    margin-top: 4rem; padding: 2.5rem 0 1rem;
-    border-top: 1px solid var(--border-soft);
-    color: var(--text-mute); font-size: 0.82rem; line-height: 1.6;
+    margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-soft);
+    color: var(--text-mute); font-size: 0.78rem; line-height: 1.6;
   }
-  footer.foot a { color: var(--text-soft); text-decoration: none; transition: color 0.15s; }
-  footer.foot a:hover { color: var(--accent); }
+  footer.foot a { color: var(--text-soft); text-decoration: underline; text-decoration-color: var(--border); }
+  footer.foot a:hover { color: var(--accent); text-decoration-color: var(--accent); }
   .foot-grid {
-    display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem;
-    margin-bottom: 2rem;
+    display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+    margin-bottom: 1.5rem;
   }
-  @media (max-width: 800px) { .foot-grid { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 480px) { .foot-grid { grid-template-columns: 1fr; } }
+  @media (min-width: 768px) { .foot-grid { grid-template-columns: repeat(3, 1fr); } }
   .foot-grid h4 {
-    font-family: var(--mono); font-size: 0.66rem; color: var(--accent);
-    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.9rem;
+    font-family: var(--mono); font-size: 0.68rem; color: var(--accent);
+    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem;
     font-weight: 500;
   }
-  .foot-grid ul { list-style: none; display: grid; gap: 0.5rem; }
-  .foot-brand-iso {
-    width: 44px; height: 44px; border-radius: 10px;
-    background: #000; border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden; margin-bottom: 0.8rem; padding: 6px;
-  }
-  .foot-newsletter {
-    margin-top: 0.7rem; display: flex; gap: 0.4rem;
-  }
-  .foot-newsletter input {
-    flex: 1; background: var(--bg); border: 1px solid var(--border);
-    color: var(--text); padding: 0.5rem 0.7rem;
-    border-radius: 6px; font-family: var(--sans); font-size: 0.82rem; outline: none;
-  }
-  .foot-newsletter input:focus { border-color: var(--accent); }
-  .foot-newsletter button {
-    background: var(--accent); color: var(--bg);
-    border: none; padding: 0 1rem; border-radius: 6px;
-    cursor: pointer; font-family: var(--sans); font-weight: 500;
-    font-size: 0.82rem; transition: background 0.15s;
-  }
-  .foot-newsletter button:hover { background: var(--accent-bright); }
-  /* ── Embed section ── */
-  .foot-embed {
-    border-top: 1px solid var(--border-soft);
-    padding: 2rem 0 1.5rem;
-  }
-  .foot-embed-inner {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
-  }
-  @media (max-width: 600px) { .foot-embed-inner { grid-template-columns: 1fr; } }
-  .embed-title {
-    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em;
-    color: var(--text-soft); margin-bottom: 0.4rem;
-  }
-  .embed-desc {
-    font-size: 0.8rem; color: var(--text-mute); margin-bottom: 0.6rem; line-height: 1.5;
-  }
-  .embed-code-wrap {
-    display: flex; align-items: center; gap: 0.5rem;
-    background: var(--bg-elevated); border: 1px solid var(--border-soft);
-    border-radius: 6px; padding: 0.5rem 0.75rem;
-  }
-  .embed-code-wrap code {
-    font-family: var(--mono); font-size: 0.68rem; color: var(--accent);
-    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    letter-spacing: 0;
-  }
-  .embed-copy-btn {
-    flex-shrink: 0; background: transparent; border: 1px solid var(--border);
-    color: var(--text-mute); font-family: var(--mono); font-size: 0.65rem;
-    padding: 0.2rem 0.6rem; border-radius: 4px; cursor: pointer;
-    transition: all 0.15s; letter-spacing: 0.05em;
-  }
-  .embed-copy-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .embed-copy-btn.copied { color: #7fae8f; border-color: #7fae8f; }
-  .embed-note {
-    font-size: 0.68rem; color: var(--text-mute); margin-top: 0.4rem;
-    font-family: var(--mono); letter-spacing: 0.04em;
-  }
-
-  .foot-bottom {
-    padding-top: 1.5rem; border-top: 1px solid var(--border-soft);
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 1rem;
-    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em;
-  }
-
-  /* ============= CALCULATOR FAB + PANEL ============= */
-  .calc-fab {
-    position: fixed; bottom: 1.5rem; right: 1.5rem;
-    width: 58px; height: 58px; border-radius: 50%;
-    background: var(--accent); color: var(--bg);
-    border: none; cursor: pointer; font-size: 1.5rem;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 24px rgba(212, 166, 71, 0.35), 0 0 0 0 rgba(212, 166, 71, 0.5);
-    z-index: 90; transition: all 0.25s var(--ease);
-  }
-  .calc-fab:hover { transform: scale(1.06); box-shadow: 0 12px 32px rgba(212, 166, 71, 0.5); }
-  .calc-fab.open { transform: scale(0.9); background: var(--bg-soft); color: var(--accent); border: 1px solid var(--border); }
-  .calc-fab svg { width: 22px; height: 22px; }
-  .calc-fab .calc-pulse {
-    position: absolute; inset: 0; border-radius: 50%;
-    border: 2px solid var(--accent);
-    animation: calc-pulse 2.4s ease-out infinite;
-    pointer-events: none;
-  }
-  @keyframes calc-pulse {
-    0% { transform: scale(1); opacity: 0.6; }
-    100% { transform: scale(1.5); opacity: 0; }
-  }
-  .calc-fab.open .calc-pulse { display: none; }
-  .calc-panel {
-    position: fixed; bottom: 6.5rem; right: 1.5rem;
-    width: 360px; max-width: calc(100vw - 3rem);
-    background: var(--bg-elevated); border: 1px solid var(--border);
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(212, 166, 71, 0.05);
-    z-index: 89;
-    transform: translateY(20px) scale(0.96);
-    opacity: 0; pointer-events: none;
-    transition: all 0.25s var(--ease);
-    backdrop-filter: blur(20px);
-  }
-  .calc-panel.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: all; }
-  .calc-header {
-    padding: 1rem 1.2rem; border-bottom: 1px solid var(--border-soft);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .calc-title { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.1rem; }
-  .calc-rate { font-family: var(--mono); font-size: 0.65rem; color: var(--text-mute); letter-spacing: 0.08em; margin-top: 0.15rem; }
-  .calc-rate strong { color: var(--accent); }
-  .calc-close {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--text-mute); width: 26px; height: 26px;
-    border-radius: 50%; cursor: pointer; font-family: var(--mono);
-    font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
-  }
-  .calc-close:hover { color: var(--text); border-color: var(--accent); }
-  .calc-body { padding: 1rem 1.2rem 1.2rem; }
-  .calc-row {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 10px; padding: 0.85rem 1rem;
-    margin-bottom: 0.6rem; transition: border-color 0.15s;
-  }
-  .calc-row:focus-within { border-color: var(--accent); }
-  .calc-row-label {
-    font-family: var(--mono); font-size: 0.62rem; color: var(--text-mute);
-    letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.3rem;
-    display: flex; justify-content: space-between;
-  }
-  .calc-row-input { display: flex; align-items: center; gap: 0.5rem; }
-  .calc-row input {
-    background: transparent; border: none; outline: none;
-    font-family: var(--serif); font-weight: 350;
-    font-size: 1.6rem; color: var(--text); width: 100%; min-width: 0;
-    font-variation-settings: 'opsz' 90; letter-spacing: -0.01em;
-  }
-  .calc-row .calc-currency { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); font-weight: 500; flex-shrink: 0; }
-  .calc-arrow {
-    text-align: center; color: var(--text-mute); font-size: 1.1rem;
-    margin: -0.3rem 0 -0.1rem; cursor: pointer; user-select: none;
-    transition: color 0.15s, transform 0.2s;
-  }
-  .calc-arrow:hover { color: var(--accent); transform: scale(1.15); }
-  .calc-mode { display: flex; gap: 0.3rem; margin-bottom: 0.8rem; }
-  .calc-mode button {
-    flex: 1; background: var(--bg); border: 1px solid var(--border);
-    color: var(--text-soft); font-family: var(--mono); font-size: 0.7rem;
-    padding: 0.4rem; border-radius: 6px; cursor: pointer;
-    transition: all 0.15s; letter-spacing: 0.05em;
-  }
-  .calc-mode button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-  .calc-presets { display: flex; gap: 0.3rem; margin-top: 0.7rem; flex-wrap: wrap; }
-  .calc-preset {
-    background: var(--bg); border: 1px solid var(--border-soft);
-    color: var(--text-soft); font-family: var(--mono); font-size: 0.7rem;
-    padding: 0.3rem 0.55rem; border-radius: 4px; cursor: pointer; transition: all 0.12s;
-  }
-  .calc-preset:hover { border-color: var(--accent); color: var(--accent); }
-  .calc-foot {
-    margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px dashed var(--border);
-    font-family: var(--mono); font-size: 0.65rem; color: var(--text-mute);
-    letter-spacing: 0.05em; line-height: 1.5;
-  }
-
-  /* ============= TOAST ============= */
-  .toast {
-    position: fixed; bottom: 5.5rem; left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--bg-elevated); border: 1px solid var(--accent);
-    padding: 0.7rem 1.2rem; border-radius: 8px;
-    font-size: 0.85rem; color: var(--text);
-    z-index: 300; opacity: 0; pointer-events: none;
-    transition: all 0.25s var(--ease);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    white-space: nowrap;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* loading */
   .skeleton { color: var(--text-mute); }
@@ -1281,94 +677,8 @@
     color: var(--text-soft);
   }
 </style>
-
-<!-- JSON-LD Structured Data — Google rich results -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "DataHunter Labs",
-  "url": "https://datahunterlabs.com",
-  "description": "Observatorio del dólar paralelo en Bolivia. Precio USDT/BOB en vivo, histórico y proyecciones.",
-  "inLanguage": "es-BO",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://datahunterlabs.com/?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "DataHunter Labs",
-    "url": "https://datahunterlabs.com",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://datahunterlabs.com/isotype.svg"
-    }
-  },
-  "mainEntity": {
-    "@type": "Dataset",
-    "name": "Cotización USDT/BOB — Mercado Paralelo Bolivia",
-    "description": "Precio de compra y venta del dólar estadounidense (USDT) en bolivianos (BOB) en el mercado P2P paralelo. Datos en tiempo real desde Binance P2P vía CriptoYa.",
-    "url": "https://datahunterlabs.com",
-    "license": "https://creativecommons.org/licenses/by/4.0/",
-    "isAccessibleForFree": true,
-    "creator": { "@type": "Organization", "name": "DataHunter Labs" },
-    "distribution": {
-      "@type": "DataDownload",
-      "encodingFormat": "application/json",
-      "contentUrl": "https://dh-og-image.reynaldoft.workers.dev/price"
-    }
-  }
-}
-</script>
 </head>
 <body>
-
-<!-- ============ LIVE TICKER ============ -->
-<div class="ticker">
-  <div class="ticker-track" id="ticker-track">
-    <!-- populated by JS -->
-  </div>
-</div>
-
-<!-- ============ NAVBAR ============ -->
-<div class="nav-wrap">
-  <nav class="navbar">
-    <a href="index.html" class="nav-logo">
-      <div class="nav-iso">
-        <img src="isotype.svg" alt="DataHunter" width="24" height="24" />
-      </div>
-      <div>
-        <div class="nav-logo-text">Data<span>Hunter</span> Labs</div>
-        <span class="nav-logo-sub">Observatorio USDT/BOB</span>
-      </div>
-    </a>
-
-    <!-- Hamburger mobile -->
-    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menú">
-      <span></span><span></span><span></span>
-    </button>
-
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html" class="active">Inicio</a></li>
-      <li class="nav-dropdown" id="nav-blog">
-        <button class="nav-dropdown-toggle">
-          Blog <span class="arrow">▾</span>
-        </button>
-        <div class="nav-dropdown-menu">
-          <a href="blog.html">📰 Todo</a>
-          <a href="blog.html#ia">🤖 IA & Tech</a>
-          <a href="blog.html#economia">📊 Economía</a>
-          <a href="blog.html#bolivia">🇧🇴 Bolivia</a>
-          <a href="blog.html#latam">🌎 LATAM</a>
-        </div>
-      </li>
-      <li><a href="nosotros.html">Nosotros</a></li>
-      <li><a href="contacto.html" class="nav-cta">Contacto</a></li>
-    </ul>
-  </nav>
-</div>
-
 <div class="wrap">
 
   <header class="topbar">
@@ -1395,257 +705,106 @@
   </header>
 
   <!-- HERO -->
-  <section class="hero" id="hero-section">
-
-    <div class="hero-eyebrow">
-      <span class="live-dot"></span>
-      <span>EN VIVO · Mercado P2P Bolivia</span>
+  <div class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">Mercado paralelo · Bolivia</div>
+      <h1>El precio real <span class="em">del dólar</span>, día a día</h1>
+      <p class="lead">
+        Cotización del paralelo USDT/BOB agregada de exchanges P2P,
+        con histórico persistente, brechas frente al oficial y proyección a corto plazo.
+      </p>
     </div>
-
-    <h1 class="wordmark">
-      <span>Data</span>
-      <span class="iso" aria-hidden="true">
-        <img src="isotype.svg" alt="" />
-      </span>
-      <span class="hunter">Hunter</span>
-    </h1>
-    <div class="hero-tag">
-      Observatorio del Dólar Paralelo <span class="pipe">·</span>
-      USDT/BOB <span class="pipe">·</span>
-      <span id="hero-date">—</span>
-    </div>
-
-    <div class="hero-grid">
-      <!-- Price card -->
-      <div class="price-card">
-        <div class="price-card-grid">
-          <div class="price-cell" title="Precio que pagás para comprar USD · el más alto (ASK)">
-            <div class="price-cell-label">
-              <span>Compra <small style="opacity:.55;font-size:.7em;">ASK</small></span>
-              <span class="price-cell-tag">P2P</span>
-            </div>
-            <div class="price-value" id="hero-compra"><span class="currency">Bs</span>—</div>
-            <div class="price-change" id="hero-compra-chg">—</div>
-          </div>
-          <div class="price-cell" title="Precio que recibís al vender tus USD · el más bajo (BID)">
-            <div class="price-cell-label">
-              <span>Venta <small style="opacity:.55;font-size:.7em;">BID</small></span>
-              <span class="price-cell-tag">P2P</span>
-            </div>
-            <div class="price-value" id="hero-venta"><span class="currency">Bs</span>—</div>
-            <div class="price-change" id="hero-venta-chg">—</div>
-          </div>
-
-          <!-- BCB Oficial — nuevo régimen: TCO de mercado (actual) + peg fijo histórico -->
-          <div class="price-cell price-cell--bcb" title="Tipo de Cambio Oficial (TCO) — promedio ponderado diario de compras de los bancos, vigente desde jun 2026">
-            <div class="price-cell-label">
-              <span>Oficial <small style="opacity:.55;font-size:.7em;">TCO</small></span>
-              <span class="price-cell-tag price-cell-tag--bcb">BCB</span>
-            </div>
-            <div class="price-value price-value--bcb" id="hero-bcb-compra"><span class="currency">Bs</span><span id="hero-bcb-compra-val">—</span></div>
-          </div>
-          <div class="price-cell price-cell--bcb" title="Peg oficial fijo histórico (Bs 6.96), vigente 2011 – jun 2026, abandonado tras la flexibilización cambiaria">
-            <div class="price-cell-label">
-              <span>Fijo ant. <small style="opacity:.55;font-size:.7em;">HIST</small></span>
-              <span class="price-cell-tag price-cell-tag--bcb">BCB</span>
-            </div>
-            <div class="price-value price-value--bcb" id="hero-bcb-venta"><span class="currency">Bs</span><span id="hero-bcb-venta-val">—</span></div>
-          </div>
-
-          <div class="price-spark">
-            <div class="price-spark-label">Variación 7 días</div>
-            <canvas id="hero-spark-canvas"></canvas>
-          </div>
-        </div>
+    <div class="hero-prices skeleton">
+      <div class="price-cell">
+        <div class="price-label">Compra</div>
+        <div class="price-value" id="hero-compra"><span class="currency">Bs</span>—</div>
+        <div class="price-change" id="hero-compra-chg">—</div>
       </div>
-
-      <!-- AI narrative card -->
-      <div class="ai-card">
-        <div class="ai-card-header">
-          <div class="ai-card-title">Hoy en el Mercado</div>
-        </div>
-        <div class="ai-card-body" id="ai-body">
-          El mercado paralelo boliviano mantiene actividad en exchanges P2P.
-          La brecha frente al tipo oficial del BCB refleja la presión sobre las
-          <strong>reservas internacionales</strong> y la escasez de divisas.
-          Los precios se actualizan cada 15 minutos desde fuentes en vivo.
-        </div>
-        <div class="ai-card-foot">
-          <span>Monitor en vivo · USDT/BOB</span>
-          <span id="ai-time">—</span>
-        </div>
+      <div class="price-cell">
+        <div class="price-label">Venta</div>
+        <div class="price-value" id="hero-venta"><span class="currency">Bs</span>—</div>
+        <div class="price-change" id="hero-venta-chg">—</div>
+      </div>
+      <div class="hero-sparkline">
+        <div class="hero-spark-label">Variación 7 días</div>
+        <canvas id="hero-spark-canvas"></canvas>
       </div>
     </div>
-
-    <!-- Quick actions -->
-    <div class="quick-actions">
-      <button class="qa-btn" id="btn-refresh-qa" onclick="document.getElementById('btn-refresh').click()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        Actualizar
-      </button>
-      <!-- Compartir cotización -->
-      <button class="qa-btn qa-btn-share" id="qa-share" title="Compartir cotización del día">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        Compartir
-      </button>
-      <!-- Descargar gráfico PNG -->
-      <button class="qa-btn" id="qa-download-chart" title="Descargar gráfico histórico como imagen PNG">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
-        Guardar gráfico
-      </button>
-      <button class="qa-btn" onclick="document.getElementById('btn-export-xlsx') && document.getElementById('btn-export-xlsx').click()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Exportar Excel
-      </button>
-      <a href="nosotros.html" class="qa-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Nosotros
-      </a>
-      <a href="contacto.html" class="qa-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        Contacto
-      </a>
-    </div>
-
-  </section>
+  </div>
 
   <div id="banner-area"></div>
 
   <!-- METRICS STRIP -->
-  <div class="metrics-section">
-    <div class="metrics-grid">
-      <div class="metric-cell featured">
-        <div class="m-label">
-          Brecha cambiaria
-          <span class="m-info" title="Diferencia entre el paralelo P2P y el Tipo de Cambio Oficial (TCO) de mercado del BCB">i</span>
-        </div>
-        <div class="m-value" id="m-brecha-of">—</div>
-        <div class="m-sub">paralelo vs Oficial BCB (TCO de mercado)</div>
+  <div class="metrics-layout">
+    <div class="brecha-hero">
+      <div class="brecha-label">Brecha cambiaria</div>
+      <div class="brecha-value" id="m-brecha-of">—</div>
+      <div class="brecha-sub">paralelo vs oficial BCB · Bs 6.96 fijo desde 2011</div>
+    </div>
+    <div class="strip">
+      <div class="strip-cell">
+        <div class="strip-label">vs Referencial</div>
+        <div class="strip-value" id="m-brecha-ref">—</div>
+        <div class="strip-sub">BCB diario</div>
       </div>
-      <div class="metric-cell">
-        <div class="m-label">
-          vs Peg fijo
-          <span class="m-info" title="Diferencia entre el paralelo y el antiguo tipo oficial fijo (Bs 6.96), vigente 2011–jun 2026">i</span>
-        </div>
-        <div class="m-value" id="m-brecha-ref">—</div>
-        <div class="m-sub">peg histórico Bs 6.96</div>
+      <div class="strip-cell">
+        <div class="strip-label">Volatilidad 7d</div>
+        <div class="strip-value" id="m-vol">—</div>
+        <div class="strip-sub">desvío estándar</div>
       </div>
-      <div class="metric-cell">
-        <div class="m-label">Volatilidad 7d</div>
-        <div class="m-value" id="m-vol">—</div>
-        <div class="m-sub">desvío estándar</div>
+      <div class="strip-cell">
+        <div class="strip-label">Máx 7 días</div>
+        <div class="strip-value" id="m-max">—</div>
+        <div class="strip-sub" id="m-max-date">—</div>
       </div>
-      <div class="metric-cell">
-        <div class="m-label">Máx 7 días</div>
-        <div class="m-value" id="m-max">—</div>
-        <div class="m-sub" id="m-max-date">—</div>
-      </div>
-      <div class="metric-cell">
-        <div class="m-label">Mín 7 días</div>
-        <div class="m-value" id="m-min">—</div>
-        <div class="m-sub" id="m-min-date">—</div>
+      <div class="strip-cell">
+        <div class="strip-label">Mín 7 días</div>
+        <div class="strip-value" id="m-min">—</div>
+        <div class="strip-sub" id="m-min-date">—</div>
       </div>
     </div>
   </div>
 
   <!-- HISTORICAL CHART -->
-  <section class="block" id="historico">
-    <div class="block-header" id="historico-header">
-      <div class="block-title"><span class="block-num">01</span>Histórico</div>
-      <div class="block-actions">
-        <div class="segmented" id="range-controls">
-          <div class="seg-indicator" id="seg-ind-range"></div>
-          <button class="seg-btn" data-range="7">7D</button>
-          <button class="seg-btn" data-range="30">30D</button>
-          <button class="seg-btn active" data-range="90">90D</button>
-          <button class="seg-btn" data-range="365">1A</button>
-          <button class="seg-btn" data-range="all">TODO</button>
-        </div>
-        <span class="block-collapse-icon">▼</span>
-      </div>
-    </div>
-    <div class="block-body">
-      <p class="block-intro">
-        Cotización del paralelo USDT/BOB junto al <strong>histórico oficial del BCB</strong> y la línea referencial.
-        Pasá el cursor sobre el gráfico para ver los valores exactos. Los pines numerados marcarán eventos clave.
-      </p>
-      <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.2rem; font-family:var(--mono); font-size:0.72rem;">
-        <span style="display:flex; align-items:center; gap:0.5rem;">
-          <span style="width:20px; height:2px; background:#d4a647; display:inline-block; border-radius:1px;"></span>
-          Paralelo USDT/BOB
-        </span>
-        <span style="display:flex; align-items:center; gap:0.5rem;">
-          <span style="width:20px; height:2px; background:#e08a4a; display:inline-block; border-radius:1px; opacity:0.8;"></span>
-          Referencial BCB
-        </span>
-        <span style="display:flex; align-items:center; gap:0.5rem;">
-          <span style="width:20px; height:2px; background:#5fb3d6; display:inline-block; border-radius:1px; opacity:0.85; border-top:1px dashed #5fb3d6;"></span>
-          Oficial BCB
-        </span>
-        <span id="data-source-badge" style="margin-left:auto; color:var(--text-mute);">Cargando…</span>
-      </div>
-      <div class="chart-container">
-        <div class="chart-wrap"><canvas id="chart-historic"></canvas></div>
-        <!-- Pins de eventos (se posicionan con JS cuando llegue la data) -->
-        <div id="event-pins-container"></div>
-        <div class="chart-event-tooltip" id="event-tooltip">
-          <div class="ev-date" id="ev-date">—</div>
-          <div id="ev-text" style="font-size:0.82rem; color:var(--text-soft); margin-top:0.2rem;">—</div>
-        </div>
-      </div>
-      <div style="margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
-        <button class="qa-btn" data-granularity="day">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Excel diario
-        </button>
-        <button class="qa-btn" data-granularity="week">Excel semanal</button>
-        <button class="qa-btn" data-granularity="month">Excel mensual</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- RESERVAS & FUNDAMENTALES BCB -->
-  <section class="block" id="fundamentales">
+  <section class="block">
     <div class="block-header">
-      <div class="block-title"><span class="block-num">02</span>Reservas &amp; Fundamentales</div>
-      <div class="block-actions">
-        <span id="rin-update-time" style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">—</span>
-        <span class="block-collapse-icon">▼</span>
+      <div>
+        <div class="block-title"><span class="num">01</span>Histórico</div>
+        <div class="data-source-line" id="data-source-badge" style="font-family:var(--mono); font-size:0.65rem; letter-spacing:0.08em; margin-top:0.4rem;">Cargando…</div>
+      </div>
+      <div class="block-actions" id="range-controls">
+        <button class="pill" data-range="7">7D</button>
+        <button class="pill" data-range="30">30D</button>
+        <button class="pill active" data-range="90">90D</button>
+        <button class="pill" data-range="365">1A</button>
+        <button class="pill" data-range="all">TODO</button>
       </div>
     </div>
     <div class="block-body">
-      <p class="block-intro">
-        Las <strong>Reservas Internacionales Netas (RIN)</strong> del BCB son el motor de fondo del dólar paralelo:
-        cuando caen, la presión sobre el tipo de cambio sube. Bolivia pasó de un pico de
-        <strong>$15.477M (2014)</strong> a un mínimo de <strong>$1.582M (2024)</strong>, y desde entonces se recupera.
-        Serie oficial mensual del BCB.
-      </p>
-
-      <!-- Tarjetas de indicadores RIN -->
-      <div class="fund-cards" id="fund-cards"></div>
-
-      <!-- Gráfico RIN -->
-      <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin:1.4rem 0 1rem; font-family:var(--mono); font-size:0.72rem;">
-        <span style="display:flex; align-items:center; gap:0.5rem;">
-          <span style="width:20px; height:8px; background:rgba(95,179,214,0.35); border-top:2px solid #5fb3d6; display:inline-block;"></span>
-          Reservas Internacionales Netas (millones USD)
-        </span>
-      </div>
-      <div class="chart-wrap" style="height:320px;"><canvas id="chart-rin"></canvas></div>
-
-      <!-- Ranking de bancos -->
-      <div class="bank-rank" id="bank-rank">
-        <div class="bank-rank-head">
-          <div>
-            <div class="bank-rank-title">¿Qué banco te paga más por tus dólares?
-              <span class="bank-rank-pill">COMPRA BCB</span>
-            </div>
-            <div class="bank-rank-sub">Tasa de compra oficial por banco · lo que recibís al vender USD en ventanilla</div>
-          </div>
-          <span class="bank-rank-date" id="bank-rank-date">—</span>
+      <div class="chart-legend-mini">
+        <div class="legend-row">
+          <span class="legend-dot" style="background:#7fae8f"></span>
+          <span class="legend-text"><strong>Compra / Venta</strong> · Binance P2P (bot 15 min)</span>
         </div>
-        <div id="bank-rank-list"></div>
-        <div class="bank-rank-note">ℹ️ Para <strong>comprar</strong> dólares, los bancos casi nunca tienen stock — por eso existe el mercado paralelo (ver bloque 01).</div>
+        <div class="legend-row">
+          <span class="legend-dot" style="background:repeating-linear-gradient(to right, #6e6a5e 0, #6e6a5e 4px, transparent 4px, transparent 8px);"></span>
+          <span class="legend-text"><strong>Oficial BCB</strong> · fijo en Bs 6.96 desde 2011</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-dot" style="background:#e08a4a"></span>
+          <span class="legend-text"><strong>Referencial BCB</strong> · diario, publicado desde dic-2025</span>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-historic"></canvas></div>
+      <div class="download-bar">
+        <div class="download-label">
+          <span class="download-icon">↓</span> Descargar Excel:
+        </div>
+        <div class="download-buttons">
+          <button class="dl-btn" data-granularity="day">Diario</button>
+          <button class="dl-btn" data-granularity="week">Semanal</button>
+          <button class="dl-btn" data-granularity="month">Mensual</button>
+        </div>
       </div>
     </div>
   </section>
@@ -1653,10 +812,12 @@
   <!-- CRYPTO MARKET -->
   <section class="block">
     <div class="block-header">
-      <div class="block-title"><span class="block-num">03</span>Mercado Cripto Global</div>
+      <div>
+        <div class="block-title"><span class="num">02</span>Mercado Cripto Global</div>
+        <div class="data-source-line" id="crypto-update-time" style="font-family:var(--mono); font-size:0.65rem; letter-spacing:0.08em; margin-top:0.4rem; color:var(--text-mute);">Cargando…</div>
+      </div>
       <div class="block-actions">
-        <span id="crypto-update-time" style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">Cargando…</span>
-        <span class="block-collapse-icon">▼</span>
+        <span class="pill" style="cursor:default; pointer-events:none;">CoinGecko</span>
       </div>
     </div>
     <div class="block-body">
@@ -1708,24 +869,20 @@
   </section>
 
   <!-- FORECAST -->
-  <section class="block" id="proyeccion">
-    <div class="block-header" id="proyeccion-header">
-      <div class="block-title"><span class="block-num">04</span>Proyección</div>
-      <div class="block-actions">
-        <div class="segmented" id="forecast-controls">
-          <div class="seg-indicator" id="seg-ind-forecast"></div>
-          <button class="seg-btn active" data-horizon="30">30 días</button>
-          <button class="seg-btn" data-horizon="90">3 meses</button>
-          <button class="seg-btn" data-horizon="180">6 meses</button>
-        </div>
-        <span class="block-collapse-icon">▼</span>
+  <section class="block">
+    <div class="block-header">
+      <div class="block-title"><span class="num">03</span>Proyección</div>
+      <div class="block-actions" id="forecast-controls">
+        <button class="pill active" data-horizon="30">30 días</button>
+        <button class="pill" data-horizon="90">3 meses</button>
+        <button class="pill" data-horizon="180">6 meses</button>
       </div>
     </div>
     <div class="block-body">
       <p class="block-intro" id="forecast-intro">
         Vista del comportamiento desde <strong>enero del año actual</strong> con proyección a futuro.
         Se entrenan <strong>dos modelos Holt independientes</strong>: uno para el paralelo (mid de Compra/Venta)
-        y otro para el Oficial BCB (TCO de mercado). Cada uno tiene su propia <strong>banda de confianza al 80%</strong>
+        y otro para el Referencial BCB diario. Cada uno tiene su propia <strong>banda de confianza al 80%</strong>
         que se ensancha con el horizonte.
       </p>
 
@@ -1753,7 +910,7 @@
           <div class="fc-stat-value" id="fc-val-2">—</div>
         </div>
         <div class="fc-stat">
-          <div class="fc-stat-label" id="fc-label-3">Oficial TCO · final</div>
+          <div class="fc-stat-label" id="fc-label-3">Referencial · final</div>
           <div class="fc-stat-value" id="fc-val-3">—</div>
         </div>
         <div class="fc-stat">
@@ -1765,7 +922,7 @@
         <h6 class="projection-table-title">Proyección mensual · escenario base</h6>
         <table class="projection-table" id="projection-table">
           <thead>
-            <tr><th>Mes</th><th>Paralelo</th><th>Δ vs hoy</th><th>Oficial BCB (TCO)</th></tr>
+            <tr><th>Mes</th><th>Paralelo</th><th>Δ vs hoy</th><th>Referencial BCB</th></tr>
           </thead>
           <tbody id="projection-table-body"></tbody>
         </table>
@@ -1784,19 +941,17 @@
   <!-- ECONOMIC INDICATORS -->
   <section class="block">
     <div class="block-header">
-      <div class="block-title"><span class="block-num">05</span>Contexto Económico</div>
+      <div class="block-title"><span class="num">04</span>Contexto Económico</div>
       <div class="block-actions">
-        <span style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">Datos oficiales</span>
-        <span class="block-collapse-icon">▼</span>
+        <span class="pill" style="cursor:default; pointer-events:none;">Datos oficiales</span>
       </div>
     </div>
     <div class="block-body">
       <p class="block-intro">
         Indicadores macroeconómicos que <strong>explican y acompañan</strong> el comportamiento del paralelo.
-        La inflación mensual del INE muestra la presión de precios sobre el boliviano; el
-        <strong>Oficial BCB (TCO)</strong> y las reservas internacionales indican el estado del mercado de divisas;
+        La inflación mensual del INE muestra la presión de precios sobre el boliviano; la brecha cambiaria
+        contra el oficial fijo y el referencial del BCB indica el grado de distorsión del mercado de divisas;
         y el salario mínimo permite dimensionar el poder adquisitivo real frente al dólar paralelo.
-        Los datos del BCB se actualizan solos; los del INE son de carga manual.
       </p>
       <div class="econ-grid">
         <div class="chart-wrap" style="height:300px"><canvas id="chart-inflation"></canvas></div>
@@ -1810,16 +965,15 @@
   <!-- NEWS -->
   <section class="block">
     <div class="block-header">
-      <div class="block-title"><span class="block-num">06</span>Pulso Informativo</div>
+      <div class="block-title"><span class="num">05</span>Pulso Informativo</div>
       <div class="block-actions">
-        <span id="news-update-time" style="font-family:var(--mono); font-size:0.68rem; color:var(--text-mute);">Cargando…</span>
-        <span class="block-collapse-icon">▼</span>
+        <span class="pill" id="news-update-time" style="cursor:default; pointer-events:none;">Cargando…</span>
       </div>
     </div>
     <div class="block-body">
       <p class="block-intro">
-        Noticias con mayor impacto sobre el tipo de cambio, <strong>curadas con IA y actualizadas cada 3 horas</strong>
-        desde medios bolivianos (Los Tiempos, Eju.tv, El Deber, Página Siete). La columna <strong>nacional</strong> cubre BCB, dólar paralelo y cripto;
+        Noticias con mayor impacto sobre el tipo de cambio, <strong>auto-actualizadas al abrir el dashboard</strong>
+        desde Google News (últimos 7 días). La columna <strong>nacional</strong> cubre BCB, ASFI y Gobierno;
         la columna <strong>internacional</strong> cubre Fed, índice DXY y eventos globales que mueven el dólar.
         Si la conexión falla, se muestra una selección curada manualmente.
       </p>
@@ -1845,12 +999,9 @@
   <!-- FOOTER -->
   <footer class="foot">
 
-    <!-- LEGAL DISCLAIMER (colapsable) -->
-    <div class="legal" id="legal-block">
-      <div class="legal-head" id="legal-toggle">
-        <span class="legal-head-left">Aviso Legal · Términos de Uso</span>
-        <span class="legal-arrow">▼</span>
-      </div>
+    <!-- LEGAL DISCLAIMER -->
+    <div class="legal-disclaimer">
+      <h5 class="legal-title">⚠ Aviso Legal · Términos de Uso</h5>
       <div class="legal-body">
         <p>
           <strong>Naturaleza referencial de la información.</strong>
@@ -1891,140 +1042,29 @@
 
     <div class="foot-grid">
       <div>
-        <div class="foot-brand-iso">
-          <img src="isotype.svg" alt="DataHunter" style="width:100%; height:100%; display:block;" />
-        </div>
-        <div style="color:var(--text); font-family:var(--serif); font-style:italic; font-size:1.1rem; margin-bottom:0.4rem;">Data<span style="color:var(--accent);">Hunter</span> Labs</div>
-        <p style="font-size:0.78rem; line-height:1.5;">Observatorio independiente del dólar paralelo en Bolivia. Sin tracking, sin terceros.</p>
-        <form class="foot-newsletter" onsubmit="event.preventDefault(); if(window.showToast) showToast('¡Te suscribiste! Te enviaremos el resumen diario.');">
-          <input type="email" placeholder="tu@email.com" required>
-          <button type="submit">Suscribir</button>
-        </form>
+        <h4>Fuentes</h4>
+        Cotización paralela: <a href="https://criptoya.com/bo" target="_blank" rel="noopener">CriptoYa API</a> (USDT/BOB agregado P2P).
+        Inflación: <a href="https://www.ine.gob.bo/" target="_blank" rel="noopener">INE Bolivia</a>.
+        Tipo oficial y referencial: <a href="https://www.bcb.gob.bo/" target="_blank" rel="noopener">Banco Central de Bolivia</a>.
       </div>
       <div>
-        <h4>Producto</h4>
-        <ul>
-          <li><a href="#" onclick="if(window.openCalc) openCalc(); return false;">Calculadora</a></li>
-          <li><a href="#" onclick="if(window.showToast) showToast('🔔 Alertas: próximamente con Telegram'); return false;">Alertas</a></li>
-          <li><a href="#" onclick="if(window.showToast) showToast('🔌 API pública en construcción'); return false;">API pública</a></li>
-          <li><a href="#" onclick="if(window.showToast) showToast('📦 Embed widget próximamente'); return false;">Embed widget</a></li>
-        </ul>
+        <h4>Metodología</h4>
+        Auto-actualización al abrir; histórico persistente entre sesiones.
+        Proyección con suavizamiento exponencial doble (α=0.6, β=0.3) y regresión
+        lineal sobre 30 días.
       </div>
       <div>
-        <h4>Recursos</h4>
-        <ul>
-          <li><a href="#" onclick="if(window.showToast) showToast('📖 Glosario en construcción'); return false;">Glosario</a></li>
-          <li><a href="#" onclick="document.querySelector('#bloque-metodologia, .block')?.scrollIntoView({behavior:'smooth'}); return false;">Metodología</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li><a href="#" id="foot-dl-csv" onclick="if(window.showToast) showToast('⬇ Descargá el Excel desde la sección Histórico'); return false;">Histórico CSV</a></li>
-          <li><a href="privacidad.html">Privacidad</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Datos</h4>
-        <ul>
-          <li><a href="https://criptoya.com/bo" target="_blank" rel="noopener">CriptoYa</a></li>
-          <li><a href="https://www.bcb.gob.bo/" target="_blank" rel="noopener">BCB</a></li>
-          <li><a href="https://www.ine.gob.bo/" target="_blank" rel="noopener">INE</a></li>
-          <li><a href="https://www.asfi.gob.bo/" target="_blank" rel="noopener">ASFI</a></li>
-        </ul>
+        <h4>Aviso</h4>
+        Información de carácter referencial. Las cotizaciones P2P varían entre exchanges
+        y por momento del día. No constituye asesoría financiera.
       </div>
     </div>
-    <!-- ── Sección Embed / API ── -->
-    <div class="foot-embed" id="embed-section">
-      <div class="foot-embed-inner">
-        <div class="embed-col">
-          <p class="embed-title">📦 Widget embebible</p>
-          <p class="embed-desc">Pega este código en cualquier sitio web para mostrar el precio en vivo:</p>
-          <div class="embed-code-wrap">
-            <code id="embed-code-widget">&lt;iframe src="https://dh-og-image.reynaldoft.workers.dev/widget" width="300" height="160" frameborder="0" style="border-radius:8px;overflow:hidden" title="USDT/BOB · DataHunter Labs"&gt;&lt;/iframe&gt;</code>
-            <button class="embed-copy-btn" onclick="copyEmbed('embed-code-widget', this)">Copiar</button>
-          </div>
-        </div>
-        <div class="embed-col">
-          <p class="embed-title">⚡ API JSON pública</p>
-          <p class="embed-desc">Precio en vivo para tus propias apps, bots o scripts:</p>
-          <div class="embed-code-wrap">
-            <code id="embed-code-api">https://dh-og-image.reynaldoft.workers.dev/price</code>
-            <button class="embed-copy-btn" onclick="copyEmbed('embed-code-api', this)">Copiar</button>
-          </div>
-          <p class="embed-note">CORS abierto · JSON · Cache 5 min · Sin registro</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="foot-bottom">
-      <span>v2.0 · cache local · sin tracking · sin terceros</span>
-      <span>© 2026 DataHunter Labs · La Paz · Bolivia</span>
+    <div style="opacity:0.5; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em;">
+      v1.0 · datos cacheados localmente · sin tracking · sin terceros
     </div>
   </footer>
 
 </div>
-
-<!-- =============== CALCULATOR FAB =============== -->
-<button class="calc-fab" id="calc-fab" aria-label="Abrir calculadora">
-  <span class="calc-pulse"></span>
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" id="calc-icon">
-    <rect x="4" y="2" width="16" height="20" rx="2"/>
-    <line x1="8" y1="6" x2="16" y2="6"/>
-    <circle cx="8.5" cy="11" r="0.5" fill="currentColor"/>
-    <circle cx="12" cy="11" r="0.5" fill="currentColor"/>
-    <circle cx="15.5" cy="11" r="0.5" fill="currentColor"/>
-    <circle cx="8.5" cy="14.5" r="0.5" fill="currentColor"/>
-    <circle cx="12" cy="14.5" r="0.5" fill="currentColor"/>
-    <circle cx="15.5" cy="14.5" r="0.5" fill="currentColor"/>
-    <circle cx="8.5" cy="18" r="0.5" fill="currentColor"/>
-    <circle cx="12" cy="18" r="0.5" fill="currentColor"/>
-    <circle cx="15.5" cy="18" r="0.5" fill="currentColor"/>
-  </svg>
-</button>
-
-<!-- =============== CALCULATOR PANEL =============== -->
-<div class="calc-panel" id="calc-panel">
-  <div class="calc-header">
-    <div>
-      <div class="calc-title">Calculadora</div>
-      <div class="calc-rate">Cotización: <strong id="calc-rate-display">Bs —</strong> · <span id="calc-rate-mode">paralelo mid</span></div>
-    </div>
-    <button class="calc-close" id="calc-close">✕</button>
-  </div>
-  <div class="calc-body">
-    <div class="calc-mode">
-      <button data-mode="parallel" class="active">Paralelo</button>
-      <button data-mode="oficial">Oficial TCO</button>
-      <button data-mode="ref">Fijo ant.</button>
-    </div>
-    <div class="calc-row">
-      <div class="calc-row-label"><span>Tengo</span><span>USD</span></div>
-      <div class="calc-row-input">
-        <input type="number" id="calc-usd" value="100" min="0" step="any" />
-        <span class="calc-currency">USD</span>
-      </div>
-    </div>
-    <div class="calc-arrow" id="calc-swap" title="Intercambiar">⇅</div>
-    <div class="calc-row">
-      <div class="calc-row-label"><span>Equivale a</span><span>BOB</span></div>
-      <div class="calc-row-input">
-        <input type="number" id="calc-bob" min="0" step="any" />
-        <span class="calc-currency">Bs</span>
-      </div>
-    </div>
-    <div class="calc-presets">
-      <button class="calc-preset" data-usd="50">$50</button>
-      <button class="calc-preset" data-usd="100">$100</button>
-      <button class="calc-preset" data-usd="500">$500</button>
-      <button class="calc-preset" data-usd="1000">$1,000</button>
-      <button class="calc-preset" data-bob="10000">Bs 10K</button>
-    </div>
-    <div class="calc-foot" id="calc-foot-note">
-      <div>📌 Seleccioná un modo de cotización arriba.</div>
-      <div style="margin-top:0.3rem;">No incluye comisiones de exchange ni spreads.</div>
-    </div>
-  </div>
-</div>
-
-<!-- =============== TOAST =============== -->
-<div class="toast" id="toast">—</div>
 
 <script>
 /* ============================================================
@@ -2156,9 +1196,9 @@ function generateSeed() {
     const spread = mid > 12 ? 0.10 : 0.06; // wider spread in high-volatility periods
     const d = new Date(startDate.getTime() + i * 86400000);
     seed.push({
-      t: dateToStrBolivia(d),
-      compra: +(mid + spread / 2).toFixed(2),  // ASK · precio de compra (mayor)
-      venta:  +(mid - spread / 2).toFixed(2),  // BID · precio de venta (menor)
+      t: d.toISOString().slice(0, 10),
+      compra: +(mid - spread / 2).toFixed(2),
+      venta: +(mid + spread / 2).toFixed(2),
       seed: true
     });
   }
@@ -2177,29 +1217,14 @@ const INFLATION_DATA = [
   { m: '2026-03', val: -0.34, label: 'Mar 26' }
 ];
 
-// Indicadores del Contexto Económico. Los del BCB (oficial TCO + reservas) se
-// leen EN VIVO de la data del dashboard (se actualizan solos vía el bot); los
-// macro (inflación, salario, PIB) son datos manuales del INE / decretos.
-function getIndicators() {
-  // Oficial TCO en vivo
-  const ofi = (typeof getOficialHoy === 'function') ? getOficialHoy() : (typeof TCO_OFICIAL !== 'undefined' ? TCO_OFICIAL : 0);
-  const ofiFecha = (typeof TCO_FECHA !== 'undefined') ? TCO_FECHA : '';
-  // Reservas RIN en vivo (último dato del array RIN_DATA)
-  let rinVal = '—', rinFecha = '';
-  if (typeof RIN_DATA !== 'undefined' && RIN_DATA.length) {
-    const last = RIN_DATA[RIN_DATA.length - 1];
-    rinVal = '$' + last[1].toLocaleString('en-US') + 'M';
-    rinFecha = last[0];
-  }
-  return [
-    { name: 'Oficial BCB (TCO)', val: 'Bs ' + ofi.toFixed(2), delta: 'de mercado', deltaType: 'up', src: 'BCB · corte ' + ofiFecha },
-    { name: 'Reservas Internacionales (RIN)', val: rinVal, delta: 'en recuperación', deltaType: 'up', src: 'BCB · ' + rinFecha },
-    { name: 'Oficial fijo anterior', val: 'Bs 6.96', delta: 'peg 2011–jun 2026', deltaType: 'flat', src: 'BCB (histórico)' },
-    { name: 'Inflación 12 meses', val: '19.64%', delta: 'dato manual', deltaType: 'down', src: 'INE · Ene 2026' },
-    { name: 'Salario mínimo nacional', val: 'Bs 3.300', delta: '+20% vs 2025', deltaType: 'up', src: 'D.S. 5516 · Ene 2026' },
-    { name: 'Proy. PIB 2026', val: '-1.1%', delta: 'recesión esperada', deltaType: 'down', src: 'Banco Mundial' }
-  ];
-}
+const INDICATORS = [
+  { name: 'Inflación 12 meses', val: '19.64%', delta: 'persistente', deltaType: 'down', src: 'INE · Ene 2026' },
+  { name: 'Inflación acumulada YTD', val: '0.34%', delta: 'feb-mar negativos', deltaType: 'flat', src: 'INE · Mar 2026' },
+  { name: 'Tipo oficial BCB', val: 'Bs 6.96', delta: 'fijo desde 2011', deltaType: 'flat', src: 'BCB' },
+  { name: 'Tipo referencial BCB', val: 'Bs 9.74', delta: 'máx. histórico', deltaType: 'up', src: 'BCB · 27-abr' },
+  { name: 'Salario mínimo nacional', val: 'Bs 3.300', delta: '+20% vs 2025', deltaType: 'up', src: 'D.S. 5516 · Ene 2026' },
+  { name: 'Proy. PIB 2026', val: '-1.1%', delta: 'recesión esperada', deltaType: 'down', src: 'Banco Mundial' }
+];
 
 const NEWS_NACIONAL = [
   {
@@ -2257,211 +1282,57 @@ const NEWS_INTERNACIONAL = [
   }
 ];
 
-const OFICIAL_FIJO = 6.96;         // Peg oficial histórico 2011 – 26 jun 2026 (abandonado tras flexibilización cambiaria)
-const REFERENCIAL_VENTA  = 9.96;  // BCB ref. venta  2026-06-26 (serie descontinuada — solo histórico)
-const REFERENCIAL_COMPRA =  9.76;  // BCB ref. compra 2026-06-26 (serie descontinuada — solo histórico)
-
-// ─── TIPO DE CAMBIO OFICIAL (TCO) — nuevo régimen de mercado desde el 26 jun 2026 ───
-// El BCB reemplazó el peg fijo de 6.96 por el TCO: promedio ponderado diario de las
-// operaciones de COMPRA de dólares de los bancos con sus clientes.
-// Fuente: https://www.bcb.gob.bo/tco_reporte_ultima_cotizacion.php
-const OFICIAL_TCO_START = '2026-06-26'; // fecha en que el oficial pasó de fijo (6.96) a TCO de mercado
-const TCO_OFICIAL = 11.92;              // último TCO publicado (2026-08-28) — actualizar vía cron
-const TCO_FECHA   = '2026-08-28';       // fecha de corte del último TCO — actualizar vía cron
-
-/* ─── Fecha local Bolivia (UTC-4, sin DST) ───────────────────────────────────
-   NUNCA usar new Date().toISOString().slice(0,10) para "hoy":
-   eso devuelve UTC y a las 20:00 La Paz ya es medianoche del día siguiente.
-   Usar siempre hoyBolivia() para cualquier comparación con fechas del dashboard.
-──────────────────────────────────────────────────────────────────────────── */
-function hoyBolivia() {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/La_Paz' }).format(new Date());
-  // en-CA produce YYYY-MM-DD nativo — sin manipulación de strings
-}
-
-// Para convertir un Date object a fecha-string local Bolivia (loops de forecast, seed data)
-function dateToStrBolivia(d) {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/La_Paz' }).format(d);
-}
+const OFICIAL_FIJO = 6.96;
+const REFERENCIAL_VENTA = 9.74;
 
 /* ============================================================
-   HISTORIAL REAL DEL REFERENCIAL BCB (venta)
-   Fuente: https://www.bcb.gob.bo/valor_referencial_venta_svg.php
-   125 registros reales. Solo días hábiles (BCB no publica fines de semana ni feriados).
-   Para días sin dato → se usa el último valor publicado (carry-forward).
-   Última actualización: 2026-05-21
+   HISTORIAL DEL REFERENCIAL BCB (venta)
+   El BCB publica el referencial diariamente desde 1 dic 2025.
+   Anclas confirmadas en notas de prensa; interpolación lineal entre ellas.
+   Antes del 1 dic 2025 → null (no existía).
 ============================================================ */
-const REFERENCIAL_DATA = new Map([
-  ['2025-12-01',9.32],['2025-12-02',9.29],['2025-12-03',9.23],['2025-12-04',9.30],
-  ['2025-12-05',9.16],['2025-12-06',9.16],['2025-12-07',9.16],['2025-12-08',9.02],
-  ['2025-12-09',8.94],['2025-12-10',8.85],['2025-12-11',8.88],['2025-12-12',8.77],
-  ['2025-12-13',8.77],['2025-12-14',8.77],['2025-12-15',8.77],['2025-12-16',8.65],
-  ['2025-12-17',8.51],['2025-12-18',8.67],['2025-12-19',8.68],['2025-12-20',8.68],
-  ['2025-12-21',8.68],['2025-12-22',8.68],['2025-12-23',8.58],['2025-12-24',8.63],
-  ['2025-12-25',8.63],['2025-12-26',8.63],['2025-12-27',8.63],['2025-12-28',8.63],
-  ['2025-12-29',8.37],['2025-12-30',8.45],['2025-12-31',8.55],
-  ['2026-01-05',8.91],['2026-01-06',8.11],['2026-01-07',8.75],['2026-01-08',8.53],
-  ['2026-01-09',9.11],['2026-01-12',9.16],['2026-01-13',9.29],['2026-01-14',8.90],
-  ['2026-01-15',9.22],['2026-01-16',9.40],['2026-01-19',9.10],['2026-01-20',9.29],
-  ['2026-01-21',9.00],['2026-01-22',9.35],['2026-01-26',9.52],['2026-01-27',9.28],
-  ['2026-01-28',9.05],['2026-01-29',9.18],['2026-01-30',8.77],
-  ['2026-02-02',8.82],['2026-02-03',8.68],['2026-02-04',9.30],['2026-02-05',9.18],
-  ['2026-02-06',9.00],['2026-02-09',8.87],['2026-02-10',9.08],['2026-02-11',9.56],
-  ['2026-02-12',8.85],['2026-02-13',8.76],['2026-02-18',8.91],['2026-02-19',8.65],
-  ['2026-02-20',8.88],['2026-02-23',9.27],['2026-02-24',9.06],['2026-02-25',8.84],
-  ['2026-02-26',9.27],['2026-02-27',9.11],
-  ['2026-03-02',8.58],['2026-03-03',8.36],['2026-03-04',8.87],['2026-03-05',9.04],
-  ['2026-03-06',8.66],['2026-03-09',8.96],['2026-03-10',8.67],['2026-03-11',8.86],
-  ['2026-03-12',9.37],['2026-03-13',9.13],['2026-03-16',9.24],['2026-03-17',9.20],
-  ['2026-03-18',9.09],['2026-03-19',9.10],['2026-03-20',9.59],['2026-03-23',9.01],
-  ['2026-03-24',8.84],['2026-03-25',9.23],['2026-03-26',9.00],['2026-03-27',9.20],
-  ['2026-03-30',8.75],['2026-03-31',8.95],
-  ['2026-04-01',9.03],['2026-04-02',8.60],['2026-04-06',9.15],['2026-04-07',9.19],
-  ['2026-04-08',9.20],['2026-04-09',9.61],['2026-04-10',9.44],['2026-04-13',9.45],
-  ['2026-04-14',9.35],['2026-04-15',9.30],['2026-04-16',9.37],['2026-04-17',9.63],
-  ['2026-04-20',9.63],['2026-04-21',9.59],['2026-04-22',9.59],['2026-04-23',9.62],
-  ['2026-04-24',9.68],['2026-04-27',9.74],['2026-04-28',9.72],['2026-04-29',9.79],
-  ['2026-04-30',9.90],
-  ['2026-05-04',10.01],['2026-05-05',10.08],['2026-05-06',10.20],['2026-05-07',10.20],
-  ['2026-05-08',10.31],['2026-05-11',10.35],['2026-05-12',10.39],['2026-05-13',10.25],
-  ['2026-05-14',10.32],['2026-05-15',10.25],['2026-05-18',10.12],['2026-05-19',10.19],
-  ['2026-05-20',10.19],['2026-05-21',10.13],['2026-05-22',10.15],['2026-05-25',10.13],['2026-05-26',10.11],['2026-05-27',10.11],['2026-05-28',10.14],['2026-05-29',10.13],['2026-06-01',10.08],['2026-06-02',10.07],['2026-06-03',9.92],['2026-06-08',10.11],['2026-06-09',10.07],['2026-06-10',10],['2026-06-11',10.03],['2026-06-12',10.07],['2026-06-15',10.02],['2026-06-16',9.94],['2026-06-17',10.02],['2026-06-18',10.01],['2026-06-19',9.92],['2026-06-23',9.99],['2026-06-24',9.96],['2026-06-25',9.93],['2026-06-26',9.96]
-]);
-
-// Claves ordenadas para carry-forward
-const _REFERENCIAL_KEYS = [...REFERENCIAL_DATA.keys()].sort();
-
-/* ============================================================
-   HISTORIAL REAL DEL TCO — Tipo de Cambio Oficial de mercado
-   Fuente: https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php
-   Promedio ponderado diario de compras de dólares de los bancos.
-   Solo días hábiles con fecha de corte. Última actualización: 2026-08-25
-============================================================ */
-const TCO_DATA = new Map([
-  ['2026-06-26',9.73],['2026-06-29',9.76],['2026-06-30',9.76],['2026-07-01',9.78],
-  ['2026-07-02',9.8],['2026-07-03',9.83],['2026-07-06',9.89],['2026-07-07',9.96],
-  ['2026-07-08',10.1],['2026-07-09',10.24],['2026-07-10',10.4],['2026-07-13',10.5],
-  ['2026-07-14',10.7],['2026-07-15',10.75],['2026-07-17',10.85],['2026-07-20',10.9],
-  ['2026-07-21',11],['2026-07-22',11.13],['2026-07-23',11.21],['2026-07-24',11.37],
-  ['2026-07-27',11.54],['2026-07-28',11.8],['2026-07-29',11.89],['2026-07-30',12.15],
-  ['2026-07-31',12.13],['2026-08-03',12.08],['2026-08-04',12.02],['2026-08-05',11.86],
-  ['2026-08-10',11.77],['2026-08-11',11.71],['2026-08-12',11.66],['2026-08-13',11.62],
-  ['2026-08-14',11.58],['2026-08-17',11.55],['2026-08-18',11.52],['2026-08-19',11.52],
-  ['2026-08-20',11.52],['2026-08-21',11.5],['2026-08-24',11.54],['2026-08-25',11.57],
-  ['2026-08-26',11.71],['2026-08-27',11.83],['2026-08-28',11.92]
-]);
-const _TCO_KEYS = [...TCO_DATA.keys()].sort();
-
-/* Valor del OFICIAL para una fecha dada, siguiendo el régimen real:
-   - Antes del 26 jun 2026 → peg fijo 6.96
-   - Desde el 26 jun 2026  → TCO de mercado (carry-forward del último dato) */
-function getOficialParaFecha(dateStr) {
-  if (!dateStr || dateStr < OFICIAL_TCO_START) return OFICIAL_FIJO;
-  if (TCO_DATA.has(dateStr)) return TCO_DATA.get(dateStr);
-  // carry-forward: último TCO publicado <= dateStr
-  let val = null;
-  for (const k of _TCO_KEYS) {
-    if (k <= dateStr) val = TCO_DATA.get(k); else break;
-  }
-  return val ?? TCO_OFICIAL;
-}
-
-/* Construye la serie OFICIAL (fijo→TCO) para un array de fechas. */
-function buildOficialHistory(targetDates) {
-  const result = new Map();
-  for (const t of targetDates) result.set(t, getOficialParaFecha(t));
-  return result;
-}
-
-/* Oficial vigente HOY (último TCO). */
-function getOficialHoy() {
-  return getOficialParaFecha(hoyBolivia());
-}
-
-/* ============================================================
-   RESERVAS INTERNACIONALES NETAS (RIN) del BCB — en millones de USD
-   Fuente: https://www.bcb.gob.bo/webdocs/bcb_semanal/data/reservas.csv
-   Serie mensual (fin de mes). Se actualiza vía cron semanal.
-   Última actualización: 2026-02-20
-============================================================ */
-const RIN_DATA = [
-  ['2006-01-31',1823],['2006-02-28',1876],['2006-03-31',2014],['2006-04-30',2217],['2006-05-31',2401],['2006-06-30',2474],
-  ['2006-07-31',2671],['2006-08-31',2776],['2006-09-30',2885],['2006-10-31',2971],['2006-11-30',3071],['2006-12-31',3178],
-  ['2007-01-31',3240],['2007-02-28',3369],['2007-03-31',3533],['2007-04-30',3734],['2007-05-31',3841],['2007-06-30',3891],
-  ['2007-07-31',4114],['2007-08-31',4384],['2007-09-30',4743],['2007-10-31',4917],['2007-11-30',5079],['2007-12-31',5319],
-  ['2008-01-31',5622],['2008-02-29',5994],['2008-03-31',6232],['2008-04-30',6513],['2008-05-31',6828],['2008-06-30',7121],
-  ['2008-07-31',7439],['2008-08-31',7687],['2008-09-30',7811],['2008-10-31',7537],['2008-11-30',7618],['2008-12-31',7722],
-  ['2009-01-31',7784],['2009-02-28',7679],['2009-03-31',7765],['2009-04-30',7740],['2009-05-31',7895],['2009-06-30',7956],
-  ['2009-07-31',8008],['2009-08-31',8310],['2009-09-30',8453],['2009-10-31',8599],['2009-11-30',8760],['2009-12-31',8580],
-  ['2010-01-31',8558],['2010-02-28',8524],['2010-03-31',8447],['2010-04-30',8440],['2010-05-31',8456],['2010-06-30',8537],
-  ['2010-07-31',8617],['2010-08-31',8737],['2010-09-30',9058],['2010-10-31',9208],['2010-11-30',9274],['2010-12-31',9730],
-  ['2011-01-31',10016],['2011-02-28',10357],['2011-03-31',10486],['2011-04-30',10752],['2011-05-31',10677],['2011-06-30',10751],
-  ['2011-07-31',11037],['2011-08-31',11632],['2011-09-30',11408],['2011-10-31',11903],['2011-11-30',12115],['2011-12-31',12019],
-  ['2012-01-31',12489],['2012-02-29',12739],['2012-03-31',12747],['2012-04-30',12573],['2012-05-31',12422],['2012-06-30',12440],
-  ['2012-07-31',12748],['2012-08-31',13064],['2012-09-30',13419],['2012-10-31',13772],['2012-11-30',13926],['2012-12-31',13927],
-  ['2013-01-31',14049],['2013-02-28',14101],['2013-03-31',14188],['2013-04-30',14206],['2013-05-31',14008],['2013-06-30',13952],
-  ['2013-07-31',14311],['2013-08-31',14401],['2013-09-30',14518],['2013-10-31',14250],['2013-11-30',14228],['2013-12-31',14430],
-  ['2014-01-31',14519],['2014-02-28',14558],['2014-03-31',14491],['2014-04-30',14533],['2014-05-31',14541],['2014-06-30',14809],
-  ['2014-07-31',14873],['2014-08-31',15395],['2014-09-30',15272],['2014-10-31',15387],['2014-11-30',15477],['2014-12-31',15123],
-  ['2015-01-31',15087],['2015-02-28',15144],['2015-03-31',14968],['2015-04-30',14841],['2015-05-31',14648],['2015-06-30',14708],
-  ['2015-07-31',14486],['2015-08-31',14353],['2015-09-30',14227],['2015-10-31',13967],['2015-11-30',13528],['2015-12-31',13056],
-  ['2016-01-31',12818],['2016-02-29',12787],['2016-03-31',12483],['2016-04-30',12233],['2016-05-31',11725],['2016-06-30',11609],
-  ['2016-07-31',11550],['2016-08-31',11259],['2016-09-30',11039],['2016-10-31',10694],['2016-11-30',10353],['2016-12-31',10081],
-  ['2017-01-31',9839],['2017-02-28',9805],['2017-03-31',10261],['2017-04-30',10025],['2017-05-31',10254],['2017-06-30',10306],
-  ['2017-07-31',10358],['2017-08-31',10452],['2017-09-30',10130],['2017-10-31',9934],['2017-11-30',10632],['2017-12-31',10261],
-  ['2018-01-31',10226],['2018-02-28',9965],['2018-03-31',9805],['2018-04-30',9602],['2018-05-31',9759],['2018-06-30',9522],
-  ['2018-07-31',9257],['2018-08-31',9080],['2018-09-30',8729],['2018-10-31',8506],['2018-11-30',8740],['2018-12-31',8946],
-  ['2019-01-31',8724],['2019-02-28',8475],['2019-03-31',7947],['2019-04-30',8409],['2019-05-31',8253],['2019-06-30',8317],
-  ['2019-07-31',8047],['2019-08-31',8027],['2019-09-30',7650],['2019-10-31',6830],['2019-11-30',6460],['2019-12-31',6468],
-  ['2020-01-31',6374],['2020-02-29',6310],['2020-03-31',6091],['2020-04-30',6532],['2020-05-31',6390],['2020-06-30',6272],
-  ['2020-07-31',6608],['2020-08-31',6644],['2020-09-30',6356],['2020-10-31',5578],['2020-11-30',5305],['2020-12-31',5276],
-  ['2021-01-31',4964],['2021-02-28',4770],['2021-03-31',4526],['2021-04-30',4629],['2021-05-31',4887],['2021-06-30',4624],
-  ['2021-07-31',4746],['2021-08-31',5116],['2021-09-30',4831],['2021-10-31',4890],['2021-11-30',4762],['2021-12-31',4752],
-  ['2022-01-31',4483],['2022-02-28',4396],['2022-03-31',4599],['2022-04-30',4602],['2022-05-31',4578],['2022-06-30',4505],
-  ['2022-07-31',4301],['2022-08-31',3807],['2022-09-30',3844],['2022-10-31',3687],['2022-11-30',3808],['2022-12-31',3796],
-  ['2023-01-31',3616],['2023-02-28',3149],['2023-03-31',3112],['2023-04-30',3158],['2023-05-31',2952],['2023-06-30',2612],
-  ['2023-07-31',2513],['2023-08-31',2147],['2023-09-30',1818],['2023-10-31',1654],['2023-11-30',1688],['2023-12-31',1709],
-  ['2024-01-31',1616],['2024-02-29',1582],['2024-03-31',1677],['2024-04-30',1796],['2024-05-31',1938],['2024-06-30',1839],
-  ['2024-07-31',1820],['2024-08-31',1905],['2024-09-30',1966],['2024-10-31',2065],['2024-11-30',1952],['2024-12-31',1977],
-  ['2025-01-31',2103],['2025-02-28',2188],['2025-03-31',2302],['2025-04-30',2618],['2025-05-31',2519],['2025-06-30',2807],
-  ['2025-07-31',2726],['2025-08-31',2881],['2025-09-30',3275],['2025-10-31',3227],['2025-11-30',3261],['2025-12-31',3713],
-  ['2026-01-31',4417],['2026-02-20',4173]
-];
-
-/* ============================================================
-   RANKING DE BANCOS — Tasa de COMPRA de dólares (TCO por entidad)
-   Lo que cada banco te paga al vender USD en ventanilla.
-   Fuente: tco_reporte_ultima_cotizacion.php · se actualiza por día hábil.
-   Última actualización: fecha de corte 2026-08-20
-============================================================ */
-const BANK_RANKING_FECHA = '2026-08-20';
-const BANK_RANKING = [
-  ['Banco Solidario',11.57],['Banco Económico',11.56],['Banco de Crédito',11.53],
-  ['Banco BISA',11.52],['Banco Ganadero',11.52],['Banco Nacional de Bolivia',11.51],
-  ['Banco de la Nación Argentina',11.48],['Banco Fortaleza',11.47],['Banco Mercantil Santa Cruz',11.45],
-  ['Banco Unión',11.45],['Banco FIE',11.32],['Banco Prodem',11.22],
-  ['Banco PyME de la Comunidad',11.12]
+const REFERENCIAL_ANCHORS = [
+  { date: '2025-12-01', val: 7.85 },  // primera publicación, cerca del oficial
+  { date: '2025-12-15', val: 8.10 },
+  { date: '2025-12-31', val: 8.40 },
+  { date: '2026-01-15', val: 8.70 },
+  { date: '2026-02-01', val: 8.90 },
+  { date: '2026-02-28', val: 9.05 },
+  { date: '2026-03-15', val: 9.20 },
+  { date: '2026-04-01', val: 9.30 },
+  { date: '2026-04-09', val: 9.41 },  // confirmado: promedio ponderado El Diario
+  { date: '2026-04-20', val: 9.55 },
+  { date: '2026-04-27', val: 9.74 },  // confirmado: máximo histórico Red Uno
+  { date: '2026-04-28', val: 9.74 },
+  { date: '2026-04-29', val: 9.72 }
 ];
 
 function buildReferencialHistory(targetDates) {
-  // Lookup exacto con carry-forward para fines de semana y feriados.
-  // Antes de 2025-12-01 → sin dato (el BCB no publicaba referencial).
+  // Generates daily values aligned to targetDates by interpolating between anchors.
   const startReferencial = '2025-12-01';
-  const lastKey = _REFERENCIAL_KEYS[_REFERENCIAL_KEYS.length - 1];
   const result = new Map();
+  if (REFERENCIAL_ANCHORS.length < 2) return result;
+
+  const anchorsByDay = REFERENCIAL_ANCHORS.map(a => ({
+    day: new Date(a.date + 'T00:00:00').getTime() / 86400000,
+    val: a.val
+  }));
 
   for (const t of targetDates) {
     if (t < startReferencial) continue;
-
-    if (REFERENCIAL_DATA.has(t)) {
-      result.set(t, REFERENCIAL_DATA.get(t));
-    } else if (t > lastKey) {
-      // Fecha futura o hoy sin dato → usar último valor conocido
-      result.set(t, REFERENCIAL_DATA.get(lastKey));
-    } else {
-      // Fin de semana / feriado → carry-forward del último día hábil anterior
-      const prev = _REFERENCIAL_KEYS.filter(k => k <= t).pop();
-      if (prev) result.set(t, REFERENCIAL_DATA.get(prev));
+    const day = new Date(t + 'T00:00:00').getTime() / 86400000;
+    if (day < anchorsByDay[0].day) continue;
+    if (day >= anchorsByDay[anchorsByDay.length - 1].day) {
+      result.set(t, anchorsByDay[anchorsByDay.length - 1].val);
+      continue;
+    }
+    for (let i = 0; i < anchorsByDay.length - 1; i++) {
+      if (day >= anchorsByDay[i].day && day <= anchorsByDay[i + 1].day) {
+        const a = anchorsByDay[i], b = anchorsByDay[i + 1];
+        const ratio = (day - a.day) / (b.day - a.day);
+        result.set(t, +(a.val + ratio * (b.val - a.val)).toFixed(3));
+        break;
+      }
     }
   }
   return result;
@@ -2649,7 +1520,6 @@ function loadFromLocalCSV() {
    Para el dashboard usamos siempre el CSV completo (raíz).
 ============================================================ */
 const USDT_SHEET_URL = 'https://monitor-p2p-bolivia.reynaldoft.workers.dev/';
-const NEWS_WORKER_URL = 'https://noticias-bolivia.reynaldoft.workers.dev/';
 
 function parseSpanishCSVRow(line) {
   // Robust: handles quoted fields containing commas
@@ -2696,27 +1566,17 @@ function parseTimestampDDMMYYYY(s) {
 }
 
 async function fetchUsdtSheet() {
-  // Fuente primaria: Google Sheet del bot (datos correctos confirmados por el usuario).
-  // Fallback: Worker monitor-p2p-bolivia si el Sheet falla.
-  // Cache buster: usar & si la URL ya tiene parámetros, ? si no.
-  const primaryUrl = DEFAULT_SHEET_URL + '&_t=' + Date.now();
-  const fallbackUrl = USDT_SHEET_URL + '?_t=' + Date.now();
+  // GitHub raw CSV is CORS-open — direct fetch only, no proxies needed.
+  // Cache buster ensures we don't get stale CDN cache.
+  const url = USDT_SHEET_URL + '?_t=' + Date.now();
 
   let text = null;
-  // Intentar primero el Google Sheet
   try {
-    const resp = await fetchWithTimeout(primaryUrl, { cache: 'no-cache' }, 10000);
-    if (resp.ok) text = await resp.text();
+    const resp = await fetchWithTimeout(url, { cache: 'no-cache' }, 10000);
+    if (resp.ok) {
+      text = await resp.text();
+    }
   } catch (_) {}
-
-  // Si falla, intentar el Worker como fallback
-  if (!text || text.length < 50 || text.trim().startsWith('<')) {
-    text = null;
-    try {
-      const resp = await fetchWithTimeout(fallbackUrl, { cache: 'no-cache' }, 10000);
-      if (resp.ok) text = await resp.text();
-    } catch (_) {}
-  }
 
   if (!text || text.length < 50) return { ok: false, reason: 'fetch-fail' };
   if (text.trim().startsWith('<')) return { ok: false, reason: 'html-no-csv' };
@@ -2741,25 +1601,20 @@ async function fetchUsdtSheet() {
     if (!tsMatch) continue;
     let yyyy = tsMatch[3];
     if (yyyy.length === 2) yyyy = '20' + yyyy;
-    // El bot registra timestamps en hora Bolivia local → dateStr ya es la fecha Bolivia correcta.
     const dateStr = `${yyyy}-${tsMatch[2].padStart(2, '0')}-${tsMatch[1].padStart(2, '0')}`;
     const hh = tsMatch[4] || '00', mm = tsMatch[5] || '00', ss = tsMatch[6] || '00';
-    // Sin sufijo Z → Date() interpreta como hora local (Bolivia en el browser del usuario).
     const fullTs = new Date(
       `${dateStr}T${hh.padStart(2, '0')}:${mm.padStart(2, '0')}:${ss.padStart(2, '0')}`
     ).getTime();
 
     const bcbCompra = parseSpanishNumber(cells[1]);
     const bcbVenta = parseSpanishNumber(cells[2]);
-    // Convención del Worker (y Google Sheet):
-    //   cells[3] = venta  (antepenúltimo) = BUY ads Binance → precio que recibís al vender USDT
-    //   cells[4] = compra (último)        = SELL ads Binance → precio que pagás para comprar USDT
-    const p2pVenta  = parseSpanishNumber(cells[3]);
-    const p2pCompra = parseSpanishNumber(cells[4]);
+    const p2pCompra = parseSpanishNumber(cells[3]);
+    const p2pVenta = parseSpanishNumber(cells[4]);
 
     if (p2pCompra == null && p2pVenta == null) continue;
     const compra = p2pCompra ?? p2pVenta;
-    const venta  = p2pVenta  ?? p2pCompra;
+    const venta = p2pVenta ?? p2pCompra;
     if (compra < 5 || compra > 30 || venta < 5 || venta > 30) continue;
 
     allRecords.push({
@@ -2777,7 +1632,7 @@ async function fetchUsdtSheet() {
   // Sort by timestamp ascending
   allRecords.sort((a, b) => a.ts - b.ts);
 
-  const todayStr = hoyBolivia();
+  const todayStr = new Date().toISOString().slice(0, 10);
   const latestRecord = allRecords[allRecords.length - 1];
 
   // Aggregate: average per day for PAST days, but use the latest record for TODAY
@@ -2928,10 +1783,10 @@ async function fetchLiveQuote() {
   if (!ask || !bid) return null;
 
   return {
-    t: hoyBolivia(),
+    t: new Date().toISOString().slice(0, 10),
     ts: time ? time * 1000 : Date.now(),
-    compra: +ask.toFixed(2),   // ASK · precio que pagás para comprar USD (perspectiva CriptoYa)
-    venta:  +bid.toFixed(2),   // BID · precio que recibís al vender USD
+    compra: +bid.toFixed(2),
+    venta: +ask.toFixed(2),
     method: usedMethod
   };
 }
@@ -3141,7 +1996,7 @@ function linearRegressionForecast(values, horizon = 14) {
 const COLORS = {
   compra: '#7fae8f',
   venta: '#d4a647',
-  oficial: '#5fb3d6',
+  oficial: '#6e6a5e',
   referencial: '#7a8a9a',
   forecastHolt: '#d4a647',
   forecastLR: '#7a8a9a',
@@ -3199,9 +2054,7 @@ function renderHistoric(data, range, liveCaptures = [], usdtSheet = null) {
   const labels = filtered.map(d => formatDate(d.t));
   const compraData = filtered.map(d => d.compra);
   const ventaData = filtered.map(d => d.venta);
-  // Oficial BCB: peg fijo 6.96 hasta el 26 jun 2026, luego TCO de mercado (sube ~9.7 → ~11.6)
-  const oficialMap = buildOficialHistory(filtered.map(d => d.t));
-  const oficialData = filtered.map(d => oficialMap.get(d.t) ?? getOficialParaFecha(d.t));
+  const oficialData = filtered.map(() => OFICIAL_FIJO);
 
   // USDT/BOB Google Sheet — only show as separate line if NOT already promoted to main source
   const isUsdtPrimary = filtered.some(d => d.source === 'usdt-sheet');
@@ -3213,19 +2066,17 @@ function renderHistoric(data, range, liveCaptures = [], usdtSheet = null) {
     hasUsdtSheet = usdtSheetData.some(v => v != null);
   }
 
-  // Referencial BCB (serie histórica dic 2025 – 26 jun 2026, descontinuada).
-  // Se corta en OFICIAL_TCO_START: después de esa fecha NO se dibuja (evita línea
-  // plana engañosa por carry-forward — el referencial dejó de publicarse).
+  // Referencial BCB (interpolated from anchors)
   const refMap = buildReferencialHistory(filtered.map(d => d.t));
-  const refData = filtered.map(d => (d.t <= OFICIAL_TCO_START ? (refMap.get(d.t) ?? null) : null));
+  const refData = filtered.map(d => refMap.get(d.t) ?? null);
   const hasRefData = refData.some(v => v != null);
 
   const datasets = [
-    { label: 'Precio compra (ASK)', data: compraData, borderColor: COLORS.compra,
+    { label: 'Compra', data: compraData, borderColor: COLORS.compra,
       backgroundColor: COLORS.compra + '15', fill: false },
-    { label: 'Precio venta (BID)', data: ventaData, borderColor: COLORS.venta,
+    { label: 'Venta', data: ventaData, borderColor: COLORS.venta,
       backgroundColor: COLORS.venta + '15', fill: false },
-    { label: 'Oficial BCB (fijo→TCO)', data: oficialData, borderColor: COLORS.oficial,
+    { label: 'Oficial BCB (fijo)', data: oficialData, borderColor: COLORS.oficial,
       borderDash: [4, 4], pointRadius: 0, fill: false }
   ];
 
@@ -3270,121 +2121,6 @@ function renderHistoric(data, range, liveCaptures = [], usdtSheet = null) {
   });
 }
 
-/* ============================================================
-   RESERVAS & FUNDAMENTALES — tarjetas RIN, gráfico RIN y ranking bancos
-============================================================ */
-let chartRin = null;
-function renderFundamentales(history) {
-  if (!Array.isArray(RIN_DATA) || !RIN_DATA.length) return;
-
-  // ---- Tarjetas ----
-  const last = RIN_DATA[RIN_DATA.length - 1];
-  const lastVal = last[1];
-  const lastDate = last[0];
-  // 12 meses atrás (aprox: 12 puntos mensuales)
-  const yearAgoIdx = Math.max(0, RIN_DATA.length - 13);
-  const yearAgoVal = RIN_DATA[yearAgoIdx][1];
-  const pctYear = ((lastVal - yearAgoVal) / yearAgoVal * 100);
-  // Pico histórico
-  let peak = RIN_DATA[0];
-  for (const p of RIN_DATA) if (p[1] > peak[1]) peak = p;
-  const pctPeak = ((lastVal - peak[1]) / peak[1] * 100);
-  const peakYear = peak[0].slice(0, 4);
-
-  const fmtM = n => '$' + n.toLocaleString('en-US');
-  const fmtMes = iso => {
-    const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-    const [y, m] = iso.split('-');
-    return meses[parseInt(m, 10) - 1] + ' ' + y;
-  };
-
-  const cards = [
-    { label: 'RIN actual', value: fmtM(lastVal) + '<small>M</small>',
-      sub: 'corte ' + fmtMes(lastDate), subColor: 'var(--text-mute)' },
-    { label: 'vs hace 12 meses', value: (pctYear >= 0 ? '+' : '') + pctYear.toFixed(0) + '%',
-      sub: (pctYear >= 0 ? '▲ recuperación' : '▼ caída'),
-      subColor: pctYear >= 0 ? 'var(--positive)' : 'var(--negative)' },
-    { label: 'vs pico histórico', value: pctPeak.toFixed(0) + '%',
-      sub: 'pico ' + fmtM(peak[1]) + 'M (' + peakYear + ')', subColor: 'var(--negative)' }
-  ];
-  const cardsEl = document.getElementById('fund-cards');
-  if (cardsEl) {
-    cardsEl.innerHTML = cards.map(c => `
-      <div class="fund-cell">
-        <div class="fund-cell-label">${c.label}</div>
-        <div class="fund-cell-value">${c.value}</div>
-        <div class="fund-cell-sub" style="color:${c.subColor}">${c.sub}</div>
-      </div>`).join('');
-  }
-  const upd = document.getElementById('rin-update-time');
-  if (upd) upd.textContent = 'RIN a ' + fmtMes(lastDate);
-
-  // ---- Gráfico RIN (área) ----
-  const ctx = document.getElementById('chart-rin');
-  if (ctx) {
-    const labels = RIN_DATA.map(p => {
-      const [y, m] = p[0].split('-');
-      return (m === '01' || m === '12') ? y : '';
-    });
-    const values = RIN_DATA.map(p => p[1]);
-    if (chartRin) chartRin.destroy();
-    chartRin = new Chart(ctx.getContext('2d'), {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          label: 'RIN (millones USD)', data: values,
-          borderColor: '#5fb3d6', backgroundColor: 'rgba(95,179,214,0.12)',
-          borderWidth: 2, pointRadius: 0, fill: true, tension: 0.25
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              title: items => { const i = items[0].dataIndex; return fmtMes(RIN_DATA[i][0]); },
-              label: item => ' RIN: $' + item.parsed.y.toLocaleString('en-US') + ' M'
-            }
-          }
-        },
-        scales: {
-          x: { ticks: { color: '#a8a394', font: { family: "'IBM Plex Mono', monospace", size: 10 },
-               maxRotation: 0, autoSkip: true, maxTicksLimit: 12 },
-               grid: { display: false } },
-          y: { ticks: { color: '#a8a394', font: { family: "'IBM Plex Mono', monospace", size: 10 },
-               callback: v => '$' + (v / 1000).toFixed(0) + 'k' },
-               grid: { color: 'rgba(255,255,255,0.04)' } }
-        }
-      }
-    });
-  }
-
-  // ---- Ranking de bancos ----
-  const listEl = document.getElementById('bank-rank-list');
-  if (listEl && Array.isArray(BANK_RANKING) && BANK_RANKING.length) {
-    const vals = BANK_RANKING.map(b => b[1]);
-    const min = Math.min(...vals), max = Math.max(...vals);
-    const rango = (max - min) || 1;
-    listEl.innerHTML = BANK_RANKING.map((b, i) => {
-      // Normalizar ancho: 55%..100% para que se note el ranking sin exagerar
-      const pct = 55 + ((b[1] - min) / rango) * 45;
-      const color = i === 0 ? 'var(--positive)' : i < 3 ? '#9ec9a8' : 'var(--accent)';
-      const nameColor = i > 6 ? 'var(--text-mute)' : 'var(--text-soft)';
-      return `
-        <div class="bank-row">
-          <span class="bank-row-name" style="color:${nameColor}" title="${b[0]}">${b[0]}</span>
-          <span class="bank-row-bar"><span style="width:${pct.toFixed(0)}%;background:${color}"></span></span>
-          <span class="bank-row-val" style="color:${i === 0 ? 'var(--positive)' : 'var(--text)'}">${b[1].toFixed(2)}</span>
-        </div>`;
-    }).join('');
-  }
-  const dateEl = document.getElementById('bank-rank-date');
-  if (dateEl) dateEl.textContent = 'corte ' + fmtMes(BANK_RANKING_FECHA);
-}
-
 function renderForecast(historical, horizonDays = 30) {
   const ctx = document.getElementById('chart-forecast').getContext('2d');
 
@@ -3423,32 +2159,31 @@ function renderForecast(historical, horizonDays = 30) {
   const lrPar = linearRegressionForecast(trainMids, HORIZON);
   if (!holtPar || !lrPar) return;
 
-  // ---- Model 2: Oficial BCB (TCO de mercado) ----
-  // Se entrena SOLO con el período TCO (desde el 26 jun 2026), no con el peg fijo
-  // de 6.96, para que la proyección refleje la tendencia de mercado vigente.
+  // ---- Model 2: Referencial BCB ----
+  // Build referencial training from anchors (more reliable than CSV mostly)
   const trainingDates = training.map(d => d.t);
-  const oficialTrainMap = buildOficialHistory(trainingDates);
-  const ofiTrainPairs = trainingDates
-    .map(t => ({ t, val: oficialTrainMap.get(t) }))
-    .filter(p => p.val != null && p.t >= OFICIAL_TCO_START);
+  const refMap = buildReferencialHistory(trainingDates);
+  const refTrainPairs = trainingDates
+    .map(t => ({ t, val: refMap.get(t) }))
+    .filter(p => p.val != null);
 
-  let holtOfi = null;
-  if (ofiTrainPairs.length >= 5) {
-    const ofiValues = ofiTrainPairs.map(p => p.val);
-    holtOfi = holtForecast(ofiValues, HORIZON);
+  let holtRef = null;
+  if (refTrainPairs.length >= 5) {
+    const refValues = refTrainPairs.map(p => p.val);
+    holtRef = holtForecast(refValues, HORIZON);
   }
 
   // Build forecast date strings
   const fcDates = [];
   for (let i = 1; i <= HORIZON; i++) {
     const d = new Date(lastDate.getTime() + i * 86400000);
-    fcDates.push(dateToStrBolivia(d));
+    fcDates.push(d.toISOString().slice(0, 10));
   }
 
-  // Oficial BCB para la ventana de display (fijo 6.96 → TCO)
+  // Reference data for display window (interpolated from anchors)
   const displayDates = displayData.map(d => d.t);
-  const displayOficialMap = buildOficialHistory(displayDates);
-  const displayOficial = displayDates.map(d => displayOficialMap.get(d) ?? null);
+  const displayRefMap = buildReferencialHistory(displayDates);
+  const displayRef = displayDates.map(d => displayRefMap.get(d) ?? null);
 
   const allDates = [...displayDates, ...fcDates];
   const labels = allDates.map(formatDate);
@@ -3471,20 +2206,27 @@ function renderForecast(historical, horizonDays = 30) {
     .concat([bridgePar])
     .concat(holtPar.forecast.map(f => +f.lower.toFixed(3)));
 
-  // Oficial BCB datasets (histórico + proyección del TCO)
-  let ofiHistDataset = null, holtOfiDataset = null, upperOfiDataset = null, lowerOfiDataset = null;
-  if (holtOfi) {
-    ofiHistDataset = displayOficial.concat(fillNulls(HORIZON));
-    const lastOfiValue = displayOficial[N - 1] ?? getOficialHoy();
-    holtOfiDataset = fillNulls(N - 1)
-      .concat([lastOfiValue])
-      .concat(holtOfi.forecast.map(f => +f.point.toFixed(3)));
-    upperOfiDataset = fillNulls(N - 1)
-      .concat([lastOfiValue])
-      .concat(holtOfi.forecast.map(f => +f.upper.toFixed(3)));
-    lowerOfiDataset = fillNulls(N - 1)
-      .concat([lastOfiValue])
-      .concat(holtOfi.forecast.map(f => +f.lower.toFixed(3)));
+  // Referencial datasets (only if we have enough data)
+  let refHistDataset = null, holtRefDataset = null, upperRefDataset = null, lowerRefDataset = null;
+  if (holtRef) {
+    const lastRefIdx = displayRef.findLastIndex(v => v != null);
+    refHistDataset = displayRef.concat(fillNulls(HORIZON));
+    if (lastRefIdx >= 0) {
+      const bridgeRef = displayRef[lastRefIdx];
+      // Forecast extends from the last known referencial point (which may not be at end of display window)
+      // Pad forecast: nulls until last ref point, then bridge, then forecast
+      // Simpler: bridge from the very last historical point assumed to be close enough
+      const lastRefValue = displayRef[N - 1] ?? bridgeRef;
+      holtRefDataset = fillNulls(N - 1)
+        .concat([lastRefValue])
+        .concat(holtRef.forecast.map(f => +f.point.toFixed(3)));
+      upperRefDataset = fillNulls(N - 1)
+        .concat([lastRefValue])
+        .concat(holtRef.forecast.map(f => +f.upper.toFixed(3)));
+      lowerRefDataset = fillNulls(N - 1)
+        .concat([lastRefValue])
+        .concat(holtRef.forecast.map(f => +f.lower.toFixed(3)));
+    }
   }
 
   const datasets = [
@@ -3495,13 +2237,13 @@ function renderForecast(historical, horizonDays = 30) {
       backgroundColor: COLORS.ciFill, fill: false, pointRadius: 0 },
   ];
 
-  // Oficial BCB (TCO) IC band if available
-  if (holtOfi) {
+  // Referencial IC band if available
+  if (holtRef) {
     datasets.push(
-      { label: 'IC oficial sup', data: upperOfiDataset, borderColor: 'transparent',
-        backgroundColor: 'rgba(95, 179, 214, 0.08)', fill: '+1', pointRadius: 0 },
-      { label: 'IC oficial inf', data: lowerOfiDataset, borderColor: 'transparent',
-        backgroundColor: 'rgba(95, 179, 214, 0.08)', fill: false, pointRadius: 0 }
+      { label: 'IC ref sup', data: upperRefDataset, borderColor: 'transparent',
+        backgroundColor: 'rgba(224, 138, 74, 0.08)', fill: '+1', pointRadius: 0 },
+      { label: 'IC ref inf', data: lowerRefDataset, borderColor: 'transparent',
+        backgroundColor: 'rgba(224, 138, 74, 0.08)', fill: false, pointRadius: 0 }
     );
   }
 
@@ -3518,11 +2260,11 @@ function renderForecast(historical, horizonDays = 30) {
       borderDash: [3, 3], fill: false, borderWidth: 1.8, pointRadius: 0 }
   );
 
-  if (holtOfi) {
+  if (holtRef) {
     datasets.push(
-      { label: 'Oficial BCB (TCO)', data: ofiHistDataset, borderColor: COLORS.oficial,
+      { label: 'Referencial BCB', data: refHistDataset, borderColor: '#e08a4a',
         fill: false, pointRadius: 0, borderWidth: 2, spanGaps: false },
-      { label: 'Proy. oficial (TCO)', data: holtOfiDataset, borderColor: COLORS.oficial,
+      { label: 'Proy. referencial', data: holtRefDataset, borderColor: '#e08a4a',
         borderDash: [4, 4], fill: false, pointRadius: 1, borderWidth: 2 }
     );
   }
@@ -3751,7 +2493,7 @@ function renderInflation() {
 
 function renderIndicators() {
   const list = document.getElementById('indicator-list');
-  list.innerHTML = getIndicators().map(i => `
+  list.innerHTML = INDICATORS.map(i => `
     <div class="indicator-row">
       <div>
         <div class="ind-name">${i.name}</div>
@@ -3763,15 +2505,11 @@ function renderIndicators() {
 }
 
 function renderNewsList(elementId, items) {
-  const impactClass = (t) => {
-    if (t === 'HOY') return 'impact high';
-    if (t === 'AYER') return 'impact';
-    return 'impact low';
-  };
-  const impactLabel = (t) => {
-    if (t === 'HOY') return 'Alto';
-    if (t === 'AYER') return 'Medio';
-    return 'Bajo';
+  const tagColor = (t) => {
+    if (t === 'HOY') return 'background:rgba(127,174,143,0.15); color:#7fae8f; border:1px solid rgba(127,174,143,0.3);';
+    if (t === 'AYER') return 'background:rgba(212,166,71,0.12); color:#d4a647; border:1px solid rgba(212,166,71,0.3);';
+    if (t === 'SEMANA') return 'background:rgba(122,138,154,0.12); color:#7a8a9a; border:1px solid rgba(122,138,154,0.3);';
+    return 'background:transparent; color:var(--text-mute); border:1px solid var(--border);';
   };
   const escapeHtml = (s) => String(s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -3780,11 +2518,10 @@ function renderNewsList(elementId, items) {
     <a href="${escapeHtml(n.url)}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">
       <div class="news-card">
         <div class="news-meta">
-          <span class="${impactClass(n.tag)}">${impactLabel(n.tag)}</span>
-          <span>${escapeHtml(n.date)} · ${escapeHtml(n.source)}</span>
+          <span style="display:inline-block; padding:0.1rem 0.4rem; border-radius:2px; font-size:0.6rem; ${tagColor(n.tag)}">${escapeHtml(n.tag)}</span>
+          <span style="margin-left:0.5rem">${escapeHtml(n.date)} · ${escapeHtml(n.source)}</span>
         </div>
         <div class="news-title">${escapeHtml(n.title)}</div>
-        <div class="news-source">${escapeHtml(n.source)}</div>
       </div>
     </a>
   `;
@@ -3828,50 +2565,20 @@ function updateMetrics(data, latest) {
   }
 
   const mid = (latest.compra + latest.venta) / 2;
-  // Brecha principal: paralelo vs Oficial BCB VIGENTE (TCO de mercado desde jun 2026)
-  const oficialHoy = getOficialHoy();
-  const brOf = ((mid - oficialHoy) / oficialHoy * 100);
-  // Brecha secundaria: paralelo vs peg fijo histórico (Bs 6.96, abandonado)
-  const brFijo = ((mid - OFICIAL_FIJO) / OFICIAL_FIJO * 100);
-  // Hero brecha — signo con color (verde si paralelo por debajo del oficial, rojo si por encima)
-  document.getElementById('m-brecha-of').innerHTML =
-    (brOf >= 0 ? '<span style="color:var(--negative)">+' : '<span style="color:var(--positive)">') +
-    brOf.toFixed(1) + '%</span>';
-  document.getElementById('m-brecha-ref').textContent =
-    (brFijo >= 0 ? '+' : '') + brFijo.toFixed(1) + '%';
+  const brOf = ((mid - OFICIAL_FIJO) / OFICIAL_FIJO * 100);
+  const brRef = ((mid - REFERENCIAL_VENTA) / REFERENCIAL_VENTA * 100);
+  // Hero brecha — show as plain large number
+  document.getElementById('m-brecha-of').textContent = '+' + brOf.toFixed(1) + '%';
+  document.getElementById('m-brecha-ref').innerHTML =
+    (brRef >= 0 ? '<span style="color:var(--negative)">+' : '<span style="color:var(--positive)">') +
+    brRef.toFixed(1) + '%</span>';
 }
 
 function updateHero(data, latest) {
-  const heroBox = document.querySelector('.hero-prices, .price-card');
-  if (heroBox) heroBox.classList.remove('skeleton');
+  const heroBox = document.querySelector('.hero-prices');
+  heroBox.classList.remove('skeleton');
   document.getElementById('hero-compra').innerHTML = '<span class="currency">Bs</span>' + latest.compra.toFixed(2);
-  document.getElementById('hero-venta').innerHTML  = '<span class="currency">Bs</span>' + latest.venta.toFixed(2);
-
-  // BCB Oficial — izquierda = TCO de mercado vigente (hoy), derecha = peg fijo histórico 6.96
-  const bcbCompraVal = document.getElementById('hero-bcb-compra-val');
-  const bcbVentaVal  = document.getElementById('hero-bcb-venta-val');
-  if (bcbCompraVal) bcbCompraVal.textContent = getOficialHoy().toFixed(2);
-  if (bcbVentaVal)  bcbVentaVal.textContent  = OFICIAL_FIJO.toFixed(2);
-
-  // Store latest mid for calculator
-  const mid = (latest.compra + latest.venta) / 2;
-  window._latestMid = +mid.toFixed(2);
-  if (window._calcInit) window._calcInit();
-  // Actualizar ticker — BOB paralelo + BCB real del bot (si disponible)
-  if (window._tickerState) {
-    window._tickerState.compra = latest.compra;
-    window._tickerState.venta  = latest.venta;
-    // bcbVenta viene del bot de Tesla (columna bcb_venta) — dato real del BCB.
-    // Buscamos el registro más reciente que tenga bcbVenta (no siempre es el último).
-    if (latest.bcbVenta != null) {
-      window._tickerState.bcbRef = latest.bcbVenta;
-    } else {
-      const withBcb = [...data].reverse().find(d => d.bcbVenta != null);
-      if (withBcb) window._tickerState.bcbRef = withBcb.bcbVenta;
-    }
-  }
-  if (window.buildTicker) window.buildTicker();
-  if (window.updateTickerPrices) window.updateTickerPrices(latest.compra, latest.venta);
+  document.getElementById('hero-venta').innerHTML = '<span class="currency">Bs</span>' + latest.venta.toFixed(2);
 
   // weekly variation
   const week = data.slice(-8, -1);
@@ -3986,16 +2693,19 @@ function parseNewsXML(xmlText) {
 }
 
 /**
- * Fetch a Google News RSS feed via our own Cloudflare Worker proxy.
- * The Worker fetches Google News server-side (no CORS issues) and returns
- * the RSS XML with proper CORS headers.
+ * Fetch news for a specific section via the Worker's aggregated RSS endpoints.
+ * 'bolivia' uses Bolivian RSS feeds (El Deber, Los Tiempos, La Razón) filtered by keywords.
+ * 'internacional' uses BBC + Reuters business feeds filtered by keywords.
+ *
+ * Falls back to legacy Google News endpoint if direct RSS aggregation fails.
  */
-async function fetchNewsFeed(query) {
-  const workerNewsUrl = USDT_SHEET_URL.replace(/\/$/, '') + '/news?q=' + encodeURIComponent(query);
+async function fetchNewsFeed(section) {
+  const baseUrl = USDT_SHEET_URL.replace(/\/$/, '');
 
-  // Try 1: Worker proxy (preferred)
+  // Try 1: New aggregated RSS endpoint
+  const sectionPath = section === 'nacional' ? '/news/bolivia' : '/news/internacional';
   try {
-    const resp = await fetchWithTimeout(workerNewsUrl, {}, 8000);
+    const resp = await fetchWithTimeout(baseUrl + sectionPath, {}, 12000);
     if (resp.ok) {
       const text = await resp.text();
       const parsed = parseNewsXML(text);
@@ -4003,12 +2713,15 @@ async function fetchNewsFeed(query) {
     }
   } catch (_) {}
 
-  // Try 2: Public proxies as last resort (may fail due to CORS issues)
-  const directURL = buildGoogleNewsURL(query);
-  const encoded = encodeURIComponent(directURL);
-
+  // Try 2: Legacy Google News endpoint as fallback (may fail with 503)
+  const legacyQuery = section === 'nacional'
+    ? 'dolar+paralelo+Bolivia+OR+BCB'
+    : 'Fed+dolar+OR+DXY';
   try {
-    const resp = await fetchWithTimeout('https://corsproxy.io/?' + encoded, {}, 5000);
+    const resp = await fetchWithTimeout(
+      baseUrl + '/news?q=' + encodeURIComponent(legacyQuery),
+      {}, 8000
+    );
     if (resp.ok) {
       const text = await resp.text();
       const parsed = parseNewsXML(text);
@@ -4022,45 +2735,10 @@ async function fetchNewsFeed(query) {
 async function refreshNews() {
   const updateTimeEl = document.getElementById('news-update-time');
 
-  // Convierte formato del Worker → formato de renderNewsList
-  function mapWorkerNews(items) {
-    return items.map(n => {
-      const date = n.fecha ? new Date(n.fecha) : null;
-      const now = new Date();
-      const hoursAgo = date ? (now - date) / 3600000 : 999;
-      let tag = 'SEMANA';
-      if (hoursAgo < 24) tag = 'HOY';
-      else if (hoursAgo < 48) tag = 'AYER';
-      else if (hoursAgo >= 168) tag = 'MES';
-      const dateStr = date ? date.toLocaleDateString('es-BO', {
-        day: '2-digit', month: 'short', year: '2-digit'
-      }) : '—';
-      return { title: n.titulo, url: n.url || '#', source: n.fuente || '—', date: dateStr, tag };
-    });
-  }
-
-  let nacionalNews = null;
-  let intlNews = null;
-
-  // Intento 1: Worker de noticias propio (fuentes bolivianas + curación IA)
-  try {
-    const [rBolivia, rIntl] = await Promise.all([
-      fetchWithTimeout(NEWS_WORKER_URL + 'noticias/bolivia', {}, 8000),
-      fetchWithTimeout(NEWS_WORKER_URL + 'noticias/internacional', {}, 8000)
-    ]);
-    if (rBolivia.ok) {
-      const data = await rBolivia.json();
-      if (data.noticias && data.noticias.length > 0) nacionalNews = mapWorkerNews(data.noticias);
-    }
-    if (rIntl.ok) {
-      const data = await rIntl.json();
-      if (data.noticias && data.noticias.length > 0) intlNews = mapWorkerNews(data.noticias);
-    }
-  } catch (_) {}
-
-  // Intento 2: fallback a RSS Google News si el Worker no tiene datos aún
-  if (!nacionalNews) nacionalNews = await fetchNewsFeed(NEWS_QUERIES.nacional);
-  if (!intlNews) intlNews = await fetchNewsFeed(NEWS_QUERIES.internacional);
+  const [nacionalNews, intlNews] = await Promise.all([
+    fetchNewsFeed('nacional'),
+    fetchNewsFeed('internacional')
+  ]);
 
   let liveCount = 0;
   if (nacionalNews && nacionalNews.length > 0) {
@@ -4100,11 +2778,11 @@ function aggregateData(history, granularity) {
       const chg = prev ? ((mid - prev) / prev * 100) : 0;
       return {
         Fecha: d.t,
-        'Precio compra Bs (ASK)': +d.compra.toFixed(2),
-        'Precio venta Bs (BID)':  +d.venta.toFixed(2),
-        'Promedio (mid)': +mid.toFixed(2),
+        Compra: +d.compra.toFixed(2),
+        Venta: +d.venta.toFixed(2),
+        Promedio: +mid.toFixed(2),
         'Variación diaria %': +chg.toFixed(3),
-        'Brecha vs Oficial %': +((mid / getOficialParaFecha(d.t) - 1) * 100).toFixed(2),
+        'Brecha vs Oficial %': +((mid / OFICIAL_FIJO - 1) * 100).toFixed(2),
         Origen: d.seed ? 'Estimado' : 'Live'
       };
     });
@@ -4204,8 +2882,7 @@ function downloadXLSX(history, primaryGranularity) {
     { Campo: 'Fecha de generación', Valor: new Date().toISOString().slice(0, 19).replace('T', ' ') },
     { Campo: 'Período cubierto', Valor: history[0].t + ' al ' + history[history.length - 1].t },
     { Campo: 'Total registros', Valor: history.length },
-    { Campo: 'Tipo oficial BCB (TCO)', Valor: 'Bs ' + getOficialHoy().toFixed(2) + ' (TCO de mercado, corte ' + TCO_FECHA + ')' },
-    { Campo: 'Oficial fijo anterior', Valor: 'Bs ' + OFICIAL_FIJO + ' (peg 2011 – jun 2026)' },
+    { Campo: 'Tipo oficial BCB', Valor: 'Bs ' + OFICIAL_FIJO + ' (fijo desde 2011)' },
     { Campo: 'Fuente paralelo', Valor: 'CriptoYa USDT/BOB agregado P2P' },
     { Campo: 'Fuente histórica', Valor: 'Datos estimados a partir de medios bolivianos + cotizaciones en vivo acumuladas' },
     { Campo: 'Aviso', Valor: 'Datos referenciales. No constituyen asesoría financiera.' }
@@ -4214,7 +2891,7 @@ function downloadXLSX(history, primaryGranularity) {
   wsMeta['!cols'] = [{ wch: 22 }, { wch: 60 }];
   XLSX.utils.book_append_sheet(wb, wsMeta, 'Info');
 
-  const today = hoyBolivia();
+  const today = new Date().toISOString().slice(0, 10);
   const filename = `bob-usd-paralelo_${today}.xlsx`;
   XLSX.writeFile(wb, filename);
 }
@@ -4229,7 +2906,7 @@ async function main() {
     return;
   }
 
-  const STORE_KEY = 'bob_usd_history_v3'; // v3: limpia caché corrupto por bug timezone (2026-05-22)
+  const STORE_KEY = 'bob_usd_history_v2';
   let history = null;
   let dataSource = 'desconocida';
   let sourceDetail = '';
@@ -4241,8 +2918,8 @@ async function main() {
 
   // Always load USDT result (for cache and the "force USDT" option)
   // Cache TTL is 5 min, matching the Worker's update frequency
-  const USDT_CACHE_KEY = 'bob_usdt_sheet_v2';
-  const USDT_CACHE_TS_KEY = 'bob_usdt_sheet_ts_v2';
+  const USDT_CACHE_KEY = 'bob_usdt_sheet_v1';
+  const USDT_CACHE_TS_KEY = 'bob_usdt_sheet_ts_v1';
   let usdtResult = null;
   try {
     const cached = await Store.get(USDT_CACHE_KEY);
@@ -4337,7 +3014,7 @@ async function main() {
 
     // Fill gaps if primary ends before today
     const lastDate = primaryData[primaryData.length - 1].t;
-    const today = hoyBolivia();
+    const today = new Date().toISOString().slice(0, 10);
     if (lastDate < today) {
       const seed = generateSeed();
       for (const s of seed) {
@@ -4384,12 +3061,12 @@ async function main() {
       method: latest.method,
       source: 'criptoya'
     };
-    let liveHistory = await Store.get('bob_live_captures_v2') || [];
+    let liveHistory = await Store.get('bob_live_captures_v1') || [];
     liveHistory = liveHistory.filter(d => d.t !== todayKey);
     liveHistory.push(livePoint);
     liveHistory.sort((a, b) => a.t.localeCompare(b.t));
     if (liveHistory.length > 365) liveHistory = liveHistory.slice(-365);
-    await Store.set('bob_live_captures_v2', liveHistory);
+    await Store.set('bob_live_captures_v1', liveHistory);
 
     const hasNonLiveToday = history.some(d => d.t === todayKey && d.source !== 'criptoya');
     if (!hasNonLiveToday) {
@@ -4413,7 +3090,7 @@ async function main() {
   }
 
   // Load all live captures for chart overlay
-  const liveCaptures = await Store.get('bob_live_captures_v2') || [];
+  const liveCaptures = await Store.get('bob_live_captures_v1') || [];
 
   // The USDT sheet was already loaded at top of main() as priority #1.
   // We pass usdtResult directly to the chart for the optional secondary line
@@ -4457,7 +3134,6 @@ async function main() {
   safe('hero', () => updateHero(history, latest));
   safe('métricas', () => updateMetrics(history, latest));
   safe('histórico', () => renderHistoric(history, '90', liveCaptures, usdtSheet));
-  safe('fundamentales', () => renderFundamentales(history));
   safe('proyección', () => renderForecast(history));
   safe('inflación', () => renderInflation());
   safe('indicadores', () => renderIndicators());
@@ -4468,8 +3144,10 @@ async function main() {
   refreshCrypto().catch(e => console.warn('refreshCrypto error:', e));
 
   // wire range buttons (historic chart)
-  document.querySelectorAll('#range-controls .seg-btn').forEach(btn => {
+  document.querySelectorAll('#range-controls .pill').forEach(btn => {
     btn.addEventListener('click', () => {
+      document.querySelectorAll('#range-controls .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       safe('histórico', () => renderHistoric(history, btn.dataset.range, liveCaptures, usdtSheet));
     });
   });
@@ -4499,15 +3177,17 @@ async function main() {
   }
 
   // wire forecast horizon buttons
-  document.querySelectorAll('#forecast-controls .seg-btn').forEach(btn => {
+  document.querySelectorAll('#forecast-controls .pill').forEach(btn => {
     btn.addEventListener('click', () => {
+      document.querySelectorAll('#forecast-controls .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       const horizon = parseInt(btn.dataset.horizon, 10);
       safe('proyección', () => renderForecast(history, horizon));
     });
   });
 
-  // wire download buttons (dl-btn legacy + qa-btn with data-granularity)
-  document.querySelectorAll('.dl-btn, .qa-btn[data-granularity]').forEach(btn => {
+  // wire download buttons
+  document.querySelectorAll('.dl-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       // Skip settings panel buttons (handled separately below)
       if (['btn-save-url', 'btn-reset-url'].includes(btn.id)) return;
@@ -4647,9 +3327,6 @@ async function refreshCrypto() {
     catch (e) { console.error('Crypto render error:', coinData.id, e); }
   }
 
-  // Actualizar ticker con precios cripto reales
-  if (window.updateTickerCrypto) window.updateTickerCrypto(data);
-
   if (updateEl) {
     const now = new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
     updateEl.innerHTML = `<span style="color:var(--positive)">●</span> Precios USD · 7d · Actualizado ${now}`;
@@ -4703,7 +3380,7 @@ function showDiagnosticBanner(msg, kind) {
 let refreshState = {
   history: null,
   liveCaptures: null,
-  STORE_KEY: 'bob_usd_history_v3',
+  STORE_KEY: 'bob_usd_history_v2',
   autoTimer: null
 };
 
@@ -4732,7 +3409,7 @@ async function liveRefresh() {
       liveHistory.sort((a, b) => a.t.localeCompare(b.t));
       if (liveHistory.length > 365) liveHistory = liveHistory.slice(-365);
       refreshState.liveCaptures = liveHistory;
-      await Store.set('bob_live_captures_v2', liveHistory);
+      await Store.set('bob_live_captures_v1', liveHistory);
 
       // Update main history if no CSV/Sheet point exists for today
       const hasNonLiveToday = refreshState.history.some(
@@ -4815,450 +3492,6 @@ function setLastUpdateLabel(mode, date, source) {
 
 
 main();
-</script>
-
-<script>
-// ============ HERO DATE ============
-(function() {
-  const el = document.getElementById('hero-date');
-  if (!el) return;
-  const now = new Date();
-  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  el.textContent = now.getDate() + ' de ' + months[now.getMonth()] + ' ' + now.getFullYear();
-  // ai-time
-  const at = document.getElementById('ai-time');
-  if (at) at.textContent = 'Actualizado · ' + now.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
-})();
-
-// ============ LIVE TICKER ============
-// ============ TICKER STATE ============
-window._tickerState = {
-  compra: null, venta: null,
-  bcbRef: null,              // BCB referencial real del bot (bcb_venta); null = usar anclas
-  btcPrice: null, btcChg: null,
-  ethPrice: null, ethChg: null,
-  usdtPrice: 1.0,
-  dxyPrice: null,
-};
-
-function getReferencialHoy() {
-  // Usa la misma lógica que los gráficos — interpolación entre anclas BCB reales.
-  // Si hoy está más allá del último anchor, devuelve ese último valor confirmado.
-  const todayKey = hoyBolivia();
-  const m = buildReferencialHistory([todayKey]);
-  return m.get(todayKey) ?? REFERENCIAL_VENTA;
-}
-
-function buildTicker() {
-  const s = window._tickerState;
-
-  const fmtUsd = v => {
-    if (v == null) return '—';
-    if (v >= 10000) return '$' + v.toLocaleString('en-US', { maximumFractionDigits: 0 });
-    return '$' + v.toFixed(2);
-  };
-  const fmtChg = v => v != null ? (v >= 0 ? '▲ +' : '▼ ') + Math.abs(v).toFixed(2) + '%' : '';
-  const chgDir = v => v == null ? 'flat' : v > 0.05 ? 'up' : v < -0.05 ? 'down' : 'flat';
-
-  const items = [
-    { sym: 'USDT/BOB COMPRA',  price: s.compra ? 'Bs ' + s.compra.toFixed(2) : '—', chg: '', dir: 'flat' },
-    { sym: 'USDT/BOB VENTA',   price: s.venta  ? 'Bs ' + s.venta.toFixed(2)  : '—', chg: '', dir: 'flat' },
-    { sym: 'BCB OFICIAL',      price: 'Bs ' + getOficialHoy().toFixed(2), chg: 'TCO', dir: 'flat' },
-    { sym: 'BCB FIJO ANT.',    price: 'Bs ' + OFICIAL_FIJO.toFixed(2), chg: 'HIST', dir: 'flat' },
-    { sym: 'BTC',  price: fmtUsd(s.btcPrice),  chg: fmtChg(s.btcChg),  dir: chgDir(s.btcChg) },
-    { sym: 'ETH',  price: fmtUsd(s.ethPrice),  chg: fmtChg(s.ethChg),  dir: chgDir(s.ethChg) },
-    { sym: 'USDT', price: fmtUsd(s.usdtPrice), chg: 'STABLE', dir: 'flat' },
-    { sym: 'DXY',  price: s.dxyPrice ? s.dxyPrice.toFixed(2) : '—', chg: '', dir: 'flat' },
-  ];
-
-  const track = document.getElementById('ticker-track');
-  if (!track) return;
-  const html = items.map(t => `
-    <div class="ticker-item">
-      <span class="ticker-symbol">${t.sym}</span>
-      <span class="ticker-price">${t.price}</span>
-      ${t.chg ? `<span class="ticker-chg ${t.dir}">${t.chg}</span>` : ''}
-      <span class="ticker-divider">·</span>
-    </div>
-  `).join('');
-  track.innerHTML = html + html; // duplicar para loop infinito
-}
-buildTicker();
-
-// Actualizar BOB cuando llegan precios en vivo
-window.updateTickerPrices = function(compra, venta) {
-  window._tickerState.compra = compra;
-  window._tickerState.venta  = venta;
-  buildTicker();
-};
-
-// Actualizar cripto cuando CoinGecko responde
-window.updateTickerCrypto = function(data) {
-  const btc  = data.find(d => d.id === 'bitcoin');
-  const eth  = data.find(d => d.id === 'ethereum');
-  const usdt = data.find(d => d.id === 'tether');
-  if (btc)  { window._tickerState.btcPrice  = btc.current_price;  window._tickerState.btcChg  = btc.price_change_percentage_24h; }
-  if (eth)  { window._tickerState.ethPrice  = eth.current_price;  window._tickerState.ethChg  = eth.price_change_percentage_24h; }
-  if (usdt) { window._tickerState.usdtPrice = usdt.current_price; }
-  buildTicker();
-};
-
-// DXY desde Yahoo Finance (CORS-open endpoint)
-async function fetchDXY() {
-  try {
-    const r = await fetch(
-      'https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB?interval=1d&range=1d',
-      { signal: AbortSignal.timeout(6000) }
-    );
-    if (!r.ok) return;
-    const j = await r.json();
-    const price = j?.chart?.result?.[0]?.meta?.regularMarketPrice;
-    if (price) { window._tickerState.dxyPrice = price; buildTicker(); }
-  } catch(e) { /* DXY no disponible, se queda en — */ }
-}
-fetchDXY();
-</script>
-
-<script>
-// ============ SEGMENTED CONTROLS ============
-function initSegmented(containerId, indicatorId, onSelect) {
-  const container = document.getElementById(containerId);
-  const indicator = document.getElementById(indicatorId);
-  if (!container || !indicator) return;
-  const btns = container.querySelectorAll('.seg-btn');
-
-  function moveIndicator(btn) {
-    const cRect = container.getBoundingClientRect();
-    const bRect = btn.getBoundingClientRect();
-    indicator.style.left = (bRect.left - cRect.left - 3) + 'px';
-    indicator.style.width = bRect.width + 'px';
-  }
-
-  // init position
-  const active = container.querySelector('.seg-btn.active');
-  if (active) setTimeout(() => moveIndicator(active), 50);
-
-  btns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      btns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      moveIndicator(btn);
-      if (onSelect) onSelect(btn);
-    });
-  });
-}
-
-// Wire range segmented → same as old pills
-initSegmented('range-controls', 'seg-ind-range', btn => {
-  const range = btn.dataset.range;
-  // trigger same event old pills used
-  document.querySelectorAll('[data-range]').forEach(b => {
-    if (b !== btn) b.classList.remove('active');
-  });
-  // dispatch synthetic click for the JS that listens to data-range
-  btn.dispatchEvent(new CustomEvent('range-change', { bubbles: true, detail: { range } }));
-});
-
-// Wire forecast segmented
-initSegmented('forecast-controls', 'seg-ind-forecast', btn => {
-  const horizon = btn.dataset.horizon;
-  document.querySelectorAll('[data-horizon]').forEach(b => {
-    if (b !== btn) b.classList.remove('active');
-  });
-  btn.dispatchEvent(new CustomEvent('horizon-change', { bubbles: true, detail: { horizon } }));
-});
-
-// ============ COLLAPSIBLE BLOCKS ============
-document.querySelectorAll('.block-header:not(.no-collapse)').forEach(header => {
-  header.addEventListener('click', e => {
-    // no colapsar si click en segmented o pill
-    if (e.target.closest('.segmented') || e.target.closest('.pill')) return;
-    const block = header.closest('.block');
-    if (block) block.classList.toggle('collapsed');
-  });
-});
-</script>
-
-<script>
-// ============ LEGAL COLAPSABLE ============
-document.getElementById('legal-toggle').addEventListener('click', () => {
-  document.getElementById('legal-block').classList.toggle('open');
-});
-</script>
-
-<script>
-// Hamburger menu mobile
-document.getElementById('nav-hamburger').addEventListener('click', () => {
-  document.getElementById('nav-links').classList.toggle('open');
-});
-// Dropdown en mobile (tap)
-document.getElementById('nav-blog').addEventListener('click', function(e) {
-  if (window.innerWidth <= 768) {
-    e.stopPropagation();
-    this.classList.toggle('open');
-  }
-});
-</script>
-
-<script>
-/* ============================================================
-   COMPARTIR COTIZACIÓN — Web Share API (móvil) + clipboard (desktop)
-============================================================ */
-function buildShareText() {
-  const s = window._tickerState || {};
-  const now = new Date();
-  const fecha = now.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' });
-  const compra = s.compra ? 'Bs ' + s.compra.toFixed(2) : '—';
-  const venta  = s.venta  ? 'Bs ' + s.venta.toFixed(2)  : '—';
-  const ref    = s.bcbRef ? 'Bs ' + s.bcbRef.toFixed(2)  : 'Bs ' + REFERENCIAL_VENTA.toFixed(2);
-  return [
-    '📊 DataHunter Labs · ' + fecha,
-    'USDT/BOB  Compra: ' + compra + '  |  Venta: ' + venta,
-    'BCB Referencial: ' + ref + '  |  Oficial BCB: Bs 6.96',
-    '🔗 datahunterlabs.com'
-  ].join('\n');
-}
-
-document.getElementById('qa-share').addEventListener('click', async () => {
-  const text = buildShareText();
-  const url  = 'https://datahunterlabs.com';
-
-  // Móvil: Web Share API (WhatsApp, Telegram, etc.)
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: 'DataHunter Labs — Dólar Paralelo Bolivia', text, url });
-      return;
-    } catch (e) {
-      if (e.name === 'AbortError') return; // usuario canceló
-    }
-  }
-
-  // Desktop: copiar al portapapeles
-  try {
-    await navigator.clipboard.writeText(text + '\n' + url);
-    showToast('📋 Cotización copiada al portapapeles');
-  } catch (e) {
-    // Fallback manual selection
-    const ta = document.createElement('textarea');
-    ta.value = text + '\n' + url;
-    ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('📋 Cotización copiada al portapapeles');
-  }
-});
-
-/* ============================================================
-   DESCARGAR GRÁFICO HISTÓRICO COMO PNG
-============================================================ */
-document.getElementById('qa-download-chart').addEventListener('click', () => {
-  const canvas = document.getElementById('chart-historic');
-  if (!canvas) { showToast('⚠ El gráfico aún no está cargado'); return; }
-
-  // Crear canvas temporal con fondo oscuro (Chart.js exporta transparente por defecto)
-  const tmp = document.createElement('canvas');
-  tmp.width  = canvas.width;
-  tmp.height = canvas.height;
-  const tmpCtx = tmp.getContext('2d');
-
-  // Fondo
-  tmpCtx.fillStyle = '#0b0d10';
-  tmpCtx.fillRect(0, 0, tmp.width, tmp.height);
-
-  // Watermark sutil
-  tmpCtx.font = '14px "Courier New", monospace';
-  tmpCtx.fillStyle = 'rgba(110,106,94,0.6)';
-  tmpCtx.textAlign = 'right';
-  tmpCtx.fillText('datahunterlabs.com', tmp.width - 16, tmp.height - 12);
-
-  // Superponer el gráfico
-  tmpCtx.drawImage(canvas, 0, 0);
-
-  // Descargar
-  const now  = hoyBolivia();
-  const link = document.createElement('a');
-  link.download = 'datahunter-dolar-paralelo-' + now + '.png';
-  link.href = tmp.toDataURL('image/png');
-  link.click();
-  showToast('🖼 Gráfico descargado como PNG');
-});
-
-/* ============================================================
-   EMBED COPY
-============================================================ */
-function copyEmbed(id, btn) {
-  const text = document.getElementById(id)?.textContent?.trim();
-  if (!text) return;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '¡Copiado!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
-  }).catch(() => {
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.textContent = '¡Copiado!'; btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-window.copyEmbed = copyEmbed;
-
-/* ============================================================
-   TOAST
-============================================================ */
-let _toastTimer = null;
-function showToast(text) {
-  const t = document.getElementById('toast');
-  if (!t) return;
-  t.textContent = text;
-  t.classList.add('show');
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
-}
-window.showToast = showToast;
-
-/* ============================================================
-   CALCULATOR FAB
-============================================================ */
-(function() {
-  const calcFab   = document.getElementById('calc-fab');
-  const calcPanel = document.getElementById('calc-panel');
-  const calcUsdEl = document.getElementById('calc-usd');
-  const calcBobEl = document.getElementById('calc-bob');
-  const calcRateDisplay = document.getElementById('calc-rate-display');
-  const calcRateModeEl  = document.getElementById('calc-rate-mode');
-  const calcFootNote    = document.getElementById('calc-foot-note');
-
-  // Rates — use live data when available, else sensible defaults
-  const RATES = {
-    parallel: () => window._latestMid || 12,
-    ref:      () => OFICIAL_FIJO || 6.96,      // peg fijo histórico
-    oficial:  () => getOficialHoy() || TCO_OFICIAL  // TCO de mercado vigente
-  };
-  const MODE_LABELS = {
-    parallel: 'paralelo mid',
-    ref: 'fijo anterior (Bs 6.96)',
-    oficial: 'oficial BCB (TCO)'
-  };
-
-  let currentMode = 'parallel';
-  let currentRate = RATES.parallel();
-  let calcLast = 'usd';
-
-  function getRate() { return RATES[currentMode](); }
-
-  function updateRateDisplay() {
-    currentRate = getRate();
-    calcRateDisplay.textContent = 'Bs ' + currentRate.toFixed(2);
-    calcRateModeEl.textContent = MODE_LABELS[currentMode];
-    if (calcFootNote) {
-      calcFootNote.querySelector('div').textContent =
-        '📌 $1 USD = Bs ' + currentRate.toFixed(2) + ' al ' + MODE_LABELS[currentMode] + '.';
-    }
-  }
-
-  function calcFromUsd() {
-    const usd = parseFloat(calcUsdEl.value || 0);
-    calcBobEl.value = (usd * getRate()).toFixed(2);
-  }
-  function calcFromBob() {
-    const bob = parseFloat(calcBobEl.value || 0);
-    calcUsdEl.value = (bob / getRate()).toFixed(2);
-  }
-
-  function openCalc() {
-    updateRateDisplay();
-    calcFromUsd();
-    calcPanel.classList.add('open');
-    calcFab.classList.add('open');
-    const icon = document.getElementById('calc-icon');
-    if (icon) icon.innerHTML =
-      '<line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.2"/>' +
-      '<line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.2"/>';
-  }
-  function closeCalc() {
-    calcPanel.classList.remove('open');
-    calcFab.classList.remove('open');
-    const icon = document.getElementById('calc-icon');
-    if (icon) icon.innerHTML =
-      '<rect x="4" y="2" width="16" height="20" rx="2"/>' +
-      '<line x1="8" y1="6" x2="16" y2="6"/>' +
-      '<circle cx="8.5" cy="11" r="0.5" fill="currentColor"/>' +
-      '<circle cx="12" cy="11" r="0.5" fill="currentColor"/>' +
-      '<circle cx="15.5" cy="11" r="0.5" fill="currentColor"/>' +
-      '<circle cx="8.5" cy="14.5" r="0.5" fill="currentColor"/>' +
-      '<circle cx="12" cy="14.5" r="0.5" fill="currentColor"/>' +
-      '<circle cx="15.5" cy="14.5" r="0.5" fill="currentColor"/>' +
-      '<circle cx="8.5" cy="18" r="0.5" fill="currentColor"/>' +
-      '<circle cx="12" cy="18" r="0.5" fill="currentColor"/>' +
-      '<circle cx="15.5" cy="18" r="0.5" fill="currentColor"/>';
-  }
-  window.openCalc = openCalc;
-
-  // Expose re-init hook so updateHero can refresh the rate display if panel is open
-  window._calcInit = function() {
-    if (calcPanel.classList.contains('open')) updateRateDisplay();
-  };
-
-  calcFab.addEventListener('click', () => {
-    calcPanel.classList.contains('open') ? closeCalc() : openCalc();
-  });
-  document.getElementById('calc-close').addEventListener('click', closeCalc);
-
-  // Mode buttons
-  document.querySelectorAll('.calc-mode button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.calc-mode button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentMode = btn.dataset.mode;
-      updateRateDisplay();
-      if (calcLast === 'usd') calcFromUsd(); else calcFromBob();
-    });
-  });
-
-  // Inputs
-  calcUsdEl.addEventListener('input', () => { calcLast = 'usd'; calcFromUsd(); });
-  calcBobEl.addEventListener('input', () => { calcLast = 'bob'; calcFromBob(); });
-
-  // Presets
-  document.querySelectorAll('.calc-preset').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (btn.dataset.usd) {
-        calcUsdEl.value = btn.dataset.usd;
-        calcLast = 'usd'; calcFromUsd();
-      } else if (btn.dataset.bob) {
-        calcBobEl.value = btn.dataset.bob;
-        calcLast = 'bob'; calcFromBob();
-      }
-    });
-  });
-
-  // Swap
-  document.getElementById('calc-swap').addEventListener('click', () => {
-    const u = calcUsdEl.value, b = calcBobEl.value;
-    calcUsdEl.value = b; calcBobEl.value = u;
-    calcLast = calcLast === 'usd' ? 'bob' : 'usd';
-  });
-
-  // Wire quick-action calc button if present
-  const qaCalcBtn = document.getElementById('qa-calc');
-  if (qaCalcBtn) qaCalcBtn.addEventListener('click', openCalc);
-
-  // Wire quick-action alert/share/api toasts if present
-  const qaAlert = document.getElementById('qa-alert');
-  const qaApi   = document.getElementById('qa-api');
-  if (qaAlert) qaAlert.addEventListener('click', () => showToast('🔔 Alertas: próximamente con bot de Telegram (gratis)'));
-  if (qaApi)   qaApi.addEventListener('click',   () => showToast('🔌 Docs API en construcción · GET /v1/quote/usdt-bob'));
-
-  // Initial display update
-  updateRateDisplay();
-  calcFromUsd();
-})();
 </script>
 </body>
 </html>
