@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<!-- ============================================================
+     GOOGLE ANALYTICS 4  ·  PENDIENTE DE ACTIVAR
+     ------------------------------------------------------------
+     1. Entra a https://analytics.google.com con la cuenta de marca
+     2. Crea la propiedad para datahunterlabs.com
+     3. Copia el ID de medicion (formato G-XXXXXXXXXX)
+     4. Reemplaza G-XXXXXXXXXX en las 2 lineas de abajo (en TODAS las paginas)
+     Mientras el ID sea el placeholder, el script no se carga (no rompe nada).
+============================================================ -->
+<script>
+  window.GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+  if (window.GA_MEASUREMENT_ID && window.GA_MEASUREMENT_ID.indexOf('XXXX') === -1) {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', window.GA_MEASUREMENT_ID, { anonymize_ip: true });
+  }
+</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Política de Privacidad — DataHunter Labs</title>
