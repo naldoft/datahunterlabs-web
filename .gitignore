@@ -1,0 +1,10 @@
+# Backups internos — no publicar
+index.backup-*.html
+*.bak
+
+# Carpetas locales no destinadas al sitio
+Repositorios/
+
+# Sistema
+.DS_Store
+Thumbs.db
