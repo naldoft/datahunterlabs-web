@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+# Backups internos — evitar indexación de contenido duplicado
+Disallow: /index.backup-
 
 # Social media scrapers — explicitly allowed
 User-agent: facebookexternalhit
