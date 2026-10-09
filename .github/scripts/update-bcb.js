@@ -21,8 +21,11 @@ const https = require('https');
 const fs    = require('fs');
 const path  = require('path');
 
-const TCO_CSV_URL    = 'https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php';
-const TCO_REPORT_URL = 'https://www.bcb.gob.bo/tco_reporte_ultima_cotizacion.php';
+// Desde oct-2026 el CSV sin parámetros solo devuelve los últimos 2 días.
+// Pasando ?desde=<inicio TCO>&hasta=<hoy+5d> recupera la serie completa.
+const TCO_INICIO     = '2026-06-26';
+const _hasta = new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10);
+const TCO_CSV_URL    = `https://www.bcb.gob.bo/bcb_tco_publico_descargar_csv.php?desde=${TCO_INICIO}&hasta=${_hasta}`;
 const RIN_CSV_URL    = 'https://www.bcb.gob.bo/webdocs/bcb_semanal/data/reservas.csv';
 const INDEX_PATH     = path.join(__dirname, '..', '..', 'index.html');
 
@@ -46,9 +49,11 @@ function fetchUrl(url) {
 }
 
 // ── Parse número BCB: "10.107" (miles) o "9,73" (decimal) ───────────────────
+// Desde oct-2026 el BCB envuelve los montos en fórmula Excel: ="2.167.201"
+// (con comillas dobladas). Hay que quitar los caracteres = y " antes de parsear.
 function num(s) {
   if (s == null) return null;
-  s = String(s).trim();
+  s = String(s).trim().replace(/[="]/g, '');
   if (!s || s === '-') return null;
   s = s.replace(/\./g, '').replace(',', '.');
   const n = parseFloat(s);
@@ -104,38 +109,46 @@ function titleCaseBanco(raw) {
   // "Banco " se antepone siempre, así que los conectores van en minúscula en cualquier posición.
   const conectores = new Set(['de', 'la', 'del', 'y', 'las', 'los']);
   const acronimos  = new Set(['BISA', 'FIE', 'BNB']);
+  const tildes = { 'union':'Unión', 'economico':'Económico', 'credito':'Crédito' };
   const words = raw.trim().toLowerCase().split(/\s+/).map(w => {
     const up = w.toUpperCase();
     if (acronimos.has(up)) return up;
     if (up === 'PYME') return 'PyME';
-    if (up === 'UNION') return 'Unión';   // el reporte del BCB omite la tilde
+    if (tildes[w]) return tildes[w];   // el CSV del BCB omite las tildes
     if (conectores.has(w)) return w;
     return w.charAt(0).toUpperCase() + w.slice(1);
   });
   return 'Banco ' + words.join(' ');
 }
 
-function parseBanks(reportHtml) {
-  const text = reportHtml
-    .replace(/<style[\s\S]*?<\/style>/gi, '')
-    .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
-  const corteM = text.match(/FECHA DE CORTE:\s*([A-ZÁÉÍÓÚ]+ \d{1,2} DE [A-ZÁÉÍÓÚ]+ DE \d{4})/i);
-  const fecha = corteM ? parseFechaLarga(corteM[1]) : null;
-  const banks = [...text.matchAll(/BANCO ([A-ZÁÉÍÓÚ ]+?) (\d{1,2},\d{2}) /g)]
-    .map(m => [titleCaseBanco(m[1]), parseFloat(m[2].replace(',', '.'))])
-    .filter(b => b[1] > 0 && b[1] < 30);
-  banks.sort((a, b) => b[1] - a[1]);
-  return { fecha, banks };
-}
-
-// "JUEVES 20 DE AGOSTO DE 2026" → "2026-08-20"
-function parseFechaLarga(s) {
-  const MESES = { enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12 };
-  const m = s.toLowerCase().match(/(\d{1,2}) de ([a-záéíóú]+) de (\d{4})/);
-  if (!m) return null;
-  const mes = MESES[m[2]];
-  if (!mes) return null;
-  return `${m[3]}-${String(mes).padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+// Ranking de bancos calculado desde el MISMO CSV del TCO (el reporte
+// tco_reporte_ultima_cotizacion.php quedó congelado en ago-2026 del lado del BCB).
+// Para la última fecha de corte, cada banco = promedio ponderado de sus operaciones.
+function parseBanksCsv(csv) {
+  const lines = csv.split(/\r?\n/);
+  const hdr = lines.find(l => /^.?"?Fecha de corte"?;Vigencia/i.test(l));
+  if (!hdr) return { fecha: null, banks: [] };
+  const hc = hdr.split(';');
+  const banks = [];
+  for (let i = 3; i < hc.length; i++) {
+    const name = hc[i].replace(/"/g, '').trim();
+    if (/^BANCO /i.test(name)) banks.push({ name: name.replace(/^BANCO /i, ''), montoCol: i + 1 });
+  }
+  const dataLines = lines.filter(l => /^\d{4}-\d{2}-\d{2};/.test(l));
+  if (!dataLines.length) return { fecha: null, banks: [] };
+  const fecha = dataLines[dataLines.length - 1].split(';')[0];
+  const rows = dataLines.filter(l => l.startsWith(fecha + ';')).map(l => l.split(';'));
+  const rank = [];
+  for (const b of banks) {
+    let w = 0, m = 0;
+    for (const c of rows) {
+      const tc = num(c[2]), mt = num(c[b.montoCol]);
+      if (tc != null && mt != null && mt > 0) { w += tc * mt; m += mt; }
+    }
+    if (m > 0) rank.push([titleCaseBanco(b.name), +(w / m).toFixed(2)]);
+  }
+  rank.sort((a, b) => b[1] - a[1]);
+  return { fecha, banks: rank };
 }
 
 function updateBanks(html, fecha, banks) {
@@ -179,18 +192,19 @@ function updateRin(html, serie) {
     const original = html;
     const changed = [];
 
-    // 1. TCO (obligatorio)
+    // 1. TCO + 2. Bancos (ambos del MISMO CSV, un solo fetch)
     console.log('📡 TCO...');
-    const tcoSerie = parseTcoCsv(await fetchUrl(TCO_CSV_URL));
+    const tcoCsv = await fetchUrl(TCO_CSV_URL);
+    const tcoSerie = parseTcoCsv(tcoCsv);
     if (!tcoSerie.length) throw new Error('CSV sin filas TCO válidas');
     const [tcoFecha, tcoValor] = tcoSerie[tcoSerie.length - 1];
     const afterTco = updateTco(html, tcoSerie);
     if (afterTco !== html) { html = afterTco; changed.push(`TCO ${tcoFecha}=${tcoValor}`); }
     console.log(`   ${tcoSerie.length} días · último ${tcoFecha} = Bs ${tcoValor}`);
 
-    // 2. Ranking de bancos (best-effort)
+    // 2. Ranking de bancos — calculado del mismo CSV (best-effort)
     try {
-      const { fecha, banks } = parseBanks(await fetchUrl(TCO_REPORT_URL));
+      const { fecha, banks } = parseBanksCsv(tcoCsv);
       const afterBanks = updateBanks(html, fecha, banks);
       if (afterBanks !== html) { html = afterBanks; changed.push(`bancos ${fecha} (${banks.length})`); }
       console.log(`   bancos: ${banks.length} · corte ${fecha}`);
