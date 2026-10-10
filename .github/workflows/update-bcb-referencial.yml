@@ -36,14 +36,16 @@ jobs:
           node-version: '20'
 
       # 3. Ejecutar el script de actualización
+      #    set +e para capturar el exit code sin abortar el paso:
+      #      exit 0 = dato nuevo · exit 2 = sin cambios · exit 1 = ERROR real
       - name: Descargar y parsear TCO del BCB
         id: bcb
         run: |
+          set +e
           node .github/scripts/update-bcb.js
           echo "exit_code=$?" >> $GITHUB_OUTPUT
-        continue-on-error: true   # No falla el workflow si no hay dato nuevo
 
-      # 4. Verificar si hubo cambios reales (exit 0 = nuevo dato, exit 2 = ya al día)
+      # 4. Verificar si hubo cambios reales
       - name: Verificar si hay cambios
         id: check
         run: |
@@ -77,3 +79,24 @@ jobs:
           else
             echo "### ℹ️ Sin cambios — BCB no publicó nuevo TCO hoy" >> $GITHUB_STEP_SUMMARY
           fi
+
+      # 7. ALERTA si el bot falló de verdad (exit 1 = error de red/parseo del BCB)
+      #    - Telegram: aviso instantáneo al celular (si los secrets están configurados)
+      #    - Email: al hacer fallar el job (exit 1), GitHub envía su email nativo de fallo
+      - name: Alertar si el bot falló
+        if: steps.bcb.outputs.exit_code == '1'
+        env:
+          TG_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT:  ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL:  ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          MSG="🔴 DataHunterLabs: el bot del BCB FALLÓ (exit 1). Probablemente el BCB cambió el formato de su CSV otra vez. Revisá: ${RUN_URL}"
+          if [ -n "$TG_TOKEN" ] && [ -n "$TG_CHAT" ]; then
+            curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TG_CHAT}" \
+              --data-urlencode "text=${MSG}" >/dev/null && echo "📲 Alerta Telegram enviada."
+          else
+            echo "ℹ️ Telegram no configurado (faltan secrets TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID)."
+          fi
+          echo "::error::$MSG"
+          exit 1   # hace fallar el job → GitHub envía el email de fallo al dueño del repo
