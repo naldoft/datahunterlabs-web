@@ -2268,8 +2268,8 @@ const REFERENCIAL_COMPRA =  9.76;  // BCB ref. compra 2026-06-26 (serie desconti
 // operaciones de COMPRA de dólares de los bancos con sus clientes.
 // Fuente: https://www.bcb.gob.bo/tco_reporte_ultima_cotizacion.php
 const OFICIAL_TCO_START = '2026-06-26'; // fecha en que el oficial pasó de fijo (6.96) a TCO de mercado
-const TCO_OFICIAL = 11.83;              // último TCO publicado (2026-11-06) — actualizar vía cron
-const TCO_FECHA   = '2026-11-06';       // fecha de corte del último TCO — actualizar vía cron
+const TCO_OFICIAL = 11.72;              // último TCO publicado (2026-11-09) — actualizar vía cron
+const TCO_FECHA   = '2026-11-09';       // fecha de corte del último TCO — actualizar vía cron
 
 /* ─── Fecha local Bolivia (UTC-4, sin DST) ───────────────────────────────────
    NUNCA usar new Date().toISOString().slice(0,10) para "hoy":
@@ -2362,7 +2362,8 @@ const TCO_DATA = new Map([
   ['2026-10-15',11.67],['2026-10-16',11.68],['2026-10-19',11.68],['2026-10-20',11.71],
   ['2026-10-21',11.74],['2026-10-22',11.78],['2026-10-23',11.86],['2026-10-26',11.97],
   ['2026-10-27',12.02],['2026-10-28',12.06],['2026-10-29',12.09],['2026-10-30',12.05],
-  ['2026-11-03',12.02],['2026-11-04',11.98],['2026-11-05',11.87],['2026-11-06',11.83]
+  ['2026-11-03',12.02],['2026-11-04',11.98],['2026-11-05',11.87],['2026-11-06',11.83],
+  ['2026-11-09',11.72]
 ]);
 const _TCO_KEYS = [...TCO_DATA.keys()].sort();
 
@@ -2448,13 +2449,13 @@ const RIN_DATA = [
    Fuente: tco_reporte_ultima_cotizacion.php · se actualiza por día hábil.
    Última actualización: fecha de corte 2026-08-20
 ============================================================ */
-const BANK_RANKING_FECHA = '2026-11-06';
+const BANK_RANKING_FECHA = '2026-11-09';
 const BANK_RANKING = [
-  ['Banco FIE',11.98],['Banco de Crédito',11.9],['Banco Fortaleza',11.89],
-  ['Banco de la Nación Argentina',11.88],['Banco Ganadero',11.82],['Banco BISA',11.8],
-  ['Banco Mercantil Santa Cruz',11.77],['Banco Económico',11.74],['Banco Nacional de Bolivia',11.67],
-  ['Banco Prodem',11.59],['Banco PyME de la Comunidad',11.5],['Banco PyME Ecofuturo',10.89],
-  ['Banco Solidario',10.7],['Banco Unión',10.39]
+  ['Banco Fortaleza',11.79],['Banco Ganadero',11.76],['Banco FIE',11.75],
+  ['Banco Nacional de Bolivia',11.73],['Banco de Crédito',11.72],['Banco Económico',11.71],
+  ['Banco BISA',11.7],['Banco Mercantil Santa Cruz',11.64],['Banco Solidario',11.53],
+  ['Banco Prodem',11.51],['Banco PyME de la Comunidad',11.41],['Banco de la Nación Argentina',11.11],
+  ['Banco Unión',10.31]
 ];
 
 function buildReferencialHistory(targetDates) {
